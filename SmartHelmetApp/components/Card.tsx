@@ -1,0 +1,15 @@
+import { View, ViewProps } from 'react-native';
+import { cn } from '../lib/utils';
+
+interface CardProps extends ViewProps {
+    className?: string;
+}
+
+export function Card({ className, ...props }: CardProps) {
+    return (
+        <View
+            className={cn("rounded-xl border border-gray-100 bg-white shadow-sm shadow-gray-200/50 p-4", className)}
+            {...props}
+        />
+    );
+}
