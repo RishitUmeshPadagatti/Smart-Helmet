@@ -10,7 +10,7 @@ interface ButtonProps extends TouchableOpacityProps {
 }
 
 export function Button({ variant = 'default', size = 'default', title, children, className, ...props }: ButtonProps) {
-    let baseClass = "flex-row items-center justify-center rounded-xl";
+    let baseClass = "flex-row items-center justify-center rounded-xl shadow-md shadow-black/10 elevation-2";
     let variantClass = "bg-black";
     let textClass = "text-white font-medium";
 
