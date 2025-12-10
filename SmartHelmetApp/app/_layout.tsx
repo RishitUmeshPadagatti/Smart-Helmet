@@ -44,12 +44,16 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+import { UserProvider } from '../context/UserContext';
+
 function RootLayoutNav() {
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="tabs" options={{ headerShown: false }} />
-      </Stack>
-    </ThemeProvider>
+    <UserProvider>
+      <ThemeProvider value={DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="tabs" options={{ headerShown: false }} />
+        </Stack>
+      </ThemeProvider>
+    </UserProvider>
   );
 }
