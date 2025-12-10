@@ -18,7 +18,7 @@ export default function IIRS() {
             >
 
                 {/* Live Preview Placeholder */}
-                <View className="w-full h-56 bg-black rounded-2xl overflow-hidden mb-4 relative">
+                <View className="w-full h-56 bg-black rounded-2xl overflow-hidden mb-4 relative shadow-md shadow-black/20 elevation-4">
                     <Image
                         source={{ uri: "https://images.unsplash.com/photo-1595182903337-95192c483c2e?q=80&w=600&auto=format&fit=crop" }}
                         className="w-full h-full opacity-60"

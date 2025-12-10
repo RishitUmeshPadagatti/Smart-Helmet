@@ -45,14 +45,16 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+import { UserProvider } from '../context/UserContext';
+
 function RootLayoutNav() {
   return (
-    <SafeAreaProvider>
+    <UserProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="tabs" options={{ headerShown: false }} />
         </Stack>
       </ThemeProvider>
-    </SafeAreaProvider>
+    </UserProvider>
   );
 }

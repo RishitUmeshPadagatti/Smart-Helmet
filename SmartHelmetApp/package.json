@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-community/slider": "5.0.1",
     "@react-navigation/native": "^7.1.8",
     "clsx": "^2.1.1",
     "expo": "~54.0.27",
@@ -38,5 +39,12 @@
     "react-test-renderer": "19.1.0",
     "typescript": "~5.9.2"
   },
-  "private": true
+  "private": true,
+  "description": "make current ui better\r fetch data from backend\r make functional, rn its just dummy components",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
