@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 
 // Replace with your backend server IP
 const API_BASE = 'http://192.168.1.4:8000';
-const USER_ID = 'test_user';
 
 export interface UserData {
   rfid: string;
@@ -38,7 +37,7 @@ export interface UserData {
   timestamp: string;
 }
 
-export function useUserData() {
+export function useUserData(userId: string = 'test_user') {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,12 +47,12 @@ export function useUserData() {
     // Optionally refresh every 10 seconds
     const interval = setInterval(fetchUserData, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [userId]);
 
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/users/${USER_ID}`);
+      const res = await fetch(`${API_BASE}/users/${userId}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setUserData(data);
@@ -68,7 +67,7 @@ export function useUserData() {
 
   const updateUserData = async (updates: Partial<UserData>) => {
     try {
-      const res = await fetch(`${API_BASE}/users/${USER_ID}`, {
+      const res = await fetch(`${API_BASE}/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),

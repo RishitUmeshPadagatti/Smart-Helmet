@@ -6,12 +6,15 @@ import { ListItem } from '../../components/ListItem';
 import { SectionTitle } from '../../components/SectionTitle';
 import { Button } from '../../components/Button';
 import { useUser } from '../../context/UserContext';
+import { useUserData } from '../hooks/useUserData';
 import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2 } from 'lucide-react-native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Settings() {
-    const { user, familyMembers, helmetVolume, updateUser, addFamilyMember, removeFamilyMember, updateHelmetVolume } = useUser();
+    const { familyMembers, helmetVolume, addFamilyMember, removeFamilyMember, updateHelmetVolume } = useUser();
+    const { userData, loading, error, updateUserData } = useUserData();
+    
     const [autoSOS, setAutoSOS] = useState(true);
     const [autoRecord, setAutoRecord] = useState(true);
     const [smsAlert, setSmsAlert] = useState(false);
@@ -21,16 +24,34 @@ export default function Settings() {
 
     // Edit Profile State
     const [isEditProfileVisible, setIsEditProfileVisible] = useState(false);
-    const [editName, setEditName] = useState(user.name);
-    const [editRfid, setEditRfid] = useState(user.rfid);
-    const [editPhoneNumber, setEditPhoneNumber] = useState(user.phoneNumber || '');
+    const [editName, setEditName] = useState(userData?.name || '');
+    const [editRfid, setEditRfid] = useState(userData?.rfid || '');
+    const [editPhoneNumber, setEditPhoneNumber] = useState('');
 
     // Add Family Member State
     const [isAddFamilyVisible, setIsAddFamilyVisible] = useState(false);
-    const handleSaveProfile = () => {
-        updateUser({ name: editName, rfid: editRfid, phoneNumber: editPhoneNumber });
-        setIsEditProfileVisible(false);
+    
+    const handleSaveProfile = async () => {
+        if (userData) {
+            await updateUserData({
+                ...userData,
+                name: editName,
+                rfid: editRfid,
+            });
+            setIsEditProfileVisible(false);
+        }
     };
+
+    if (loading || !userData) {
+        return (
+            <SafeAreaView className="flex-1 bg-gray-50">
+                <Header title="Settings" />
+                <View className="flex-1 items-center justify-center">
+                    <Text className="text-gray-500">Loading...</Text>
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
@@ -44,18 +65,18 @@ export default function Settings() {
                 {/* Profile Section */}
                 <View className="items-center mb-8 mt-2">
                     <View className="w-24 h-24 rounded-full bg-gray-200 mb-3 overflow-hidden border-4 border-white shadow-sm">
-                        <Image source={{ uri: user.avatarUrl }} className="w-full h-full" />
+                        <Image source={{ uri: userData.avatarUrl }} className="w-full h-full" />
                     </View>
-                    <Text className="text-xl font-bold text-gray-900">{user.name}</Text>
-                    <Text className="text-sm text-gray-500">{user.rfid}</Text>
+                    <Text className="text-xl font-bold text-gray-900">{userData.name}</Text>
+                    <Text className="text-sm text-gray-500">{userData.rfid}</Text>
                     <Button
                         variant="outline"
                         size="sm"
                         title="Edit Profile"
                         className="mt-3 h-8"
                         onPress={() => {
-                            setEditName(user.name);
-                            setEditRfid(user.rfid);
+                            setEditName(userData.name);
+                            setEditRfid(userData.rfid);
                             setIsEditProfileVisible(true);
                         }}
                     />

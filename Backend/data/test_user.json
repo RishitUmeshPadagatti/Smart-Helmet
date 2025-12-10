@@ -1,6 +1,6 @@
 {
-  "rfid": "test_user",
-  "name": "User test_user",
+  "rfid": "RFID1234",
+  "name": "Mohith",
   "avatarUrl": "https://via.placeholder.com/150",
   "dashboard": {
     "speed": 0,
@@ -10,9 +10,9 @@
     "mediaTrack": "No track playing"
   },
   "location": {
-    "latitude": 12.9716,
-    "longitude": 77.5946,
-    "address": "Bangalore, India"
+    "latitude": 0,
+    "longitude": 0,
+    "address": ""
   },
   "impact": {
     "forceScore": 0,
@@ -23,5 +23,5 @@
   },
   "incidents": [],
   "settings": {},
-  "timestamp": "2025-12-10T16:01:30.544060"
+  "timestamp": "2025-12-10T17:02:47.472918"
 }
