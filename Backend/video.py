@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 # To import from the ML_model directory, we need to add the project root to the Python path.
 # This makes the project structure more robust.
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
@@ -14,8 +14,8 @@ if project_root not in sys.path:
 from ML_model.fault_detection import process_video_file
 
 # ================= Configuration =================
-UPLOAD_FOLDER = os.path.join(project_root, 'uploads')
-PROCESSED_FOLDER = os.path.join(project_root, 'processed')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+PROCESSED_FOLDER = os.path.join(os.path.dirname(__file__), 'processed')
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv'}
 
 # ================= Router Setup =================
