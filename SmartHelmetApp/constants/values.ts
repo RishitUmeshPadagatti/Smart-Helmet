@@ -1,0 +1,1 @@
+export const vapi_authorization_token = "Bearer 6c3d0752-d771-44ef-b4b0-d0679bab5381"

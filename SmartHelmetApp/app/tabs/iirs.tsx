@@ -1,4 +1,4 @@
-import { View, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, ScrollView, Image } from 'react-native';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/Button';
@@ -7,86 +7,8 @@ import { Badge } from '../../components/Badge';
 import { incidents } from '../../lib/mockData';
 import { Camera, Calendar } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState, useEffect } from 'react';
-
-// Camera Server Configuration
-const CAMERA_SERVER_URL = 'http://192.168.1.100:3001';
 
 export default function IIRS() {
-    const [isStreaming, setIsStreaming] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [latestFrame, setLatestFrame] = useState(null);
-    const [error, setError] = useState(null);
-    let frameInterval;
-
-    // Start camera stream
-    const startCamera = async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const response = await fetch(`${CAMERA_SERVER_URL}/camera/start`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await response.json();
-            if (data.success) {
-                setIsStreaming(true);
-                captureFrames();
-            } else {
-                setError(data.message);
-            }
-        } catch (err) {
-            setError(`Failed to connect: ${err.message}`);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Stop camera stream
-    const stopCamera = async () => {
-        setIsLoading(true);
-        try {
-            clearInterval(frameInterval);
-            const response = await fetch(`${CAMERA_SERVER_URL}/camera/stop`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await response.json();
-            if (data.success) {
-                setIsStreaming(false);
-                setLatestFrame(null);
-                setError(null);
-            }
-        } catch (err) {
-            setError(`Failed to stop: ${err.message}`);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Capture frames continuously
-    const captureFrames = () => {
-        const capture = async () => {
-            try {
-                const response = await fetch(`${CAMERA_SERVER_URL}/camera/frame`);
-                const data = await response.json();
-                if (data.success && data.frameData) {
-                    setLatestFrame(data.frameData);
-                }
-            } catch (err) {
-                console.error('Frame capture error:', err);
-            }
-        };
-        frameInterval = setInterval(capture, 100);
-    };
-
-    // Cleanup
-    useEffect(() => {
-        return () => {
-            if (frameInterval) clearInterval(frameInterval);
-        };
-    }, []);
-
     return (
         <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
             <Header title="IIRS System" />
@@ -96,52 +18,19 @@ export default function IIRS() {
                 showsVerticalScrollIndicator={false}
             >
 
-                {/* Live Preview */}
+                {/* Live Preview Placeholder */}
                 <View className="w-full h-56 bg-black rounded-2xl overflow-hidden mb-4 relative shadow-md shadow-black/20 elevation-4">
-                    {isStreaming && latestFrame ? (
-                        <Image
-                            source={{ uri: `data:image/jpeg;base64,${latestFrame}` }}
-                            className="w-full h-full"
-                        />
-                    ) : (
-                        <>
-                            <Image
-                                source={{ uri: "https://images.unsplash.com/photo-1595182903337-95192c483c2e?q=80&w=600&auto=format&fit=crop" }}
-                                className="w-full h-full opacity-60"
-                            />
-                            <View className="absolute inset-0 items-center justify-center">
-                                <Camera size={40} color="white" className="opacity-80" />
-                                <Text className="text-white font-medium mt-2">
-                                    {error ? 'Connection Error' : 'Live Camera Feed'}
-                                </Text>
-                            </View>
-                        </>
-                    )}
-                    
-                    {isStreaming && (
-                        <View className="absolute top-3 right-3 bg-red-500 px-2 py-1 rounded-md flex-row items-center gap-1">
-                            <View className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                            <Text className="text-white text-xs font-bold">LIVE</Text>
-                        </View>
-                    )}
-                </View>
-
-                {/* Error Display */}
-                {error && (
-                    <View className="w-full bg-red-100 border border-red-300 rounded-lg p-3 mb-4">
-                        <Text className="text-red-700 text-sm">{error}</Text>
-                    </View>
-                )}
-
-                {/* Controls */}
-                <View className="flex-row gap-3 mb-8">
-                    <Button 
-                        className={`flex-1 ${isStreaming ? 'bg-red-500' : 'bg-green-500'}`}
-                        title={isLoading ? '...' : (isStreaming ? 'Stop Recording' : 'Start Recording')}
-                        onPress={isStreaming ? stopCamera : startCamera}
-                        disabled={isLoading}
+                    <Image
+                        source={{ uri: "https://images.unsplash.com/photo-1595182903337-95192c483c2e?q=80&w=600&auto=format&fit=crop" }}
+                        className="w-full h-full opacity-60"
                     />
-                    <Button className="flex-1" variant="outline" title="Settings" />
+                    <View className="absolute inset-0 items-center justify-center">
+                        <Camera size={40} color="white" className="opacity-80" />
+                        <Text className="text-white font-medium mt-2">Live Camera Feed</Text>
+                    </View>
+                    <View className="absolute top-3 right-3 bg-red-500 px-2 py-1 rounded-md">
+                        <Text className="text-white text-xs font-bold">REC</Text>
+                    </View>
                 </View>
 
                 {/* Incidents List */}
