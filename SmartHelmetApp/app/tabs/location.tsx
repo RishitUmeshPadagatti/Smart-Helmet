@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { Text } from '../../components/Text';
 import { MapPin, Navigation, Share2 } from 'lucide-react-native';
 import { AddFamilyMemberModal } from '../../components/AddFamilyMemberModal';
 import { Header } from '../../components/Header';
@@ -30,40 +31,40 @@ export default function Location() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
             <Header title="Location" />
             <View className="flex-1 relative">
                 {/* Map Placeholder */}
-                <View className="absolute inset-0 bg-gray-200 items-center justify-center shadow-md shadow-black/10 elevation-3">
+                <View className="absolute inset-0 bg-gray-200 dark:bg-neutral-800 items-center justify-center shadow-md shadow-black/10 elevation-3">
                     <Image
                         source={{ uri: 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/-122.4324,37.78825,12,0/600x600?access_token=pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJja2xh... ' }} // Dummy map image
                         className="w-full h-full opacity-50"
                     />
                     <View className="absolute items-center">
                         <MapPin size={48} color="#EF4444" fill="#EF4444" />
-                        <View className="bg-white px-3 py-1 rounded-full shadow-sm mt-2">
-                            <Text className="font-bold text-gray-900">You are here</Text>
+                        <View className="bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm mt-2">
+                            <Text className="font-bold">You are here</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Overlay Stats */}
                 <View className="absolute top-4 left-4 right-4 flex-row justify-between">
-                    <View className="bg-white/90 p-3 rounded-2xl shadow-md shadow-black/10 elevation-3 backdrop-blur-md">
+                    <View className="bg-white/90 dark:bg-gray-900/90 p-3 rounded-2xl shadow-md shadow-black/10 elevation-3 backdrop-blur-md">
                         <View className="flex-row items-center gap-2">
                             <Navigation size={20} color="#4F46E5" />
                             <View>
-                                <Text className="text-xs text-gray-500">Speed</Text>
-                                <Text className="text-lg font-bold text-gray-900">{locationData.speed} km/h</Text>
+                                <Text className="text-xs" variant="muted">Speed</Text>
+                                <Text className="text-lg font-bold">{locationData.speed} km/h</Text>
                             </View>
                         </View>
                     </View>
-                    <View className="bg-white/90 p-3 rounded-2xl shadow-md shadow-black/10 elevation-3 backdrop-blur-md">
+                    <View className="bg-white/90 dark:bg-gray-900/90 p-3 rounded-2xl shadow-md shadow-black/10 elevation-3 backdrop-blur-md">
                         <View className="flex-row items-center gap-2">
                             <Share2 size={20} color="#4F46E5" />
                             <View>
-                                <Text className="text-xs text-gray-500">Share</Text>
-                                <Text className="text-lg font-bold text-gray-900">Live</Text>
+                                <Text className="text-xs" variant="muted">Share</Text>
+                                <Text className="text-lg font-bold">Live</Text>
                             </View>
                         </View>
                     </View>
@@ -81,11 +82,11 @@ export default function Location() {
                             activeOpacity={0.8}
                             onPress={() => setIsAddFamilyVisible(true)}
                         >
-                            <Card className="w-36 p-3 items-center justify-center h-full border-2 border-dashed border-gray-300 bg-gray-50/80">
-                                <View className="w-10 h-10 rounded-full bg-gray-200 items-center justify-center mb-2">
-                                    <Text className="text-2xl font-light text-gray-500">+</Text>
+                            <Card className="w-36 p-3 items-center justify-center h-full border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/80">
+                                <View className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center mb-2">
+                                    <Text className="text-2xl font-light" variant="muted">+</Text>
                                 </View>
-                                <Text className="font-medium text-gray-500">Add Member</Text>
+                                <Text className="font-medium" variant="muted">Add Member</Text>
                             </Card>
                         </TouchableOpacity>
 
@@ -97,20 +98,20 @@ export default function Location() {
                             >
                                 <Card className="w-36 p-3 items-center">
                                     <View className="relative">
-                                        <View className="w-12 h-12 rounded-full bg-gray-100 items-center justify-center mb-2">
-                                            <Text className="text-xl font-bold text-gray-600">{member.name[0]}</Text>
+                                        <View className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 items-center justify-center mb-2">
+                                            <Text className="text-xl font-bold" variant="muted">{member.name[0]}</Text>
                                         </View>
                                         <View className={cn(
-                                            "absolute bottom-2 right-0 w-3.5 h-3.5 rounded-full border-2 border-white",
+                                            "absolute bottom-2 right-0 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-gray-800",
                                             member.status === 'Driving' ? "bg-green-500" :
                                                 member.status === 'Not Driving' ? "bg-blue-500" : "bg-gray-400"
                                         )} />
                                     </View>
-                                    <Text className="font-semibold text-gray-900">{member.name}</Text>
-                                    <Text className="text-xs text-gray-500 mb-1">{member.status}</Text>
+                                    <Text className="font-semibold">{member.name}</Text>
+                                    <Text className="text-xs mb-1" variant="muted">{member.status}</Text>
                                     {member.speed !== undefined && (
-                                        <View className="bg-gray-100 px-2 py-0.5 rounded-full mt-1">
-                                            <Text className="text-[10px] font-bold text-gray-600">
+                                        <View className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full mt-1">
+                                            <Text className="text-[10px] font-bold" variant="muted">
                                                 {member.speed} km/h
                                             </Text>
                                         </View>

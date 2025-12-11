@@ -1,5 +1,6 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { cn } from '../lib/utils';
+import { Text } from './Text';
 
 interface BadgeProps {
     variant?: 'default' | 'outline' | 'destructive' | 'success' | 'warning';
@@ -8,24 +9,25 @@ interface BadgeProps {
 }
 
 export function Badge({ variant = 'default', children, className }: BadgeProps) {
-    let bgClass = 'bg-gray-100';
-    let textClass = 'text-gray-800';
+    let bgClass = 'bg-gray-100 dark:bg-gray-800';
+    let textClass = 'text-gray-800 dark:text-gray-300';
 
     switch (variant) {
         case 'success':
-            bgClass = 'bg-green-100';
-            textClass = 'text-green-800';
+            bgClass = 'bg-green-100 dark:bg-green-900/40';
+            textClass = 'text-green-800 dark:text-green-400';
             break;
         case 'warning':
-            bgClass = 'bg-yellow-100';
-            textClass = 'text-yellow-800';
+            bgClass = 'bg-yellow-100 dark:bg-yellow-900/40';
+            textClass = 'text-yellow-800 dark:text-yellow-400';
             break;
         case 'destructive':
-            bgClass = 'bg-red-100';
-            textClass = 'text-red-800';
+            bgClass = 'bg-red-100 dark:bg-red-900/40';
+            textClass = 'text-red-800 dark:text-red-400';
             break;
         case 'outline':
-            bgClass = 'bg-transparent border border-gray-200';
+            bgClass = 'bg-transparent border border-gray-200 dark:border-gray-700';
+            textClass = 'text-gray-800 dark:text-gray-300';
             break;
     }
 

@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { Text } from './Text';
 import { cn } from '../lib/utils';
 
 interface SectionTitleProps {
@@ -8,7 +8,7 @@ interface SectionTitleProps {
 
 export function SectionTitle({ title, className }: SectionTitleProps) {
     return (
-        <Text className={cn("text-lg font-bold text-gray-900 mb-3", className)}>
+        <Text className={cn("text-lg font-bold mb-3", className)}>
             {title}
         </Text>
     );

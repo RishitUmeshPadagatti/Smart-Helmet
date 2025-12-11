@@ -1,8 +1,10 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
+import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
+import { SOSButton } from '../../components/SOSButton';
 import { Battery, Zap, AlertTriangle, ShieldCheck, Music2 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserData } from '../hooks/useUserData';
@@ -13,10 +15,10 @@ export default function Dashboard() {
 
     if (loading) {
         return (
-            <SafeAreaView className="flex-1 bg-gray-50">
+            <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black">
                 <Header title="Dashboard" />
                 <View className="flex-1 items-center justify-center">
-                    <Text className="text-gray-500">Loading...</Text>
+                    <Text variant="muted">Loading...</Text>
                 </View>
             </SafeAreaView>
         );
@@ -24,10 +26,10 @@ export default function Dashboard() {
 
     if (error || !userData) {
         return (
-            <SafeAreaView className="flex-1 bg-gray-50">
+            <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black">
                 <Header title="Dashboard" />
                 <View className="flex-1 items-center justify-center px-4">
-                    <Text className="text-red-500 text-center">
+                    <Text variant="destructive" className="text-center">
                         {error || 'Failed to load user data'}
                     </Text>
                 </View>
@@ -36,7 +38,7 @@ export default function Dashboard() {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
             <Header title="Dashboard" />
             <ScrollView
                 className="flex-1 px-4 py-4"
@@ -47,14 +49,14 @@ export default function Dashboard() {
                 {/* Current User Card */}
                 <Card className="mb-6 flex-row items-center justify-between">
                     <View>
-                        <Text className="text-sm text-gray-500 mb-1">Current User</Text>
-                        <Text className="text-xl font-bold text-gray-900">{currentUser.name}</Text>
-                        <Text className="text-xs text-gray-400 mt-1">{userData.rfid}</Text>
+                        <Text className="text-sm mb-1" variant="muted">Current User</Text>
+                        <Text className="text-xl font-bold">{currentUser.name}</Text>
+                        <Text className="text-xs mt-1" variant="muted">{userData.rfid}</Text>
                     </View>
                     <View className="items-end gap-2">
                         <View className="flex-row items-center gap-1.5">
                             <View className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                            <Text className="text-green-600 font-medium text-sm">Active</Text>
+                            <Text variant="success" className="font-medium text-sm">Active</Text>
                         </View>
                         <Badge variant="outline">Connected</Badge>
                     </View>
@@ -65,17 +67,17 @@ export default function Dashboard() {
                     {/* Speed Card */}
                     <Card className="w-[48%] items-center justify-center py-6">
                         <Zap size={28} color="#F59E0B" className="mb-2" />
-                        <Text className="text-3xl font-bold text-gray-900">{userData.dashboard.speed}</Text>
-                        <Text className="text-xs text-gray-500 uppercase font-medium">km/h</Text>
+                        <Text className="text-3xl font-bold">{userData.dashboard.speed}</Text>
+                        <Text className="text-xs uppercase font-medium" variant="muted">km/h</Text>
                     </Card>
 
                     {/* Wearing Status */}
                     <Card className="w-[48%] items-center justify-center py-6">
                         <ShieldCheck size={28} color="#10B981" className="mb-2" />
-                        <Text className="text-lg font-bold text-gray-900 text-center">
+                        <Text className="text-lg font-bold text-center">
                             {userData.dashboard.wearing ? "Wearing" : "Not Wearing"}
                         </Text>
-                        <Text className="text-xs text-green-600 font-medium mt-1">
+                        <Text className="text-xs font-medium mt-1" variant="success">
                             {userData.dashboard.wearing ? "Safe" : "Warning"}
                         </Text>
                     </Card>
@@ -83,33 +85,36 @@ export default function Dashboard() {
                     {/* Accident Status */}
                     <Card className="w-[48%] items-center justify-center py-6">
                         <AlertTriangle size={28} color="#3B82F6" className="mb-2" />
-                        <Text className="text-lg font-bold text-gray-900 text-center capitalize">{userData.dashboard.accident}</Text>
-                        <Text className="text-xs text-gray-500 mt-1">Status</Text>
+                        <Text className="text-lg font-bold text-center capitalize">{userData.dashboard.accident}</Text>
+                        <Text className="text-xs mt-1" variant="muted">Status</Text>
                     </Card>
 
                     {/* Battery */}
                     <Card className="w-[48%] items-center justify-center py-6">
                         <Battery size={28} color="#10B981" className="mb-2" />
-                        <Text className="text-3xl font-bold text-gray-900">{userData.dashboard.battery}%</Text>
-                        <Text className="text-xs text-gray-500 uppercase font-medium">Battery</Text>
+                        <Text className="text-3xl font-bold">{userData.dashboard.battery}%</Text>
+                        <Text className="text-xs uppercase font-medium" variant="muted">Battery</Text>
                     </Card>
                 </View>
 
                 {/* Quick Actions */}
-                <Text className="text-lg font-bold text-gray-900 mb-3">Quick Actions</Text>
+                <Text className="text-lg font-bold mb-3">Quick Actions</Text>
                 <View className="gap-3 mb-6">
-                    <Button variant="destructive" title="SOS Emergency Call" className="w-full" />
-                    <Button variant="default" title="Start IIRS Recording" className="w-full bg-blue-600" />
+                    <SOSButton
+                        onTrigger={() => {
+                            console.log("SOS Activated! EMERGENCY CALL INITIATED - Coordinates sent to IIRS.");
+                        }}
+                    />
                 </View>
 
                 {/* Media */}
-                <Card className="flex-row items-center gap-4 bg-gray-900 border-gray-900">
-                    <View className="w-10 h-10 rounded-full bg-gray-800 items-center justify-center">
+                <Card className="flex-row items-center gap-4 bg-gray-900 border-gray-900 dark:bg-gray-800 dark:border-gray-800">
+                    <View className="w-10 h-10 rounded-full bg-gray-800 dark:bg-gray-700 items-center justify-center">
                         <Music2 size={20} color="white" />
                     </View>
                     <View className="flex-1">
                         <Text className="text-white font-medium">{userData.dashboard.mediaTrack}</Text>
-                        <Text className="text-gray-400 text-xs">Now Playing</Text>
+                        <Text className="text-gray-400 dark:text-gray-300 text-xs">Now Playing</Text>
                     </View>
                 </Card>
 

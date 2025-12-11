@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, ScrollView, Image } from 'react-native';
+import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -9,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function IIRS() {
     return (
-        <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
             <Header title="IIRS System" />
             <ScrollView
                 className="flex-1 p-4"
@@ -39,7 +40,7 @@ export default function IIRS() {
                 </View>
 
                 {/* Incidents List */}
-                <Text className="text-lg font-bold text-gray-900 mb-3">Incident Reports</Text>
+                <Text className="text-lg font-bold mb-3">Incident Reports</Text>
 
                 <View className="gap-4">
                     {incidents.map((incident) => (
@@ -52,10 +53,10 @@ export default function IIRS() {
                                 <View className="flex-1 p-3 justify-between">
                                     <View className="flex-row justify-between items-start">
                                         <View>
-                                            <Text className="font-bold text-gray-800 text-base">{incident.location}</Text>
+                                            <Text className="font-bold text-base">{incident.location}</Text>
                                             <View className="flex-row items-center gap-1 mt-1">
                                                 <Calendar size={12} color="#888" />
-                                                <Text className="text-xs text-gray-500">{new Date(incident.timestamp).toLocaleDateString()}</Text>
+                                                <Text className="text-xs" variant="muted">{new Date(incident.timestamp).toLocaleDateString()}</Text>
                                             </View>
                                         </View>
                                         <Badge
@@ -70,7 +71,7 @@ export default function IIRS() {
                                         size="sm"
                                         className="self-end h-8 px-2"
                                     >
-                                        <Text className="text-blue-600 text-xs font-bold">View Details</Text>
+                                        <Text className="text-blue-600 dark:text-blue-400 text-xs font-bold">View Details</Text>
                                     </Button>
                                 </View>
                             </View>
