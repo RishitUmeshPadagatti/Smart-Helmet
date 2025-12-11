@@ -1,10 +1,13 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import logging
+import os
 from datetime import datetime, timezone
 
-from app.routes import users_router
+from app.routes import users_router, sensors_router
+from video import video_router
 
 # Lifespan context manager for startup/shutdown
 @asynccontextmanager
@@ -32,6 +35,15 @@ app.add_middleware(
 
 # Include routers
 app.include_router(users_router)
+app.include_router(sensors_router)
+app.include_router(video_router)
+
+# Create directories if they don't exist
+PROCESSED_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'processed')
+os.makedirs(PROCESSED_FOLDER, exist_ok=True)
+
+# Mount static files for results download
+app.mount("/results", StaticFiles(directory=PROCESSED_FOLDER), name="results")
 
 
 # Health check endpoint

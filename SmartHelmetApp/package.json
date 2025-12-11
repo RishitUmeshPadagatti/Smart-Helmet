@@ -3,10 +3,10 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web"
+    "start": "set REACT_NATIVE_PACKAGER_HOSTNAME=192.168.0.112 && expo start",
+    "android": "set REACT_NATIVE_PACKAGER_HOSTNAME=192.168.0.112 && expo run:android",
+    "ios": "set REACT_NATIVE_PACKAGER_HOSTNAME=192.168.0.112 && expo run:ios",
+    "web": "set REACT_NATIVE_PACKAGER_HOSTNAME=192.168.0.112 && expo start --web"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
