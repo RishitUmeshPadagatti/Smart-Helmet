@@ -36,7 +36,7 @@ class ImpactData(BaseModel):
 class UserData(BaseModel):
     rfid: str = "RFID001"
     name: str = "User"
-    avatarUrl: str = "https://via.placeholder.com/150"
+    avatarUrl: str = "https://ui-avatars.com/api/?name=User&background=4F46E5&color=fff&size=150"
     dashboard: DashboardData = DashboardData()
     location: LocationData = LocationData()
     impact: ImpactData = ImpactData()

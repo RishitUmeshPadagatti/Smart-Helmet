@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { currentUser, helmetData, locationData, impactData, incidents } from '../../lib/mockData';
 
 // Replace with your backend server IP
-const API_BASE = 'http://192.168.1.4:8000';
+const API_BASE = 'http://localhost:8000';
 
 export interface UserData {
   rfid: string;
@@ -37,6 +38,41 @@ export interface UserData {
   timestamp: string;
 }
 
+// Fallback mock data when backend is unavailable
+const getMockUserData = (): UserData => ({
+  rfid: currentUser.rfid,
+  name: currentUser.name,
+  avatarUrl: currentUser.avatarUrl,
+  dashboard: {
+    speed: helmetData.speed,
+    wearing: helmetData.wearing,
+    accident: helmetData.accident,
+    battery: helmetData.battery,
+    mediaTrack: helmetData.mediaTrack,
+  },
+  location: {
+    latitude: locationData.latitude,
+    longitude: locationData.longitude,
+    address: "Current Location",
+  },
+  impact: {
+    forceScore: impactData.forceScore,
+    injuryProb: impactData.injuryProb,
+    fallDirection: "None",
+    tiltAngle: 0,
+    history: [],
+  },
+  incidents: incidents.map(inc => ({
+    id: inc.id.toString(),
+    timestamp: inc.timestamp,
+    location: inc.location,
+    severity: inc.severity,
+    thumbnail: inc.thumbnail,
+  })),
+  settings: {},
+  timestamp: new Date().toISOString(),
+});
+
 export function useUserData(userId: string = 'test_user') {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,16 +87,24 @@ export function useUserData(userId: string = 'test_user') {
 
   const fetchUserData = async () => {
     try {
-      setLoading(true);
-      const res = await fetch(`${API_BASE}/users/${userId}`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+
+      const res = await fetch(`${API_BASE}/users/${userId}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setUserData(data);
       setError(null);
+      setLoading(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch data');
-      console.error('Fetch error:', err);
-    } finally {
+      // Backend unavailable or timeout - use mock data immediately without loading state
+      console.log('Backend unavailable, using mock data immediately');
+      setUserData(getMockUserData());
+      setError(null);
       setLoading(false);
     }
   };
