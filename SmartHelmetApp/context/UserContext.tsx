@@ -3,17 +3,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { currentUser as initialUser, familyMembers as initialFamily } from '../lib/mockData';
 
 // Define types based on mock data
-type User = typeof initialUser & { phoneNumber?: string };
-type FamilyMember = typeof initialFamily[0] & { speed?: number; rfid?: string; mobileNumber?: string };
+export type User = typeof initialUser & { phoneNumber?: string };
+export type FamilyMember = typeof initialFamily[0] & { speed?: number; rfid?: string; mobileNumber?: string };
 
 interface UserContextType {
     user: User;
     familyMembers: FamilyMember[];
     helmetVolume: number;
+    unitSystem: 'metric' | 'imperial';
     updateUser: (updatedUser: Partial<User>) => void;
     addFamilyMember: (member: Omit<FamilyMember, 'id' | 'speed'>) => void;
     removeFamilyMember: (id: number) => void;
     updateHelmetVolume: (volume: number) => void;
+    updateUnitSystem: (units: 'metric' | 'imperial') => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -22,27 +24,33 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User>(initialUser);
     const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
     const [helmetVolume, setHelmetVolume] = useState(80);
+    const [unitSystem, setUnitSystem] = useState<'metric' | 'imperial'>('metric');
 
     // Load data from storage on mount
     React.useEffect(() => {
         const loadData = async () => {
             try {
-                const [storedFamily, storedVolume] = await Promise.all([
+                const [storedFamily, storedVolume, storedUnits] = await Promise.all([
                     AsyncStorage.getItem('familyMembers'),
-                    AsyncStorage.getItem('helmetVolume')
+                    AsyncStorage.getItem('helmetVolume'),
+                    AsyncStorage.getItem('unitSystem')
                 ]);
 
-                if (storedFamily) {
-                    setFamilyMembers(JSON.parse(storedFamily));
-                } else {
-                    // Initialize with mock data if empty
-                    const initialData = initialFamily.map(m => ({ ...m, speed: 0, status: 'Not Driving', rfid: '', mobileNumber: '' }));
-                    setFamilyMembers(initialData);
-                    await AsyncStorage.setItem('familyMembers', JSON.stringify(initialData));
-                }
+                // For development: Always reset to mock data to ensure location updates are reflected
+                // if (storedFamily) {
+                //    setFamilyMembers(JSON.parse(storedFamily));
+                // } else {
+                const initialData = initialFamily.map(m => ({ ...m, speed: 0, status: 'Not Driving', rfid: '', mobileNumber: '' }));
+                setFamilyMembers(initialData);
+                await AsyncStorage.setItem('familyMembers', JSON.stringify(initialData));
+                //}
 
                 if (storedVolume) {
                     setHelmetVolume(JSON.parse(storedVolume));
+                }
+
+                if (storedUnits) {
+                    setUnitSystem(storedUnits as 'metric' | 'imperial');
                 }
             } catch (e) {
                 console.error("Failed to load user context data", e);
@@ -51,30 +59,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         loadData();
     }, []);
 
-    // Simulate real-time updates
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setFamilyMembers(prev => {
-                const updated = prev.map(member => {
-                    // 40% chance of being "Not Driving" (speed 0)
-                    const isDriving = Math.random() > 0.4;
-                    let newSpeed = 0;
-                    let newStatus = 'Not Driving';
-
-                    if (isDriving) {
-                        newSpeed = Math.floor(Math.random() * 91) + 10;
-                        newStatus = 'Driving';
-                    }
-
-                    return { ...member, speed: newSpeed, status: newStatus };
-                });
-                // Note: We do NOT save to storage here to avoid excessive writes for transient data
-                return updated;
-            });
-        }, 3000);
-
-        return () => clearInterval(interval);
-    }, []);
+    // Removed random simulation for family member driving status
 
     const updateUser = (updatedUser: Partial<User>) => {
         setUser((prev) => ({ ...prev, ...updatedUser }));
@@ -99,8 +84,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
         await AsyncStorage.setItem('helmetVolume', JSON.stringify(newVolume));
     };
 
+    const updateUnitSystem = async (units: 'metric' | 'imperial') => {
+        setUnitSystem(units);
+        await AsyncStorage.setItem('unitSystem', units);
+    };
+
     return (
-        <UserContext.Provider value={{ user, familyMembers, helmetVolume, updateUser, addFamilyMember, removeFamilyMember, updateHelmetVolume }}>
+        <UserContext.Provider value={{ user, familyMembers, helmetVolume, unitSystem, updateUser, addFamilyMember, removeFamilyMember, updateHelmetVolume, updateUnitSystem }}>
             {children}
         </UserContext.Provider>
     );

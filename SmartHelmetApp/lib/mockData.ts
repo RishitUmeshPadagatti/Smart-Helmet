@@ -1,8 +1,9 @@
 export const currentUser = {
-    name: "Rishit",
+    name: "Mohith",
     rfid: "RFID12345",
     status: "active", // green dot
-    avatarUrl: "https://github.com/shadcn.png" // dummy
+    avatarUrl: "https://github.com/shadcn.png", // dummy
+    phoneNumber: "+91 78993 96101"
 };
 
 export const helmetData = {
@@ -16,16 +17,26 @@ export const helmetData = {
 };
 
 export const locationData = {
-    latitude: 37.78825,
-    longitude: -122.4324,
+    latitude: 12.9039167,
+    longitude: 77.5069167,
     timestamp: new Date().toISOString(),
     speed: 42,
     direction: "NW",
 };
 
 export const familyMembers = [
-    { id: 1, name: "Mom", location: { lat: 37.78825, lng: -122.4324 }, status: "Home" },
-    { id: 2, name: "Dad", location: { lat: 37.75825, lng: -122.4624 }, status: "Work" },
+    {
+        id: 1, name: "Mom", location: {
+            lat: 12.9362778,
+            lng: 77.5182222
+        }, status: "Not Driving"
+    },
+    {
+        id: 2, name: "Dad", location: {
+            lat: 13.0115833,
+            lng: 77.5544722
+        }, status: "Not Driving"
+    },
 ];
 
 export const incidents = [

@@ -8,6 +8,7 @@ export interface UserData {
   rfid: string;
   name: string;
   avatarUrl: string;
+  phoneNumber?: string;
   dashboard: {
     speed: number;
     wearing: boolean;
@@ -43,6 +44,7 @@ const getMockUserData = (): UserData => ({
   rfid: currentUser.rfid,
   name: currentUser.name,
   avatarUrl: currentUser.avatarUrl,
+  phoneNumber: currentUser.phoneNumber || '',
   dashboard: {
     speed: helmetData.speed,
     wearing: helmetData.wearing,
@@ -73,7 +75,7 @@ const getMockUserData = (): UserData => ({
   timestamp: new Date().toISOString(),
 });
 
-export function useUserData(userId: string = 'test_user') {
+export default function useUserData(userId: string = 'test_user') {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

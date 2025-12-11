@@ -1,0 +1,30 @@
+{
+  "name": "smart-helmet-camera-server",
+  "version": "1.0.0",
+  "description": "Express.js camera streaming server for Smart Helmet with live MJPEG and SSE support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "camera",
+    "streaming",
+    "mjpeg",
+    "live",
+    "video"
+  ],
+  "author": "Smart Helmet Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

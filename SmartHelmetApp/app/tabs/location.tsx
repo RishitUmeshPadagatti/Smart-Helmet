@@ -1,6 +1,6 @@
-import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { Text } from '../../components/Text';
-import { MapPin, Navigation, Share2 } from 'lucide-react-native';
+import { Navigation, Share2, ArrowLeft } from 'lucide-react-native';
 import { AddFamilyMemberModal } from '../../components/AddFamilyMemberModal';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
@@ -9,6 +9,7 @@ import { useUser } from '../../context/UserContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
+import { LocationMap } from '../../components/LocationMap';
 
 export default function Location() {
     const [region, setRegion] = useState({
@@ -20,6 +21,7 @@ export default function Location() {
 
     const { familyMembers, addFamilyMember } = useUser();
     const [isAddFamilyVisible, setIsAddFamilyVisible] = useState(false);
+    const [isViewingMyLocation, setIsViewingMyLocation] = useState(true);
 
     const focusLocation = (lat: number, lng: number) => {
         setRegion({
@@ -28,25 +30,28 @@ export default function Location() {
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
         });
+        setIsViewingMyLocation(false);
+    };
+
+    const focusMyLocation = () => {
+        setRegion({
+            latitude: locationData.latitude,
+            longitude: locationData.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+        });
+        setIsViewingMyLocation(true);
     };
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
             <Header title="Location" />
             <View className="flex-1 relative">
-                {/* Map Placeholder */}
-                <View className="absolute inset-0 bg-gray-200 dark:bg-neutral-800 items-center justify-center shadow-md shadow-black/10 elevation-3">
-                    <Image
-                        source={{ uri: 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/-122.4324,37.78825,12,0/600x600?access_token=pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJja2xh... ' }} // Dummy map image
-                        className="w-full h-full opacity-50"
-                    />
-                    <View className="absolute items-center">
-                        <MapPin size={48} color="#EF4444" fill="#EF4444" />
-                        <View className="bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm mt-2">
-                            <Text className="font-bold">You are here</Text>
-                        </View>
-                    </View>
-                </View>
+                <LocationMap
+                    region={region}
+                    setRegion={setRegion}
+                    familyMembers={familyMembers}
+                />
 
                 {/* Overlay Stats */}
                 <View className="absolute top-4 left-4 right-4 flex-row justify-between">
@@ -69,6 +74,19 @@ export default function Location() {
                         </View>
                     </View>
                 </View>
+
+                {/* Back Button - Shows when viewing family member's location */}
+                {!isViewingMyLocation && (
+                    <View className="absolute top-20 left-4">
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={focusMyLocation}
+                            className="bg-white/90 dark:bg-gray-900/90 p-3 rounded-full shadow-md shadow-black/10 elevation-3 backdrop-blur-md"
+                        >
+                            <ArrowLeft size={20} color="#4F46E5" />
+                        </TouchableOpacity>
+                    </View>
+                )}
 
                 {/* Family Members List */}
                 <View className="absolute bottom-8 left-0 right-0">
@@ -109,13 +127,11 @@ export default function Location() {
                                     </View>
                                     <Text className="font-semibold">{member.name}</Text>
                                     <Text className="text-xs mb-1" variant="muted">{member.status}</Text>
-                                    {member.speed !== undefined && (
-                                        <View className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full mt-1">
-                                            <Text className="text-[10px] font-bold" variant="muted">
-                                                {member.speed} km/h
-                                            </Text>
-                                        </View>
-                                    )}
+                                    <View className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full mt-1">
+                                        <Text className="text-[10px] font-bold" variant="muted">
+                                            0 km/h
+                                        </Text>
+                                    </View>
                                 </Card>
                             </TouchableOpacity>
                         ))}

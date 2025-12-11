@@ -20,7 +20,7 @@ export default function Impact() {
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
-            <Header title="Impact History" />
+            <Header title="Impact" />
 
             <ScrollView
                 className="flex-1 px-4 py-4"

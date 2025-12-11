@@ -1,4 +1,4 @@
-import { View, ScrollView, Switch, Image, Modal, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ScrollView, Switch, Image, Modal, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text } from '../../components/Text';
 import Slider from '@react-native-community/slider';
@@ -8,14 +8,14 @@ import { ListItem } from '../../components/ListItem';
 import { SectionTitle } from '../../components/SectionTitle';
 import { Button } from '../../components/Button';
 import { useUser } from '../../context/UserContext';
-import { useUserData } from '../hooks/useUserData';
+import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
 import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2 } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Settings() {
-    const { familyMembers, helmetVolume, addFamilyMember, removeFamilyMember, updateHelmetVolume } = useUser();
+    const { familyMembers, helmetVolume, unitSystem, addFamilyMember, removeFamilyMember, updateHelmetVolume, updateUnitSystem } = useUser();
     const { userData, loading, error, updateUserData } = useUserData();
 
     const [autoSOS, setAutoSOSState] = useState(true);
@@ -76,7 +76,7 @@ export default function Settings() {
     const [isEditProfileVisible, setIsEditProfileVisible] = useState(false);
     const [editName, setEditName] = useState(userData?.name || '');
     const [editRfid, setEditRfid] = useState(userData?.rfid || '');
-    const [editPhoneNumber, setEditPhoneNumber] = useState('');
+    const [editPhoneNumber, setEditPhoneNumber] = useState(userData?.phoneNumber || '');
 
     // Add Family Member State
     const [isAddFamilyVisible, setIsAddFamilyVisible] = useState(false);
@@ -87,12 +87,37 @@ export default function Settings() {
                 ...userData,
                 name: editName,
                 rfid: editRfid,
+                phoneNumber: editPhoneNumber,
             });
             setIsEditProfileVisible(false);
         }
     };
 
+    const handleUnitsPress = () => {
+        Alert.alert(
+            "Select Unit System",
+            "Choose your preferred unit system",
+            [
+                { text: "Metric (km/h)", onPress: () => updateUnitSystem('metric'), style: 'default' },
+                { text: "Imperial (mph)", onPress: () => updateUnitSystem('imperial') },
+                { text: "Cancel", style: "cancel" }
+            ]
+        );
+    };
 
+    const handleAboutPress = () => {
+        Alert.alert(
+            "About Smart Helmet",
+            "Version 1.0.0\n\nDeveloped by Lingesans Team\n\nThis app connects to your Smart Helmet to provide safety features like impact detection, SOS alerts, and location tracking."
+        );
+    };
+
+    const handleLogOutPress = () => {
+        Alert.alert(
+            "Cannot Log Out",
+            "Logging out is disabled in this demo version."
+        );
+    };
 
     if (loading || !userData) {
         return (
@@ -117,10 +142,11 @@ export default function Settings() {
                 {/* Profile Section */}
                 <View className="items-center mb-8 mt-2">
                     <View className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 mb-3 overflow-hidden border-4 border-white dark:border-gray-800 shadow-sm">
-                        <Image source={{ uri: currentUser.avatarUrl }} className="w-full h-full" />
+                        <Image source={require('../../assets/images/dummy.jpeg')} className="w-full h-full" resizeMode="contain" />
                     </View>
-                    <Text className="text-xl font-bold">{currentUser.name}</Text>
+                    <Text className="text-xl font-bold">{userData.name}</Text>
                     <Text className="text-sm" variant="muted">{userData.rfid}</Text>
+                    <Text className="text-sm" variant="muted">{userData.phoneNumber}</Text>
                     <Button
                         variant="outline"
                         size="sm"
@@ -172,7 +198,13 @@ export default function Settings() {
                         </View>
                         <Switch value={notifications} onValueChange={setNotifications} trackColor={{ true: '#4F46E5' }} />
                     </View>
-                    <ListItem className="rounded-t-none border-t-0" icon={Zap} label="Units" value="km/h" onPress={() => { }} />
+                    <ListItem
+                        className="rounded-t-none border-t-0"
+                        icon={Zap}
+                        label="Units"
+                        value={unitSystem === 'metric' ? "Metric (km/h)" : "Imperial (mph)"}
+                        onPress={handleUnitsPress}
+                    />
                     <ListItem
                         icon={Volume2}
                         label="Helmet Volume"
@@ -184,12 +216,10 @@ export default function Settings() {
                 {/* Management */}
                 <SectionTitle title="Management" />
                 <View className="mb-6 bg-white dark:bg-neutral-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-md shadow-black/5 elevation-2">
-                    <View className="p-4 border-b border-gray-100 dark:border-gray-800 flex-row justify-between items-center">
+                    <TouchableOpacity onPress={() => setIsAddFamilyVisible(true)} className="p-4 border-b border-gray-100 dark:border-gray-800 flex-row justify-between items-center">
                         <Text className="font-medium">Family Members</Text>
-                        <TouchableOpacity onPress={() => setIsAddFamilyVisible(true)}>
-                            <Plus size={20} color="#4F46E5" />
-                        </TouchableOpacity>
-                    </View>
+                        <Plus size={20} color="#4F46E5" />
+                    </TouchableOpacity>
                     {familyMembers.map((member) => (
                         <View key={member.id} className="p-4 border-b border-gray-100 dark:border-gray-800 flex-row justify-between items-center">
                             <View>
@@ -208,10 +238,10 @@ export default function Settings() {
                     )}
                 </View>
                 <View className="mb-6">
-                    <ListItem icon={Info} label="About & Help" onPress={() => { }} />
+                    <ListItem icon={Info} label="About & Help" onPress={handleAboutPress} />
                 </View>
 
-                <Button variant="destructive" title="Log Out" className="mt-4 mb-8" />
+                <Button variant="destructive" title="Log Out" className="mt-4 mb-8" onPress={handleLogOutPress} />
 
             </ScrollView>
 
