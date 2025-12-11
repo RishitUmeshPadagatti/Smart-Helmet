@@ -7,31 +7,35 @@ FastAPI-based backend for Smart Helmet with video analysis, sensor data manageme
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.8+
 - pip package manager
 
 ### Installation
 
 1. **Create and activate virtual environment**
+
    ```bash
    python -m venv venv
-   
+
    # Windows (Git Bash)
    source venv/Scripts/activate
-   
+
    # Windows (CMD)
    venv\Scripts\activate
-   
+
    # Mac/Linux
    source venv/bin/activate
    ```
 
 2. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Run the server**
+
    ```bash
    uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
@@ -43,12 +47,14 @@ FastAPI-based backend for Smart Helmet with video analysis, sensor data manageme
 ## 🔌 API Endpoints
 
 ### Root & Health
+
 ```
 GET /                    # Root endpoint
 GET /health             # Health check with timestamp
 ```
 
 ### Users (`/users`)
+
 ```
 GET /users              # List all users
 GET /users/{user_id}    # Get specific user
@@ -57,6 +63,7 @@ PATCH /users/{user_id}  # Partial update user
 ```
 
 ### Sensors (`/sensors`) - ESP32 Data
+
 ```
 POST /sensors/upload         # Receive ESP32 sensor data
 GET /sensors/latest          # Get latest reading
@@ -66,6 +73,7 @@ DELETE /sensors/history      # Clear history
 ```
 
 **Sensor data format:**
+
 ```json
 {
   "sos": false,
@@ -74,7 +82,7 @@ DELETE /sensors/history      # Clear history
   "gyro": [0, 0, 0],
   "gps_fix": false,
   "gps": "",
-  "mq3_v": 0.030,
+  "mq3_v": 0.03,
   "turb_raw": 1535,
   "ultrasonic_cm": -1,
   "button": false
@@ -82,12 +90,14 @@ DELETE /sensors/history      # Clear history
 ```
 
 ### Video Analysis (`/video`) - ML Model
+
 ```
 POST /video/upload       # Upload MP4 for YOLO analysis
 GET /results/{filename}  # Download processed video
 ```
 
 **Video response:**
+
 ```json
 {
   "message": "Processing complete successfully",
@@ -96,8 +106,8 @@ GET /results/{filename}  # Download processed video
   "download_url": "/results/processed_video.mp4",
   "analytics": {
     "track_id": [
-      {"frame": 1, "score": 0},
-      {"frame": 2, "score": 15}
+      { "frame": 1, "score": 0 },
+      { "frame": 2, "score": 15 }
     ]
   }
 }
@@ -140,12 +150,12 @@ curl http://localhost:8000/users
 
 ## 🐛 Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| ModuleNotFoundError | Run `pip install -r requirements.txt` |
-| Port 8000 in use | Use `--port 8001` instead |
-| Video upload fails | Check `uploads/` and `processed/` folders exist |
-| YOLO model fails | Run `pip install --upgrade ultralytics` |
+| Issue               | Solution                                        |
+| ------------------- | ----------------------------------------------- |
+| ModuleNotFoundError | Run `pip install -r requirements.txt`           |
+| Port 8000 in use    | Use `--port 8001` instead                       |
+| Video upload fails  | Check `uploads/` and `processed/` folders exist |
+| YOLO model fails    | Run `pip install --upgrade ultralytics`         |
 
 ---
 
@@ -157,6 +167,7 @@ curl http://localhost:8000/users
 ---
 
 **Last Updated:** December 11, 2025
+
 - CORS: the server is configured to allow only origins on port `8081` (e.g. the Expo web preview or Metro dev server). If you need access from a different origin, update `main.py`'s CORS settings.
 - Data is currently mock/static; integrate with your ESP32 communication method separately.
 
