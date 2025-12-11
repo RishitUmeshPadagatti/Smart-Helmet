@@ -39,6 +39,7 @@ Smart-Helmet/
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.8+
 - Node.js 16+
 - Git
@@ -47,32 +48,36 @@ Smart-Helmet/
 ### Backend Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/Smart-Helmet.git
    cd Smart-Helmet/Backend
    ```
 
 2. **Create virtual environment**
+
    ```bash
    python -m venv venv
-   
+
    # Activate venv
    # Windows (Git Bash)
    source venv/Scripts/activate
-   
+
    # Or Windows (CMD)
    venv\Scripts\activate
-   
+
    # Mac/Linux
    source venv/bin/activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Run the server**
+
    ```bash
    uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
@@ -82,11 +87,13 @@ Smart-Helmet/
 ### Frontend Setup
 
 1. **Navigate to app folder**
+
    ```bash
    cd ../SmartHelmetApp
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -101,12 +108,15 @@ Smart-Helmet/
 ## 📡 API Endpoints
 
 ### Health Check
+
 ```
 GET http://localhost:8000/health
 ```
+
 Returns server status and timestamp.
 
 ### User Management
+
 ```
 GET /users                    # List all users
 GET /users/{user_id}          # Get user by ID
@@ -115,6 +125,7 @@ PATCH /users/{user_id}        # Partially update user
 ```
 
 ### Sensor Data (ESP32)
+
 ```
 POST /sensors/upload          # Receive sensor data from ESP32
 GET /sensors/latest           # Get latest sensor reading
@@ -124,6 +135,7 @@ DELETE /sensors/history       # Clear history
 ```
 
 **Sensor data format:**
+
 ```json
 {
   "sos": false,
@@ -132,7 +144,7 @@ DELETE /sensors/history       # Clear history
   "gyro": [0, 0, 0],
   "gps_fix": false,
   "gps": "",
-  "mq3_v": 0.030,
+  "mq3_v": 0.03,
   "turb_raw": 1535,
   "ultrasonic_cm": -1,
   "button": false
@@ -140,12 +152,14 @@ DELETE /sensors/history       # Clear history
 ```
 
 ### Video Analysis (ML Model)
+
 ```
 POST /video/upload            # Upload MP4 for YOLO analysis
 GET /results/{filename}       # Download processed video
 ```
 
 **Response from video upload:**
+
 ```json
 {
   "message": "Processing complete successfully",
@@ -154,8 +168,8 @@ GET /results/{filename}       # Download processed video
   "download_url": "/results/processed_video.mp4",
   "analytics": {
     "track_id": [
-      {"frame": 1, "score": 0},
-      {"frame": 2, "score": 15}
+      { "frame": 1, "score": 0 },
+      { "frame": 2, "score": 15 }
     ]
   }
 }
@@ -168,6 +182,7 @@ GET /results/{filename}       # Download processed video
 ### Backend Configuration Files
 
 **`requirements.txt`** - Python dependencies:
+
 - FastAPI 0.115.6
 - Uvicorn 0.32.1
 - Pydantic 2.10.3
@@ -219,31 +234,32 @@ void loop() {
     doc["turb_raw"] = 1535;
     doc["ultrasonic_cm"] = -1;
     doc["button"] = false;
-    
+
     JsonArray accel = doc.createNestedArray("accel");
     accel.add(0.0); accel.add(0.0); accel.add(0.0);
-    
+
     JsonArray gyro = doc.createNestedArray("gyro");
     gyro.add(0.0); gyro.add(0.0); gyro.add(0.0);
-    
+
     String jsonString;
     serializeJson(doc, jsonString);
-    
+
     HTTPClient http;
     http.begin(serverUrl);
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(jsonString);
-    
+
     Serial.print("Response: ");
     Serial.println(httpResponseCode);
     http.end();
   }
-  
+
   delay(5000); // Send every 5 seconds
 }
 ```
 
 **Libraries needed in Arduino IDE:**
+
 - WiFi (built-in)
 - HTTPClient (built-in)
 - ArduinoJson (install via Library Manager)
@@ -253,6 +269,7 @@ void loop() {
 ## 🎥 Video Analysis Features
 
 ### ML Model: YOLOv8
+
 - **Model:** YOLOv8 (Small variant)
 - **Task:** Object detection & tracking for vehicles
 - **Target Classes:** Cars, Bikes, Trucks, Motorcycles
@@ -260,6 +277,7 @@ void loop() {
 - **Processing Device:** CPU (auto-detects GPU if available)
 
 ### Output Analytics
+
 - **Track IDs:** Unique identifier for each detected object
 - **Threat Scores:** 0-100 score based on:
   - Proximity to center (danger zone)
@@ -268,6 +286,7 @@ void loop() {
   - Historical tracking data
 
 ### Supported Video Formats
+
 - MP4
 - AVI
 - MOV
@@ -278,6 +297,7 @@ void loop() {
 ## 🧪 Testing
 
 ### Test Sensor Endpoint (Postman)
+
 ```bash
 curl -X POST http://localhost:8000/sensors/upload \
   -H "Content-Type: application/json" \
@@ -296,11 +316,13 @@ curl -X POST http://localhost:8000/sensors/upload \
 ```
 
 ### Fetch Sensor Data
+
 ```bash
 curl http://localhost:8000/sensors/latest
 ```
 
 ### Test Health Endpoint
+
 ```bash
 curl http://localhost:8000/health
 ```
@@ -310,23 +332,27 @@ curl http://localhost:8000/health
 ## 🐛 Troubleshooting
 
 ### Server won't start
+
 ```
 Error: ModuleNotFoundError: No module named 'torch'
 → Run: pip install -r requirements.txt
 ```
 
 ### 500 Error on video upload
+
 - Check if `Backend/uploads/` and `Backend/processed/` folders exist
 - Ensure `yolov8s.pt` is present in `Backend/ML_model/`
 - Check if video file is valid MP4 format
 - Review server console for detailed error
 
 ### ESP32 can't reach backend
+
 - Ensure ESP32 and backend are on same network
 - Replace `192.168.1.100` with your actual backend IP
 - Check firewall settings allow port 8000
 
 ### CORS errors in frontend
+
 - Backend allows origin regex: `https?://.*:8081`
 - Ensure frontend runs on port 8081
 
@@ -335,6 +361,7 @@ Error: ModuleNotFoundError: No module named 'torch'
 ## 📦 GitHub Setup & Pushing
 
 ### 1. Initialize Git Repository
+
 ```bash
 cd Smart-Helmet
 git init
@@ -343,6 +370,7 @@ git config user.email "your.email@example.com"
 ```
 
 ### 2. Create `.gitignore`
+
 ```
 # Python
 venv/
@@ -373,18 +401,21 @@ sensor_data.json
 ```
 
 ### 3. Stage and Commit
+
 ```bash
 git add .
 git commit -m "Initial commit: Smart Helmet system with ESP32, ML analysis, and mobile app"
 ```
 
 ### 4. Create GitHub Repository
+
 1. Go to [github.com/new](https://github.com/new)
 2. Name: `Smart-Helmet`
 3. Description: "Intelligent Smart Helmet with IoT sensors, YOLO video analysis, and impact detection"
 4. Click **Create repository**
 
 ### 5. Add Remote and Push
+
 ```bash
 git remote add origin https://github.com/yourusername/Smart-Helmet.git
 git branch -M main
@@ -392,6 +423,7 @@ git push -u origin main
 ```
 
 ### 6. Future Commits
+
 ```bash
 # Make changes
 git add .
@@ -404,6 +436,7 @@ git push
 ## 🔐 Environment Variables
 
 Create `.env` file in Backend folder:
+
 ```
 BACKEND_URL=http://localhost:8000
 FRONTEND_URL=http://localhost:8081
@@ -449,7 +482,7 @@ This project is part of JSS Ideathon 2025.
 ✅ React Native mobile app for monitoring  
 ✅ User management system  
 ✅ Historical data tracking  
-✅ Processed video download  
+✅ Processed video download
 
 ---
 
