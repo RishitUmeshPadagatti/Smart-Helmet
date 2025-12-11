@@ -6,6 +6,7 @@ import { Button } from '../../components/Button';
 import { Battery, Zap, AlertTriangle, ShieldCheck, Music2 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserData } from '../hooks/useUserData';
+import { currentUser } from '../../lib/mockData';
 
 export default function Dashboard() {
     const { userData, loading, error } = useUserData();
@@ -47,7 +48,7 @@ export default function Dashboard() {
                 <Card className="mb-6 flex-row items-center justify-between">
                     <View>
                         <Text className="text-sm text-gray-500 mb-1">Current User</Text>
-                        <Text className="text-xl font-bold text-gray-900">{userData.name}</Text>
+                        <Text className="text-xl font-bold text-gray-900">{currentUser.name}</Text>
                         <Text className="text-xs text-gray-400 mt-1">{userData.rfid}</Text>
                     </View>
                     <View className="items-end gap-2">

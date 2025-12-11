@@ -7,6 +7,7 @@ import { SectionTitle } from '../../components/SectionTitle';
 import { Button } from '../../components/Button';
 import { useUser } from '../../context/UserContext';
 import { useUserData } from '../hooks/useUserData';
+import { currentUser } from '../../lib/mockData';
 import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2 } from 'lucide-react-native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -65,9 +66,9 @@ export default function Settings() {
                 {/* Profile Section */}
                 <View className="items-center mb-8 mt-2">
                     <View className="w-24 h-24 rounded-full bg-gray-200 mb-3 overflow-hidden border-4 border-white shadow-sm">
-                        <Image source={{ uri: userData.avatarUrl }} className="w-full h-full" />
+                        <Image source={{ uri: currentUser.avatarUrl }} className="w-full h-full" />
                     </View>
-                    <Text className="text-xl font-bold text-gray-900">{userData.name}</Text>
+                    <Text className="text-xl font-bold text-gray-900">{currentUser.name}</Text>
                     <Text className="text-sm text-gray-500">{userData.rfid}</Text>
                     <Button
                         variant="outline"
