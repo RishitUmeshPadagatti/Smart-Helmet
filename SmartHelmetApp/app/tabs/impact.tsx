@@ -1,99 +1,108 @@
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { SectionTitle } from '../../components/SectionTitle';
-import { impactData } from '../../lib/mockData';
+import { Button } from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Activity, AlertTriangle, ShieldAlert, TrendingUp } from 'lucide-react-native';
+import { Activity, UploadCloud, ChevronRight } from 'lucide-react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function Impact() {
-    const chartData = impactData.history.map((item, index) => ({ value: item.force, label: item.time }));
+    const router = useRouter();
+
+    const handleUpload = () => {
+        console.log("Uploading Impact Data...");
+        // In real app, this would pick a file or sync with helmet
+    };
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
-            <Header title="Impact Analysis" />
+        <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
+            <Header title="Impact History" />
+
             <ScrollView
                 className="flex-1 px-4 py-4"
                 contentContainerStyle={{ paddingBottom: 20 }}
                 showsVerticalScrollIndicator={false}
             >
-
-                {/* Summary Cards */}
-                <View className="flex-row flex-wrap gap-3 mb-6">
-                    <Card className="w-[48%] py-4 items-center border-red-100 bg-red-50/50">
-                        <Activity size={24} color="#EF4444" className="mb-2" />
-                        <Text className="text-3xl font-bold text-gray-900">{impactData.forceScore}</Text>
-                        <Text className="text-xs text-red-600 font-medium">Impact Force</Text>
-                    </Card>
-
-                    <Card className="w-[48%] py-4 items-center">
-                        <ShieldAlert size={24} color="#F59E0B" className="mb-2" />
-                        <Text className="text-xl font-bold text-gray-900">{impactData.injuryProb}</Text>
-                        <Text className="text-xs text-gray-500 font-medium">Injury Prob.</Text>
-                    </Card>
-
-                    <Card className="w-[48%] py-4 items-center">
-                        <AlertTriangle size={24} color="#6366F1" className="mb-2" />
-                        <Text className="text-lg font-bold text-gray-900">{impactData.fallDirection}</Text>
-                        <Text className="text-xs text-gray-500 font-medium">Fall Direction</Text>
-                    </Card>
-
-                    <Card className="w-[48%] py-4 items-center">
-                        <TrendingUp size={24} color="#10B981" className="mb-2" />
-                        <Text className="text-2xl font-bold text-gray-900">{impactData.tiltAngle}°</Text>
-                        <Text className="text-xs text-gray-500 font-medium">Tilt Angle</Text>
-                    </Card>
-                </View>
-
-                {/* Chart Placeholder (Custom Visual) */}
-                <Card className="mb-6 p-4 pb-8">
-                    <SectionTitle title="Impact Force Timeline" className="mb-6" />
-                    <View className="h-48 flex-row items-end justify-between px-2">
-                        {/* Simple Bar representation */}
-                        {chartData.map((item, index) => (
-                            <View key={index} className="items-center gap-2">
-                                <View
-                                    className="w-8 rounded-t-sm bg-red-400 opacity-80"
-                                    style={{ height: `${(item.value / 10) * 100}%` }}
-                                />
-                                <Text className="text-[10px] text-gray-400">{item.label}</Text>
-                            </View>
-                        ))}
+                {/* Upload Section */}
+                <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
+                    <View className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center mb-4">
+                        <UploadCloud size={32} color="#3B82F6" />
                     </View>
+                    <Text className="text-lg font-bold mb-1">Upload Impact Data</Text>
+                    <Text className="text-center text-sm mb-4" variant="muted">
+                        Sync data from your smart helmet to analyze latest impacts.
+                    </Text>
+                    <Button
+                        title="Upload New Data"
+                        onPress={handleUpload}
+                        className="w-full"
+                    />
                 </Card>
 
                 {/* History List */}
-                <SectionTitle title="Impact History" />
-                <View>
-                    <Card className="flex-row justify-between items-center mb-2 p-3">
-                        <View className="flex-row items-center gap-3">
-                            <View className="w-10 h-10 rounded-full bg-red-100 items-center justify-center">
-                                <Activity size={20} color="#EF4444" />
+                <SectionTitle title="Recent Activity" />
+                <View className="gap-3">
+                    {/* Item 1 */}
+                    <TouchableOpacity onPress={() => router.push('/impact/123')}>
+                        <Card className="flex-row justify-between items-center p-4">
+                            <View className="flex-row items-center gap-4">
+                                <View className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 items-center justify-center">
+                                    <Activity size={24} color="#EF4444" />
+                                </View>
+                                <View>
+                                    <Text className="font-bold text-base">High Impact Detected</Text>
+                                    <Text className="text-xs" variant="muted">Today, 10:10 AM • 8.5g Force</Text>
+                                </View>
                             </View>
-                            <View>
-                                <Text className="font-bold text-gray-900">High Impact Detected</Text>
-                                <Text className="text-xs text-gray-500">10:10 AM • 8.5g Force</Text>
+                            <View className="items-end">
+                                <Text className="font-bold text-xs mb-1" variant="destructive">CRITICAL</Text>
+                                <ChevronRight size={16} color="#9CA3AF" />
                             </View>
-                        </View>
-                        <Text className="text-red-500 font-bold text-xs">CRITICAL</Text>
-                    </Card>
+                        </Card>
+                    </TouchableOpacity>
 
-                    <Card className="flex-row justify-between items-center mb-2 p-3">
-                        <View className="flex-row items-center gap-3">
-                            <View className="w-10 h-10 rounded-full bg-blue-100 items-center justify-center">
-                                <Activity size={20} color="#3B82F6" />
+                    {/* Item 2 */}
+                    <TouchableOpacity onPress={() => router.push('/impact/124')}>
+                        <Card className="flex-row justify-between items-center p-4">
+                            <View className="flex-row items-center gap-4">
+                                <View className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center">
+                                    <Activity size={24} color="#3B82F6" />
+                                </View>
+                                <View>
+                                    <Text className="font-bold text-base">Minor Bump</Text>
+                                    <Text className="text-xs" variant="muted">Yesterday, 4:05 PM • 3.0g Force</Text>
+                                </View>
                             </View>
-                            <View>
-                                <Text className="font-bold text-gray-900">Minor Bump</Text>
-                                <Text className="text-xs text-gray-500">10:05 AM • 3.0g Force</Text>
+                            <View className="items-end">
+                                <Text className="text-blue-500 font-bold text-xs mb-1">LOW</Text>
+                                <ChevronRight size={16} color="#9CA3AF" />
                             </View>
-                        </View>
-                        <Text className="text-blue-500 font-bold text-xs">LOW</Text>
-                    </Card>
+                        </Card>
+                    </TouchableOpacity>
+
+                    {/* Item 3 */}
+                    <TouchableOpacity onPress={() => router.push('/impact/125')}>
+                        <Card className="flex-row justify-between items-center p-4">
+                            <View className="flex-row items-center gap-4">
+                                <View className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center">
+                                    <Activity size={24} color="#6B7280" />
+                                </View>
+                                <View>
+                                    <Text className="font-bold text-base">Routine Check</Text>
+                                    <Text className="text-xs" variant="muted">Oct 20, 9:00 AM • 0.5g Force</Text>
+                                </View>
+                            </View>
+                            <View className="items-end">
+                                <Text className="text-gray-500 font-bold text-xs mb-1">NORMAL</Text>
+                                <ChevronRight size={16} color="#9CA3AF" />
+                            </View>
+                        </Card>
+                    </TouchableOpacity>
                 </View>
-
             </ScrollView>
         </SafeAreaView>
     );

@@ -1,12 +1,15 @@
 import { Tabs } from 'expo-router';
 import { Home, Map as MapIcon, Camera, Activity, Settings } from 'lucide-react-native';
 
+import { useColorScheme } from 'nativewind';
+
 export default function TabLayout() {
+  const { colorScheme } = useColorScheme();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#000000',
+        tabBarActiveTintColor: colorScheme === 'dark' ? '#ffffff' : '#000000',
         tabBarInactiveTintColor: '#94a3b8',
       }}>
       <Tabs.Screen

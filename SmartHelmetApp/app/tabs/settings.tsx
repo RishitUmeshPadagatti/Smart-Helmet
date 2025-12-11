@@ -1,4 +1,6 @@
-import { View, Text, ScrollView, Switch, Image, Modal, TextInput, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Switch, Image, Modal, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text } from '../../components/Text';
 import Slider from '@react-native-community/slider';
 import { AddFamilyMemberModal } from '../../components/AddFamilyMemberModal';
 import { Header } from '../../components/Header';
@@ -9,16 +11,63 @@ import { useUser } from '../../context/UserContext';
 import { useUserData } from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
 import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2 } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Settings() {
     const { familyMembers, helmetVolume, addFamilyMember, removeFamilyMember, updateHelmetVolume } = useUser();
     const { userData, loading, error, updateUserData } = useUserData();
-    
-    const [autoSOS, setAutoSOS] = useState(true);
-    const [autoRecord, setAutoRecord] = useState(true);
-    const [smsAlert, setSmsAlert] = useState(false);
+
+    const [autoSOS, setAutoSOSState] = useState(true);
+    const [autoRecord, setAutoRecordState] = useState(true);
+    const [smsAlert, setSmsAlertState] = useState(false);
+    const [notifications, setNotificationsState] = useState(true);
+
+    const setAutoSOS = async (value: boolean) => {
+        setAutoSOSState(value);
+        await AsyncStorage.setItem('autoSOS', JSON.stringify(value));
+    };
+
+    const setAutoRecord = async (value: boolean) => {
+        setAutoRecordState(value);
+        await AsyncStorage.setItem('autoRecord', JSON.stringify(value));
+    };
+
+    const setSmsAlert = async (value: boolean) => {
+        setSmsAlertState(value);
+        await AsyncStorage.setItem('smsAlert', JSON.stringify(value));
+    };
+
+    const setNotifications = async (value: boolean) => {
+        setNotificationsState(value);
+        await AsyncStorage.setItem('notifications', JSON.stringify(value));
+    };
+
+    const [loadingSettings, setLoadingSettings] = useState(true);
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const [storedAutoSOS, storedAutoRecord, storedSmsAlert, storedNotifications] = await Promise.all([
+                    AsyncStorage.getItem('autoSOS'),
+                    AsyncStorage.getItem('autoRecord'),
+                    AsyncStorage.getItem('smsAlert'),
+                    AsyncStorage.getItem('notifications'),
+                ]);
+
+                if (storedAutoSOS !== null) setAutoSOSState(JSON.parse(storedAutoSOS));
+                if (storedAutoRecord !== null) setAutoRecordState(JSON.parse(storedAutoRecord));
+                if (storedSmsAlert !== null) setSmsAlertState(JSON.parse(storedSmsAlert));
+                if (storedNotifications !== null) setNotificationsState(JSON.parse(storedNotifications));
+            } catch (e) {
+                console.error("Failed to load settings", e);
+            } finally {
+                setLoadingSettings(false);
+            }
+        };
+
+        loadSettings();
+    }, []);
 
     // Helmet Volume State
     const [isVolumeModalVisible, setIsVolumeModalVisible] = useState(false);
@@ -31,7 +80,7 @@ export default function Settings() {
 
     // Add Family Member State
     const [isAddFamilyVisible, setIsAddFamilyVisible] = useState(false);
-    
+
     const handleSaveProfile = async () => {
         if (userData) {
             await updateUserData({
@@ -43,19 +92,21 @@ export default function Settings() {
         }
     };
 
+
+
     if (loading || !userData) {
         return (
-            <SafeAreaView className="flex-1 bg-gray-50">
+            <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black">
                 <Header title="Settings" />
                 <View className="flex-1 items-center justify-center">
-                    <Text className="text-gray-500">Loading...</Text>
+                    <Text variant="muted">Loading...</Text>
                 </View>
             </SafeAreaView>
         );
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-gray-50" edges={['top']}>
+        <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
             <Header title="Settings" />
             <ScrollView
                 className="flex-1 px-4 py-4"
@@ -65,11 +116,11 @@ export default function Settings() {
 
                 {/* Profile Section */}
                 <View className="items-center mb-8 mt-2">
-                    <View className="w-24 h-24 rounded-full bg-gray-200 mb-3 overflow-hidden border-4 border-white shadow-sm">
+                    <View className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 mb-3 overflow-hidden border-4 border-white dark:border-gray-800 shadow-sm">
                         <Image source={{ uri: currentUser.avatarUrl }} className="w-full h-full" />
                     </View>
-                    <Text className="text-xl font-bold text-gray-900">{currentUser.name}</Text>
-                    <Text className="text-sm text-gray-500">{userData.rfid}</Text>
+                    <Text className="text-xl font-bold">{currentUser.name}</Text>
+                    <Text className="text-sm" variant="muted">{userData.rfid}</Text>
                     <Button
                         variant="outline"
                         size="sm"
@@ -85,19 +136,19 @@ export default function Settings() {
 
                 {/* Helmet Settings */}
                 <SectionTitle title="Helmet Configuration" />
-                <View className="bg-white rounded-xl border border-gray-100 overflow-hidden mb-6 shadow-md shadow-black/5 elevation-2">
-                    <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
+                <View className="bg-white dark:bg-neutral-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-6 shadow-md shadow-black/5 dark:shadow-none elevation-2">
+                    <View className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
                         <View className="flex-row items-center gap-3">
                             <Shield size={20} color="#4F46E5" />
-                            <Text className="text-base font-medium text-gray-700">Auto SOS</Text>
+                            <Text className="text-base font-medium">Auto SOS</Text>
                         </View>
                         <Switch value={autoSOS} onValueChange={setAutoSOS} trackColor={{ true: '#4F46E5' }} />
                     </View>
 
-                    <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
+                    <View className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
                         <View className="flex-row items-center gap-3">
                             <VideoIcon size={20} color="#4F46E5" />
-                            <Text className="text-base font-medium text-gray-700">Auto IIRS Recording</Text>
+                            <Text className="text-base font-medium">Auto IIRS Recording</Text>
                         </View>
                         <Switch value={autoRecord} onValueChange={setAutoRecord} trackColor={{ true: '#4F46E5' }} />
                     </View>
@@ -105,7 +156,7 @@ export default function Settings() {
                     <View className="flex-row items-center justify-between p-4">
                         <View className="flex-row items-center gap-3">
                             <Phone size={20} color="#4F46E5" />
-                            <Text className="text-base font-medium text-gray-700">SMS on Crash</Text>
+                            <Text className="text-base font-medium">SMS on Crash</Text>
                         </View>
                         <Switch value={smsAlert} onValueChange={setSmsAlert} trackColor={{ true: '#4F46E5' }} />
                     </View>
@@ -114,8 +165,14 @@ export default function Settings() {
                 {/* App Settings */}
                 <SectionTitle title="App Preferences" />
                 <View className="mb-6">
-                    <ListItem icon={Bell} label="Notifications" value="On" onPress={() => { }} />
-                    <ListItem icon={Zap} label="Units" value="km/h" onPress={() => { }} />
+                    <View className="flex-row items-center justify-between p-4 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-gray-800 rounded-t-xl">
+                        <View className="flex-row items-center gap-3">
+                            <Bell size={20} color="#666" />
+                            <Text className="text-base font-medium">Notifications</Text>
+                        </View>
+                        <Switch value={notifications} onValueChange={setNotifications} trackColor={{ true: '#4F46E5' }} />
+                    </View>
+                    <ListItem className="rounded-t-none border-t-0" icon={Zap} label="Units" value="km/h" onPress={() => { }} />
                     <ListItem
                         icon={Volume2}
                         label="Helmet Volume"
@@ -126,18 +183,18 @@ export default function Settings() {
 
                 {/* Management */}
                 <SectionTitle title="Management" />
-                <View className="mb-6 bg-white rounded-xl border border-gray-100 overflow-hidden shadow-md shadow-black/5 elevation-2">
-                    <View className="p-4 border-b border-gray-100 flex-row justify-between items-center">
-                        <Text className="font-medium text-gray-900">Family Members</Text>
+                <View className="mb-6 bg-white dark:bg-neutral-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-md shadow-black/5 elevation-2">
+                    <View className="p-4 border-b border-gray-100 dark:border-gray-800 flex-row justify-between items-center">
+                        <Text className="font-medium">Family Members</Text>
                         <TouchableOpacity onPress={() => setIsAddFamilyVisible(true)}>
                             <Plus size={20} color="#4F46E5" />
                         </TouchableOpacity>
                     </View>
                     {familyMembers.map((member) => (
-                        <View key={member.id} className="p-4 border-b border-gray-100 flex-row justify-between items-center">
+                        <View key={member.id} className="p-4 border-b border-gray-100 dark:border-gray-800 flex-row justify-between items-center">
                             <View>
-                                <Text className="font-medium text-gray-800">{member.name}</Text>
-                                <Text className="text-xs text-gray-500">{member.status}</Text>
+                                <Text className="font-medium">{member.name}</Text>
+                                <Text className="text-xs" variant="muted">{member.status}</Text>
                             </View>
                             <TouchableOpacity onPress={() => removeFamilyMember(member.id)}>
                                 <Trash2 size={18} color="#EF4444" />
@@ -146,7 +203,7 @@ export default function Settings() {
                     ))}
                     {familyMembers.length === 0 && (
                         <View className="p-4">
-                            <Text className="text-gray-400 text-center">No family members added</Text>
+                            <Text variant="muted" className="text-center">No family members added</Text>
                         </View>
                     )}
                 </View>
@@ -165,50 +222,60 @@ export default function Settings() {
                 visible={isEditProfileVisible}
                 onRequestClose={() => setIsEditProfileVisible(false)}
             >
-                <View className="flex-1 justify-end bg-black/50">
-                    <View className="bg-white rounded-t-3xl p-6">
-                        <View className="flex-row justify-between items-center mb-6">
-                            <Text className="text-xl font-bold text-gray-900">Edit Profile</Text>
-                            <TouchableOpacity onPress={() => setIsEditProfileVisible(false)}>
-                                <X size={24} color="#6B7280" />
-                            </TouchableOpacity>
-                        </View>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    className="flex-1"
+                >
+                    <View className="flex-1 justify-end bg-black/50">
+                        <View className="bg-white dark:bg-gray-800 rounded-t-3xl p-6">
+                            <View className="flex-row justify-between items-center mb-6">
+                                <Text className="text-xl font-bold">Edit Profile</Text>
+                                <TouchableOpacity onPress={() => setIsEditProfileVisible(false)}>
+                                    <X size={24} color="#6B7280" />
+                                </TouchableOpacity>
+                            </View>
 
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-gray-700 mb-2">Name</Text>
-                            <TextInput
-                                className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900"
-                                value={editName}
-                                onChangeText={setEditName}
-                                placeholder="Enter your name"
-                            />
-                        </View>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                <View className="mb-4">
+                                    <Text className="text-sm font-medium mb-2">Name</Text>
+                                    <TextInput
+                                        className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4 text-gray-900 dark:text-white"
+                                        value={editName}
+                                        onChangeText={setEditName}
+                                        placeholder="Enter your name"
+                                        placeholderTextColor="#9CA3AF"
+                                    />
+                                </View>
 
-                        <View className="mb-4">
-                            <Text className="text-sm font-medium text-gray-700 mb-2">RFID Tag</Text>
-                            <TextInput
-                                className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900"
-                                value={editRfid}
-                                onChangeText={setEditRfid}
-                                placeholder="Enter RFID"
-                            />
-                        </View>
+                                <View className="mb-4">
+                                    <Text className="text-sm font-medium mb-2">RFID Tag</Text>
+                                    <TextInput
+                                        className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4 text-gray-900 dark:text-white"
+                                        value={editRfid}
+                                        onChangeText={setEditRfid}
+                                        placeholder="Enter RFID"
+                                        placeholderTextColor="#9CA3AF"
+                                    />
+                                </View>
 
-                        <View className="mb-6">
-                            <Text className="text-sm font-medium text-gray-700 mb-2">Phone Number</Text>
-                            <TextInput
-                                className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900"
-                                value={editPhoneNumber}
-                                onChangeText={setEditPhoneNumber}
-                                placeholder="Enter Phone Number"
-                                keyboardType="phone-pad"
-                            />
-                        </View>
+                                <View className="mb-6">
+                                    <Text className="text-sm font-medium mb-2">Phone Number</Text>
+                                    <TextInput
+                                        className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4 text-gray-900 dark:text-white"
+                                        value={editPhoneNumber}
+                                        onChangeText={setEditPhoneNumber}
+                                        placeholder="Enter Phone Number"
+                                        placeholderTextColor="#9CA3AF"
+                                        keyboardType="phone-pad"
+                                    />
+                                </View>
 
-                        <Button title="Save Changes" onPress={handleSaveProfile} />
-                        <View className="h-8" />
+                                <Button title="Save Changes" onPress={handleSaveProfile} />
+                                <View className="h-8" />
+                            </ScrollView>
+                        </View>
                     </View>
-                </View>
+                </KeyboardAvoidingView>
             </Modal>
 
             {/* Add Family Member Modal */}
@@ -231,11 +298,11 @@ export default function Settings() {
                 onRequestClose={() => setIsVolumeModalVisible(false)}
             >
                 <View className="flex-1 justify-center items-center bg-black/50 p-4">
-                    <View className="bg-white rounded-2xl p-6 w-full max-w-sm items-center">
-                        <Text className="text-xl font-bold text-gray-900 mb-6">Helmet Volume</Text>
+                    <View className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-sm items-center">
+                        <Text className="text-xl font-bold mb-6">Helmet Volume</Text>
 
                         <View className="w-full items-center mb-8">
-                            <Text className="text-4xl font-bold text-indigo-600 mb-4">
+                            <Text variant="primary" className="text-4xl font-bold mb-4">
                                 {helmetVolume ?? 80}%
                             </Text>
                             <Slider

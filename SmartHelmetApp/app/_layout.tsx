@@ -1,12 +1,13 @@
 import '../global.css';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useColorScheme } from 'nativewind';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,9 +49,10 @@ export default function RootLayout() {
 import { UserProvider } from '../context/UserContext';
 
 function RootLayoutNav() {
+  const { colorScheme } = useColorScheme();
   return (
     <UserProvider>
-      <ThemeProvider value={DefaultTheme}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="tabs" options={{ headerShown: false }} />
         </Stack>

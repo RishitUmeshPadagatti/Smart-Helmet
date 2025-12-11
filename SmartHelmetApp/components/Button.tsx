@@ -1,4 +1,5 @@
-import { TouchableOpacity, Text, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { Text } from './Text';
 import { cn } from '../lib/utils';
 
 interface ButtonProps extends TouchableOpacityProps {
@@ -11,20 +12,20 @@ interface ButtonProps extends TouchableOpacityProps {
 
 export function Button({ variant = 'default', size = 'default', title, children, className, ...props }: ButtonProps) {
     let baseClass = "flex-row items-center justify-center rounded-xl shadow-md shadow-black/10 elevation-2";
-    let variantClass = "bg-black";
-    let textClass = "text-white font-medium";
+    let variantClass = "bg-black dark:bg-white";
+    let textClass = "text-white font-medium dark:text-black";
 
     switch (variant) {
         case 'ghost':
-            variantClass = "bg-transparent";
-            textClass = "text-black";
+            variantClass = "bg-transparent shadow-none";
+            textClass = "text-black dark:text-white";
             break;
         case 'outline':
-            variantClass = "bg-transparent border border-gray-200";
-            textClass = "text-black";
+            variantClass = "bg-transparent border border-gray-200 shadow-none dark:border-gray-700";
+            textClass = "text-black dark:text-white";
             break;
         case 'destructive':
-            variantClass = "bg-red-500";
+            variantClass = "bg-red-500 shadow-red-500/20";
             textClass = "text-white";
             break;
     }
