@@ -1,17 +1,143 @@
-import { View, ScrollView, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { SectionTitle } from '../../components/SectionTitle';
-import { impactData } from '../../lib/mockData';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Activity, AlertTriangle, ShieldAlert, TrendingUp, PlayCircle, ChevronLeft } from 'lucide-react-native';
+import { Activity, AlertTriangle, ShieldAlert, TrendingUp, PlayCircle, ChevronLeft, Trash2 } from 'lucide-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect } from 'react';
+import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+
+interface ImpactIncident {
+    id: string;
+    title: string;
+    timestamp: string;
+    force: number;
+    severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+    videoPath: string; // Stored as 'video1' or 'video2'
+    forceScore?: number;
+    injuryProb?: string;
+    fallDirection?: string;
+    tiltAngle?: number;
+    history?: Array<{ time: string; force: number }>;
+}
+
+const VIDEO_MAP: Record<string, any> = {
+    'video1': require('../../assets/videos/video1_impact.mp4'),
+    'video2': require('../../assets/videos/video2_impact.mp4'),
+    'video3': require('../../assets/videos/video3_impact.mp4'),
+};
 
 export default function ImpactAnalysisDetail() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
-    const chartData = impactData.history.map((item, index) => ({ value: item.force, label: item.time }));
+    const [incident, setIncident] = useState<ImpactIncident | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [videoRef, setVideoRef] = useState<Video | null>(null);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+    useEffect(() => {
+        loadIncident();
+    }, [id]);
+
+    const loadIncident = async () => {
+        try {
+            const stored = await AsyncStorage.getItem('impactIncidents');
+            if (stored) {
+                const incidents: ImpactIncident[] = JSON.parse(stored);
+                const found = incidents.find(inc => inc.id === id);
+                if (found) {
+                    setIncident(found);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load incident:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = () => {
+        Alert.alert(
+            'Delete Incident',
+            'Are you sure you want to delete this incident? This action cannot be undone.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            const stored = await AsyncStorage.getItem('impactIncidents');
+                            if (stored) {
+                                const incidents: ImpactIncident[] = JSON.parse(stored);
+                                const filtered = incidents.filter(inc => inc.id !== id);
+                                await AsyncStorage.setItem('impactIncidents', JSON.stringify(filtered));
+                                router.back();
+                            }
+                        } catch (error) {
+                            console.error('Failed to delete incident:', error);
+                            Alert.alert('Error', 'Failed to delete incident. Please try again.');
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
+    const handlePlayVideo = async () => {
+        if (!videoRef || !incident) return;
+        
+        try {
+            // Set up playback status listener before presenting
+            videoRef.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
+                if (status.isLoaded) {
+                    if (status.didJustFinish) {
+                        setIsVideoPlaying(false);
+                    }
+                }
+            });
+            
+            // Present video in native fullscreen player
+            // This will open the native video player in fullscreen mode
+            await videoRef.presentFullscreenPlayer();
+            setIsVideoPlaying(true);
+        } catch (error) {
+            console.error('Error playing video:', error);
+            Alert.alert('Error', 'Failed to play video. Please try again.');
+        }
+    };
+
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 bg-white dark:bg-black" edges={['top', 'bottom', 'left', 'right']}>
+                <Stack.Screen options={{ headerShown: false }} />
+                <Header title="Loading..." />
+                <View className="flex-1 items-center justify-center">
+                    <Text variant="muted">Loading incident details...</Text>
+                </View>
+            </SafeAreaView>
+        );
+    }
+
+    if (!incident) {
+        return (
+            <SafeAreaView className="flex-1 bg-white dark:bg-black" edges={['top', 'bottom', 'left', 'right']}>
+                <Stack.Screen options={{ headerShown: false }} />
+                <Header title="Not Found" />
+                <View className="flex-1 items-center justify-center">
+                    <Text variant="muted">Incident not found</Text>
+                </View>
+            </SafeAreaView>
+        );
+    }
+
+    const chartData = (incident.history || []).map((item) => ({ value: item.force, label: item.time }));
 
     return (
         <SafeAreaView className="flex-1 bg-white dark:bg-black" edges={['top', 'bottom', 'left', 'right']}>
@@ -23,6 +149,14 @@ export default function ImpactAnalysisDetail() {
                         <ChevronLeft size={24} color="#6B7280" />
                     </TouchableOpacity>
                 }
+                rightContent={
+                    <TouchableOpacity 
+                        onPress={handleDelete} 
+                        className="p-1 rounded-full bg-red-100 dark:bg-red-900/30"
+                    >
+                        <Trash2 size={20} color="#EF4444" />
+                    </TouchableOpacity>
+                }
             />
 
             <ScrollView
@@ -30,42 +164,51 @@ export default function ImpactAnalysisDetail() {
                 contentContainerStyle={{ paddingBottom: 40 }}
                 showsVerticalScrollIndicator={false}
             >
-                {/* Video Playback Placeholder */}
+                {/* Video Playback */}
                 <Card className="mb-6 p-0 overflow-hidden h-56 bg-black justify-center items-center relative">
-                    <View className="absolute z-10 items-center">
-                        <PlayCircle size={48} color="white" className="opacity-90" />
-                        <Text className="text-white font-medium mt-2">Replay Impact Video</Text>
-                    </View>
-                    <Image
-                        source={{ uri: "https://images.unsplash.com/photo-1595182903337-95192c483c2e?q=80&w=600&auto=format&fit=crop" }}
-                        className="w-full h-full opacity-50"
-                        resizeMode="cover"
+                    <Video
+                        ref={(ref) => setVideoRef(ref)}
+                        source={VIDEO_MAP[incident.videoPath] || VIDEO_MAP['video1']}
+                        className="w-full h-full"
+                        resizeMode={ResizeMode.COVER}
+                        useNativeControls={false}
+                        shouldPlay={false}
                     />
+                    <TouchableOpacity 
+                        onPress={handlePlayVideo}
+                        className="absolute z-10 items-center"
+                        activeOpacity={0.8}
+                    >
+                        <View className="bg-black/50 rounded-full p-3">
+                            <PlayCircle size={48} color="white" />
+                        </View>
+                        <Text className="text-white font-medium mt-2">Replay Impact Video</Text>
+                    </TouchableOpacity>
                 </Card>
 
                 {/* Summary Cards */}
                 <View className="flex-row flex-wrap gap-3 mb-6">
                     <Card className="w-[48%] py-4 items-center border-red-100 bg-red-50/50 dark:border-red-900/50 dark:bg-red-900/20">
                         <Activity size={24} color="#EF4444" className="mb-2" />
-                        <Text className="text-3xl font-bold">{impactData.forceScore}</Text>
+                        <Text className="text-3xl font-bold">{incident.forceScore || incident.force}</Text>
                         <Text className="text-xs font-medium" variant="destructive">Impact Force</Text>
                     </Card>
 
                     <Card className="w-[48%] py-4 items-center">
                         <ShieldAlert size={24} color="#F59E0B" className="mb-2" />
-                        <Text className="text-xl font-bold">{impactData.injuryProb}</Text>
+                        <Text className="text-xl font-bold">{incident.injuryProb || 'N/A'}</Text>
                         <Text className="text-xs font-medium" variant="muted">Injury Prob.</Text>
                     </Card>
 
                     <Card className="w-[48%] py-4 items-center">
                         <AlertTriangle size={24} color="#6366F1" className="mb-2" />
-                        <Text className="text-lg font-bold">{impactData.fallDirection}</Text>
+                        <Text className="text-lg font-bold">{incident.fallDirection || 'N/A'}</Text>
                         <Text className="text-xs font-medium" variant="muted">Fall Direction</Text>
                     </Card>
 
                     <Card className="w-[48%] py-4 items-center">
                         <TrendingUp size={24} color="#10B981" className="mb-2" />
-                        <Text className="text-2xl font-bold">{impactData.tiltAngle}°</Text>
+                        <Text className="text-2xl font-bold">{incident.tiltAngle || 0}°</Text>
                         <Text className="text-xs font-medium" variant="muted">Tilt Angle</Text>
                     </Card>
                 </View>
