@@ -6,14 +6,16 @@ import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { SOSButton } from '../../components/SOSButton';
-import { Battery, Zap, AlertTriangle, ShieldCheck, Music2 } from 'lucide-react-native';
+import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
 import { vapi_authorization_token } from '@/constants/values';
 
 export default function Dashboard() {
     const { userData, loading, error } = useUserData();
+    const router = useRouter();
 
     const handleSOS = async () => {
         console.log("SOS Activated! EMERGENCY CALL INITIATED");
@@ -63,7 +65,19 @@ export default function Dashboard() {
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
-            <Header title="Dashboard" />
+            <Header
+                title="Dashboard"
+                rightContent={
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-1"
+                        onPress={() => router.push('/tabs/location')}
+                    >
+                        <Map size={24} color="#3b82f6" />
+                    </Button>
+                }
+            />
             <ScrollView
                 className="flex-1 px-4 py-4"
                 contentContainerStyle={{ paddingBottom: 20 }}

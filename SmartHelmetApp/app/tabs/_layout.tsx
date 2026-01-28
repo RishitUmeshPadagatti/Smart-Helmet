@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Map as MapIcon, Camera, Activity, Settings } from 'lucide-react-native';
+import { Home, Trash2, Car, Activity, Settings } from 'lucide-react-native';
 
 import { useColorScheme } from 'nativewind';
 
@@ -20,17 +20,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="location"
+        name="traffic"
         options={{
-          title: 'Location',
-          tabBarIcon: ({ color }) => <MapIcon size={24} color={color} />,
+          title: 'Traffic',
+          tabBarIcon: ({ color }) => <Car size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="iirs"
+        name="waste"
         options={{
-          title: 'IIRS',
-          tabBarIcon: ({ color }) => <Camera size={24} color={color} />,
+          title: 'Waste',
+          tabBarIcon: ({ color }) => <Trash2 size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -45,6 +45,12 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color }) => <Settings size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="location"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

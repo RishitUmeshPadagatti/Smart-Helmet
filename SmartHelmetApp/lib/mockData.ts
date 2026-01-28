@@ -45,14 +45,14 @@ export const incidents = [
         timestamp: "2023-10-24T14:30:00Z",
         severity: "High",
         location: "Main St & 4th Ave",
-        thumbnail: "https://via.placeholder.com/150"
+        thumbnail: "https://media.istockphoto.com/id/526110307/photo/motorcycle-accident.jpg?s=612x612&w=0&k=20&c=bDS8Vs6e4zbngG8ck-tJXgW5b5ZMfjXPFQl-H1E9dcI="
     },
     {
         id: 2,
         timestamp: "2023-10-20T09:15:00Z",
         severity: "Low",
         location: "Park Rd",
-        thumbnail: "https://via.placeholder.com/150"
+        thumbnail: "https://images.unsplash.com/photo-1592126296549-0e3edb40aca1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHRyYWZmaWMlMjB2aW9sYXRpb258ZW58MHx8MHx8fDA%3D"
     },
 ];
 
