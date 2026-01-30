@@ -5,6 +5,8 @@ const usersRouter = require('./users');
 const sensorsRouter = require('./sensors');
 const videoRouter = require('./video');
 const helmetRouter = require('./helmet');
+const videoAnalysisRouter = require('./videoAnalysis');
+const garbageRouter = require('./garbageRoutes');
 
 const router = express.Router();
 
@@ -13,6 +15,8 @@ router.use('/users', usersRouter);
 router.use('/sensors', sensorsRouter);
 router.use('/video', videoRouter);
 router.use('/helmet-detect', helmetRouter);
+router.use('/api', videoAnalysisRouter);
+router.use('/api', garbageRouter);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -26,7 +30,14 @@ router.get('/health', (req, res) => {
 router.get('/', (req, res) => {
   res.json({
     message: 'Smart Helmet Backend API',
-    version: '1.0.0'
+    version: '1.0.0',
+    endpoints: {
+      video_analysis: 'POST /api/video-analysis',
+      garbage_image_check: 'POST /api/garbage-image-check',
+      garbage_result: 'POST /api/garbage-result',
+      helmet_detect: 'POST /helmet-detect/detect',
+      health: 'GET /health'
+    }
   });
 });
 
