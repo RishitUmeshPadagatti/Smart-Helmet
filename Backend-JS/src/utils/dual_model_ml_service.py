@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Dual-Model Vehicle & Helmet Violation Detection Service
-Runs YOLO v8 for vehicle threat detection + Custom YOLO for helmet detection + PaddleOCR for license plate
-Processes videos and outputs the best violation image + analytics + extracted license plate
+Runs YOLO v8 for vehicle threat detection + Custom YOLO for helmet detection
+Processes videos and extracts violation frames for EasyOCR-based license plate extraction
 """
 
 import sys
@@ -161,6 +161,12 @@ class DualModelVideoProcessor:
         self.violations = []
         self.best_violation_frame = None
         self.best_violation_score = 0
+        self.violation_frames = []  # Store multiple frames for voting-based OCR
+        
+        # Garbage detection tracking (stateless, single best frame in RAM)
+        self.best_garbage_frame = None
+        self.best_garbage_confidence = 0.0
+        self.garbage_detector = None  # Lazy loaded on first frame
         
     def process_frame(self, frame, frame_count):
         """Process single frame with both models"""
@@ -172,6 +178,9 @@ class DualModelVideoProcessor:
         # Detect helmet violations
         helmet_violations = self.helmet_detector.detect_helmet_violations(frame)
         
+        # Detect garbage (stateless frame-by-frame)
+        garbage_confidence, is_garbage = self._detect_garbage(frame)
+        
         # Combine violations
         all_violations = vehicle_violations + helmet_violations
         
@@ -180,6 +189,9 @@ class DualModelVideoProcessor:
         
         # Track best violation frame and extract plates
         self._update_best_violation(frame, combined_score, helmet_violations)
+        
+        # Track best garbage frame (single frame in RAM)
+        self._update_best_garbage_frame(frame, is_garbage, garbage_confidence)
         
         # Annotate frame
         annotated_frame = self._annotate_frame(frame, vehicle_violations, helmet_violations)
@@ -231,10 +243,75 @@ class DualModelVideoProcessor:
         return combined
     
     def _update_best_violation(self, frame, score, helmet_violations):
-        """Keep only the best violation frame and extract license plates"""
+        """Store frames with high violation scores for voting-based OCR"""
+        if score >= self.best_violation_score * 0.8:  # Store frames with 80%+ of best score
+            self.violation_frames.append({
+                'frame': frame.copy(),
+                'score': score,
+                'timestamp': datetime.now().isoformat()
+            })
+            # Keep only top 10 frames for voting
+            if len(self.violation_frames) > 10:
+                self.violation_frames.sort(key=lambda x: x['score'], reverse=True)
+                self.violation_frames = self.violation_frames[:10]
+        
         if score > self.best_violation_score:
             self.best_violation_score = score
             self.best_violation_frame = frame.copy()
+    
+    def _detect_garbage(self, frame):
+        """
+        Stateless garbage detection for single frame
+        Returns: (garbage_confidence, is_garbage)
+        Only best frame kept in RAM, all others discarded
+        """
+        try:
+            # Lazy load garbage detector on first frame
+            if self.garbage_detector is None:
+                try:
+                    from detect_garbage_frame import get_garbage_detector
+                    self.garbage_detector = get_garbage_detector()
+                    logger.info("Garbage detector initialized (lazy loaded)")
+                except ImportError as e:
+                    logger.warning(f"Garbage detector not available: {e}. Skipping garbage detection.")
+                    return 0.0, False
+            
+            # Detect garbage in frame
+            result = self.garbage_detector.detect_frame(frame)
+            
+            if not result.get('success', False):
+                logger.warning(f"Garbage detection failed: {result.get('error', 'Unknown error')}")
+                return 0.0, False
+            
+            garbage_confidence = result.get('garbage_confidence', 0.0)
+            is_garbage = result.get('is_garbage', False)
+            
+            return garbage_confidence, is_garbage
+            
+        except Exception as e:
+            logger.error(f"Error in garbage detection: {e}")
+            return 0.0, False
+    
+    def _update_best_garbage_frame(self, frame, is_garbage, confidence):
+        """
+        Keep only BEST garbage frame in RAM
+        Replace stored frame only if higher confidence found
+        Requirement: At any time, at most ONE frame in RAM
+        """
+        # Only track if garbage detected
+        if is_garbage and confidence > 0.5:
+            # Replace stored frame only if confidence is higher
+            if confidence > self.best_garbage_confidence:
+                # Discard previous frame from memory
+                self.best_garbage_frame = frame.copy()
+                self.best_garbage_confidence = confidence
+                logger.info(f"Updated best garbage frame (confidence: {confidence:.3f})")
+    
+    def get_best_garbage_frame(self):
+        """Get best garbage frame if detected"""
+        if self.best_garbage_frame is not None and self.best_garbage_confidence > 0.5:
+            return self.best_garbage_frame, self.best_garbage_confidence
+        return None, 0.0
     
     def _annotate_frame(self, frame, vehicle_violations, helmet_violations):
         """Annotate frame with detections"""
@@ -285,8 +362,37 @@ class DualModelVideoProcessor:
             logger.error(f"Error in annotation: {e}")
             return frame
     
-    def process_video(self, video_path, output_dir):
-        """Process entire video and create annotated output"""
+    def _annotate_plate(self, frame, plate_text):
+        """Annotate frame with detected license plate number"""
+        try:
+            annotated = frame.copy()
+            height, width = frame.shape[:2]
+            
+            # Add a black background bar at the bottom for the plate info
+            bar_height = 60
+            cv2.rectangle(annotated, (0, height - bar_height), (width, height), (0, 0, 0), -1)
+            
+            # Add license plate text
+            plate_label = f"License Plate: {plate_text}"
+            text_color = (0, 255, 0)  # Green
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 1.2
+            thickness = 2
+            
+            # Get text size to center it
+            text_size = cv2.getTextSize(plate_label, font, font_scale, thickness)[0]
+            text_x = (width - text_size[0]) // 2
+            text_y = height - 15
+            
+            cv2.putText(annotated, plate_label, (text_x, text_y), font, font_scale, text_color, thickness)
+            
+            return annotated
+        except Exception as e:
+            logger.error(f"Error annotating plate: {e}")
+            return frame
+    
+    def process_video(self, video_path, output_dir, detected_plate=None):
+        """Process entire video and create annotated output with detected plate"""
         cap = cv2.VideoCapture(video_path)
         
         if not cap.isOpened():
@@ -300,6 +406,8 @@ class DualModelVideoProcessor:
         
         logger.info(f"Processing video: {video_path}")
         logger.info(f"Total frames: {total_frames}, FPS: {fps}, Resolution: {width}x{height}")
+        if detected_plate:
+            logger.info(f"Detected License Plate: {detected_plate}")
         
         # Create output directory
         Path(output_dir).mkdir(parents=True, exist_ok=True)
@@ -319,6 +427,10 @@ class DualModelVideoProcessor:
             
             annotated_frame, violations, score = self.process_frame(frame, frame_count)
             
+            # Add detected license plate to frame if available
+            if detected_plate:
+                annotated_frame = self._annotate_plate(annotated_frame, detected_plate)
+            
             # Write annotated frame to output video
             out.write(annotated_frame)
             
@@ -336,7 +448,7 @@ class DualModelVideoProcessor:
         analytics = {
             'total_frames': frame_count,
             'best_violation_score': self.best_violation_score,
-            'best_violation_image': best_image_path,
+            'violation_frames': best_image_path,
             'annotated_video': output_video_path,
             'processing_complete': True,
             'timestamp': datetime.now().isoformat()
@@ -345,17 +457,22 @@ class DualModelVideoProcessor:
         return analytics
     
     def _save_best_violation(self, output_dir):
-        """Save the best violation frame as image"""
-        if self.best_violation_frame is None:
+        """Save violation frames for voting-based OCR extraction"""
+        if not self.violation_frames:
             return None
         
-        filename = f"best_violation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
-        output_path = os.path.join(output_dir, filename)
+        violation_frames_dir = os.path.join(output_dir, 'violation_frames')
+        Path(violation_frames_dir).mkdir(parents=True, exist_ok=True)
         
-        cv2.imwrite(output_path, self.best_violation_frame)
-        logger.info(f"Best violation image saved: {output_path}")
+        saved_frames = []
+        for idx, violation_data in enumerate(self.violation_frames):
+            filename = f"violation_frame_{idx:02d}_score_{violation_data['score']:.2f}.jpg"
+            filepath = os.path.join(violation_frames_dir, filename)
+            cv2.imwrite(filepath, violation_data['frame'])
+            saved_frames.append(filename)
+            logger.info(f"Saved violation frame: {filename}")
         
-        return filename
+        return saved_frames
 
 
 def main():

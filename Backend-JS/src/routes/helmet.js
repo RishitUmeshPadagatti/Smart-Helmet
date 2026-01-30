@@ -4,6 +4,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const { spawn } = require('child_process');
 const { v4: uuidv4 } = require('uuid');
 
@@ -14,6 +15,15 @@ const UPLOAD_FOLDER = path.join(__dirname, '..', '..', 'uploads');
 const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'bmp', 'gif'];
 const MODEL_PATH = path.join(__dirname, '..', '..', 'ML_model', 'helmet_best.pt');
 const PREDICT_SCRIPT = path.join(__dirname, '..', '..', 'ML_model', 'predict_helmet.py');
+
+// Python executable - use venv Python for TensorFlow compatibility
+const VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+const getPythonCmd = () => {
+  if (fsSync.existsSync(VENV_PYTHON)) {
+    return VENV_PYTHON;
+  }
+  return process.platform === 'win32' ? 'py' : 'python';
+};
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -173,9 +183,8 @@ router.post('/detect', upload.single('image'), async (req, res) => {
  */
 function runYOLOInference(imagePath, modelPath) {
   return new Promise((resolve, reject) => {
-    // Use 'python' command (works on most systems)
-    // Fallback to 'py' on Windows if needed
-    const pythonCmd = process.platform === 'win32' ? 'py' : 'python';
+    // Use venv Python if available
+    const pythonCmd = getPythonCmd();
 
     const pythonProcess = spawn(pythonCmd, [
       PREDICT_SCRIPT,

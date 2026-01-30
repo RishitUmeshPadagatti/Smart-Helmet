@@ -4,7 +4,14 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const fsPromises = require('fs').promises;
-const LicensePlateOCRHandler = require('./ocrHandler');
+
+// Python executable - use venv Python for TensorFlow compatibility\n// .venv is in Smart-Helmet root (3 levels up from src/utils/)\nconst VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+const getPythonCmd = () => {
+  if (fs.existsSync(VENV_PYTHON)) {
+    return VENV_PYTHON;
+  }
+  return process.platform === 'win32' ? 'py' : 'python';
+};
 
 /**
  * Process video using Dual ML Models (Vehicle Threat + Helmet Detection)
@@ -16,7 +23,7 @@ async function processVideoWithDualModels(inputPath, outputDir) {
     // Paths to ML models
     const dualModelScriptPath = path.join(__dirname, 'dual_model_ml_service.py');
     const vehicleModelPath = path.join(__dirname, '..', '..', 'ML_model', 'yolov8s.pt');
-    const helmetModelPath = path.join(__dirname, '..', '..', '..', 'Helmet-Violations-main', 'yolo-weights', 'best.pt');
+    const helmetModelPath = path.join(__dirname, '..', '..', 'ML_model', 'helmet_best.pt');
     
     console.log(`[Dual Model Processor] Starting vehicle + helmet detection...`);
     console.log(`[Dual Model Processor] Input: ${inputPath}`);
@@ -36,7 +43,7 @@ async function processVideoWithDualModels(inputPath, outputDir) {
     }
 
     // Spawn Python process with both models
-    const pythonProcess = spawn('py', [
+    const pythonProcess = spawn(getPythonCmd(), [
       dualModelScriptPath,
       inputPath,
       vehicleModelPath,
@@ -72,13 +79,40 @@ async function processVideoWithDualModels(inputPath, outputDir) {
           const lastLine = lines[lines.length - 1];
           const analytics = JSON.parse(lastLine);
           
-          // Now run OCR on the violation image
+          // Now run voting-based OCR on the violation frames
           runOCROnViolationImage(analytics, outputDir)
+            .then((analyticsWithPlates) => {
+              // Re-annotate video with detected license plate
+              if (analyticsWithPlates.plate_extraction && analyticsWithPlates.plate_extraction.success) {
+                const primaryPlate = analyticsWithPlates.plate_extraction.plate;
+                const secondaryPlate = analyticsWithPlates.plate_extraction.plate_2 || null;
+                
+                return annotateVideoWithPlate(
+                  path.join(outputDir, 'annotated_violations.mp4'),
+                  path.join(outputDir, 'annotated_violations_with_plate.mp4'),
+                  primaryPlate,
+                  secondaryPlate
+                ).then((annotationResult) => {
+                  if (annotationResult.success) {
+                    // Replace original with plate-annotated version
+                    const fs = require('fs').promises;
+                    return fs.unlink(path.join(outputDir, 'annotated_violations.mp4'))
+                      .then(() => fs.rename(
+                        path.join(outputDir, 'annotated_violations_with_plate.mp4'),
+                        path.join(outputDir, 'annotated_violations.mp4')
+                      ))
+                      .then(() => analyticsWithPlates);
+                  }
+                  return analyticsWithPlates;
+                });
+              }
+              return analyticsWithPlates;
+            })
             .then((analyticsWithPlates) => {
               resolve({
                 success: true,
                 analytics: analyticsWithPlates,
-                message: 'Video processed with dual models and OCR successfully'
+                message: 'Video processed with dual models, voting-based OCR, and plate annotation successfully'
               });
             })
             .catch((ocrError) => {
@@ -87,7 +121,7 @@ async function processVideoWithDualModels(inputPath, outputDir) {
               resolve({
                 success: true,
                 analytics,
-                message: 'Video processed but OCR extraction failed'
+                message: 'Video processed but voting OCR extraction failed'
               });
             });
         } catch (parseError) {
@@ -120,7 +154,7 @@ async function processVideoWithYOLO(inputPath, outputPath) {
     console.log(`[Video Processor] Output: ${outputPath}`);
 
     // Spawn Python process
-    const pythonProcess = spawn('python', [pythonScriptPath, inputPath, outputPath], {
+    const pythonProcess = spawn(getPythonCmd(), [pythonScriptPath, inputPath, outputPath], {
       stdio: ['pipe', 'pipe', 'pipe'],
       timeout: 3600000 // 1 hour timeout
     });
@@ -212,7 +246,7 @@ function parseYOLOAnalytics(output) {
  */
 async function checkPythonDependencies() {
   return new Promise((resolve) => {
-    const checkProcess = spawn('python', ['-c', 'import torch; import cv2; import ultralytics; print("OK")'
+    const checkProcess = spawn(getPythonCmd(), ['-c', 'import torch; import cv2; import ultralytics; print("OK")'
     ], {
       stdio: ['pipe', 'pipe', 'pipe']
     });
@@ -238,7 +272,7 @@ async function checkPythonDependencies() {
  */
 async function checkDualModelDependencies() {
   return new Promise((resolve) => {
-    const checkProcess = spawn('python', ['-c', 'import torch; import cv2; import ultralytics; import numpy; print("OK")'
+    const checkProcess = spawn(getPythonCmd(), ['-c', 'import torch; import cv2; import ultralytics; import numpy; print("OK")'
     ], {
       stdio: ['pipe', 'pipe', 'pipe']
     });
@@ -260,33 +294,210 @@ async function checkDualModelDependencies() {
 }
 
 /**
- * Run OCR on the best violation image to extract license plates
+ * Run EasyOCR-based plate extraction on violation frames using frequency voting
+ * Processes multiple frames and votes for best result
  */
 async function runOCROnViolationImage(analytics, outputDir) {
-  try {
-    if (!analytics.best_violation_image) {
-      console.log('[OCR] No violation image available for OCR');
-      analytics.extracted_plates = [];
-      return analytics;
+  return new Promise((resolve, reject) => {
+    try {
+      if (!analytics.violation_frames || analytics.violation_frames.length === 0) {
+        console.log('[OCR] No violation frames available for extraction');
+        analytics.extracted_plates = null;
+        analytics.plate_extraction = {
+          success: false,
+          reason: 'No violation frames found'
+        };
+        return resolve(analytics);
+      }
+
+      const violationFramesDir = path.join(outputDir, 'violation_frames');
+      const easyOCRScript = path.join(__dirname, 'extract_plates.py');
+      
+      console.log(`[OCR] Starting EasyOCR-based plate extraction on ${analytics.violation_frames.length} frames`);
+
+      // Create Python script call with ABSOLUTE Windows-style frame paths as JSON
+      const absoluteFramePaths = analytics.violation_frames.map(filename => {
+        let fullPath = path.join(violationFramesDir, filename);
+        // Ensure Windows-style path for Python
+        fullPath = fullPath.replace(/\\\\/g, '\\');
+        return fullPath;
+      });
+      const framesList = JSON.stringify(absoluteFramePaths);
+      
+      console.log(`[OCR] Frame directory: ${violationFramesDir}`);
+      console.log(`[OCR] Sample frame path: ${absoluteFramePaths[0]}`);
+      
+      const pythonProcess = spawn(getPythonCmd(), [
+        easyOCRScript,
+        framesList,
+        violationFramesDir
+      ], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+        timeout: 600000  // 10 minutes timeout for OCR
+      });
+
+      let outputBuffer = '';
+      let errorBuffer = '';
+
+      pythonProcess.stdout.on('data', (data) => {
+        const output = data.toString();
+        outputBuffer += output;
+        console.log(`[EasyOCR] ${output.trim()}`);
+      });
+
+      pythonProcess.stderr.on('data', (data) => {
+        const error = data.toString();
+        errorBuffer += error;
+        console.error(`[EasyOCR Error] ${error.trim()}`);
+      });
+
+      pythonProcess.on('close', (code) => {
+        if (code === 0) {
+          try {
+            // Parse the JSON result from Python
+            const lines = outputBuffer.trim().split('\n');
+            let result = null;
+            
+            // Find the JSON result in output
+            for (let i = lines.length - 1; i >= 0; i--) {
+              try {
+                result = JSON.parse(lines[i]);
+                if (result.success !== undefined) {
+                  break;
+                }
+              } catch (e) {
+                continue;
+              }
+            }
+
+            if (result) {
+              analytics.extracted_plates = result.plate;
+              analytics.plate_extraction = {
+                success: result.success,
+                plate: result.plate,
+                frequency: result.frequency,
+                plate_2: result.plate_2 || null,
+                frequency_2: result.frequency_2 || 0,
+                attempts: result.attempts,
+                validExtractions: result.valid_extractions,
+                allExtractions: result.all_extractions,
+                voting_mechanism: 'frequency_voting',
+                votes: result.votes
+              };
+
+              console.log(`[OCR] Extraction complete. Primary Plate: ${result.plate} (${result.frequency} votes), Secondary: ${result.plate_2 || 'None'}`);
+              resolve(analytics);
+            } else {
+              throw new Error('No valid result from OCR');
+            }
+          } catch (parseError) {
+            console.error(`[OCR] Failed to parse result: ${parseError.message}`);
+            analytics.plate_extraction = {
+              success: false,
+              error: parseError.message
+            };
+            resolve(analytics);
+          }
+        } else {
+          console.error(`[OCR] Process exited with code ${code}`);
+          analytics.plate_extraction = {
+            success: false,
+            error: `OCR process failed with code ${code}`
+          };
+          resolve(analytics);
+        }
+      });
+
+      pythonProcess.on('error', (error) => {
+        console.error(`[OCR] Failed to start Python process:`, error);
+        analytics.plate_extraction = {
+          success: false,
+          error: error.message
+        };
+        resolve(analytics);
+      });
+    } catch (error) {
+      console.error(`[OCR] Error during extraction: ${error.message}`);
+      analytics.plate_extraction = {
+        success: false,
+        error: error.message
+      };
+      resolve(analytics);
+    }
+  });
+}
+
+/**
+ * Annotate video with detected license plate information
+ */
+async function annotateVideoWithPlate(inputVideoPath, outputVideoPath, primaryPlate, secondaryPlate = null) {
+  return new Promise((resolve, reject) => {
+    const annotationScriptPath = path.join(__dirname, 'annotate_video_with_plate.py');
+    
+    console.log(`[Plate Annotation] Adding license plate to video...`);
+    console.log(`[Plate Annotation] Primary: ${primaryPlate}`);
+    if (secondaryPlate) {
+      console.log(`[Plate Annotation] Secondary: ${secondaryPlate}`);
     }
 
-    const imagePath = path.join(outputDir, analytics.best_violation_image);
-    
-    console.log(`[OCR] Running license plate extraction on: ${imagePath}`);
-    
-    const ocrHandler = new LicensePlateOCRHandler();
-    const plates = await ocrHandler.extractPlatesFromImage(imagePath);
-    
-    analytics.extracted_plates = plates.map(p => p.plate_number);
-    analytics.plate_details = plates;
-    
-    console.log(`[OCR] Extraction complete. Found ${plates.length} license plates`);
-    
-    return analytics;
-  } catch (error) {
-    console.error(`[OCR] Error during plate extraction: ${error.message}`);
-    throw error;
-  }
+    const args = [annotationScriptPath, inputVideoPath, outputVideoPath, primaryPlate];
+    if (secondaryPlate) {
+      args.push(secondaryPlate);
+    }
+
+    const pythonProcess = spawn(getPythonCmd(), args, {
+      stdio: ['pipe', 'pipe', 'pipe'],
+      timeout: 1800000 // 30 minutes timeout
+    });
+
+    let outputBuffer = '';
+    let errorBuffer = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      const output = data.toString();
+      outputBuffer += output;
+      console.log(`[Plate Annotation] ${output.trim()}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      const error = data.toString();
+      errorBuffer += error;
+      console.error(`[Plate Annotation Error] ${error.trim()}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log(`[Plate Annotation] Video annotation completed successfully`);
+        
+        try {
+          const lines = outputBuffer.trim().split('\n');
+          const lastLine = lines[lines.length - 1];
+          const result = JSON.parse(lastLine);
+          resolve(result);
+        } catch (parseError) {
+          console.error(`[Plate Annotation] Failed to parse result: ${parseError.message}`);
+          resolve({
+            success: false,
+            error: parseError.message
+          });
+        }
+      } else {
+        console.error(`[Plate Annotation] Process exited with code ${code}`);
+        resolve({
+          success: false,
+          error: `Annotation failed with exit code ${code}: ${errorBuffer}`
+        });
+      }
+    });
+
+    pythonProcess.on('error', (error) => {
+      console.error(`[Plate Annotation] Spawn error: ${error.message}`);
+      resolve({
+        success: false,
+        error: error.message
+      });
+    });
+  });
 }
 
 module.exports = {
@@ -294,5 +505,7 @@ module.exports = {
   processVideoWithDualModels,
   parseYOLOAnalytics,
   checkPythonDependencies,
-  checkDualModelDependencies
+  checkDualModelDependencies,
+  runOCROnViolationImage,
+  annotateVideoWithPlate
 };
