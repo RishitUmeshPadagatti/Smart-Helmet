@@ -1,4 +1,4 @@
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -6,12 +6,13 @@ import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { SOSButton } from '../../components/SOSButton';
-import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map } from 'lucide-react-native';
+import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
-import { vapi_authorization_token } from '@/constants/values';
+import { piIpAddress, vapi_authorization_token } from '@/constants/values';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
     const { userData, loading, error } = useUserData();
@@ -68,14 +69,24 @@ export default function Dashboard() {
             <Header
                 title="Dashboard"
                 rightContent={
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="p-1"
-                        onPress={() => router.push('/tabs/location')}
-                    >
-                        <Map size={24} color="#3b82f6" />
-                    </Button>
+                    <View className="flex-row items-center gap-1">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="p-2"
+                            onPress={() => router.push('/live-cam' as any)}
+                        >
+                            <Camera size={24} color="#3b82f6" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="p-2"
+                            onPress={() => router.push('/tabs/location')}
+                        >
+                            <Map size={24} color="#3b82f6" />
+                        </Button>
+                    </View>
                 }
             />
             <ScrollView
