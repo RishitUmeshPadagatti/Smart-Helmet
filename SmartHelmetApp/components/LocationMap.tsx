@@ -32,18 +32,20 @@ export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: L
             provider={PROVIDER_DEFAULT}
         >
             {showHeatmap && aqiPoints.map((point, index) => (
-                <Circle
+                <Marker
                     key={`aqi-point-${index}-${point.latitude}-${point.longitude}`}
-                    center={{ latitude: point.latitude, longitude: point.longitude }}
-                    radius={150}
-                    fillColor={
-                        point.weight > 80 ? "rgba(255, 0, 0, 0.3)" :    // Red
-                            point.weight > 60 ? "rgba(255, 126, 0, 0.3)" :  // Orange
-                                point.weight > 40 ? "rgba(255, 255, 0, 0.3)" :  // Yellow
-                                    "rgba(0, 228, 0, 0.3)"                     // Green
-                    }
-                    strokeWidth={0}
-                />
+                    coordinate={{ latitude: point.latitude, longitude: point.longitude }}
+                >
+                    <View className={cn(
+                        "px-2 py-1 rounded-full border border-white shadow-sm",
+                        point.weight > 80 ? "bg-red-500" :
+                            point.weight > 60 ? "bg-orange-500" :
+                                point.weight > 40 ? "bg-yellow-500" :
+                                    "bg-green-500"
+                    )}>
+                        <Text className="text-[12px] font-bold text-white">{point.weight}</Text>
+                    </View>
+                </Marker>
             ))}
 
             {familyMembers.map((member) => (
