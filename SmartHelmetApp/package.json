@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "start_mohith": "set REACT_NATIVE_PACKAGER_HOSTNAME=172.20.10.12 && expo start",
+    "android_mohith": "set REACT_NATIVE_PACKAGER_HOSTNAME=172.20.10.12 && expo run:android",
+    "ios_mohith": "set REACT_NATIVE_PACKAGER_HOSTNAME=172.20.10.12 && expo run:ios",
+    "web_mohith": "set REACT_NATIVE_PACKAGER_HOSTNAME=172.20.10.12 && expo start --web"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
