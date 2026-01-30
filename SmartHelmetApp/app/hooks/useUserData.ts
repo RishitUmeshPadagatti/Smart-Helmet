@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { currentUser, helmetData, locationData, impactData, incidents } from '../../lib/mockData';
-
-// Replace with your backend server IP
-const API_BASE = 'http://localhost:8000';
+import { API_BASE } from '../../config/api';
 
 export interface UserData {
   rfid: string;
