@@ -130,3 +130,12 @@ temp/
 # Expo specific
 web-build/
 .expo/*
+
+# -------------------------
+# Backend Outputs
+# -------------------------
+Backend-JS/outputs/
+Backend-JS/uploads/
+Backend-JS/processed/
+Backend-JS/test_analysis_output/
+Backend-JS/test_analysis_output_v2/

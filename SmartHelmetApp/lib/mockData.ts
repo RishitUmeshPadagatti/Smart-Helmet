@@ -41,13 +41,21 @@ export const familyMembers = [
 
 export interface TrafficIncident {
     id: string;
-    type: 'No Helmet' | 'One Way' | 'Triple Riding' | 'Signal Jump' | 'Speeding';
+    type: 'No Helmet' | 'One Way' | 'Triple Riding' | 'Signal Jump' | 'Speeding' | 'Helmet Violation';
     location: string;
     timestamp: string;
     severity: 'High' | 'Low' | 'Medium';
     numberPlate: string;
     thumbnail: string;
-    videoPath: string; // reference to bundled video
+    videoPath: string; // reference to bundled video or URL
+    // API response fields
+    videoId?: string;
+    annotatedVideoUrl?: string;
+    bestFrameUrl?: string;
+    helmetViolationsCount?: number;
+    vehicleThreatsCount?: number;
+    processingTime?: number;
+    isProcessing?: boolean;
 }
 
 export const incidents: TrafficIncident[] = [
@@ -75,11 +83,16 @@ export const incidents: TrafficIncident[] = [
 
 export interface WasteIncident {
     id: string;
-    type: 'Littering' | 'Illegal Dumping' | 'Overflowing Bin' | 'Hazardous Waste';
+    type: 'Littering' | 'Illegal Dumping' | 'Overflowing Bin' | 'Hazardous Waste' | 'Garbage Detected' | 'Clean Area';
     location: string;
     timestamp: string;
     severity: 'High' | 'Low' | 'Medium';
     thumbnail: string;
+    // API response fields
+    garbageDetected?: boolean;
+    confidence?: number;
+    annotatedImageUrl?: string;
+    isProcessing?: boolean;
 }
 
 export const wasteIncidents: WasteIncident[] = [

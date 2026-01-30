@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { incidents as INITIAL_INCIDENTS, TrafficIncident } from '../../lib/mockData';
+import { API_BASE } from '../../config/api';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -18,6 +19,7 @@ export default function Traffic() {
     const router = useRouter();
     const [incidents, setIncidents] = useState<TrafficIncident[]>([]);
     const [loading, setLoading] = useState(true);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         loadIncidents();
@@ -71,31 +73,71 @@ export default function Traffic() {
                 quality: 1,
             });
 
-            if (result.canceled) {
+            if (result.canceled || !result.assets[0]) {
                 return;
             }
 
-            // Create a new dummy incident tied to video3
+            const videoAsset = result.assets[0];
+            setUploading(true);
+
+            // Create form data for API
+            const formData = new FormData();
+            formData.append('video', {
+                uri: videoAsset.uri,
+                type: 'video/mp4',
+                name: `video_${Date.now()}.mp4`,
+            } as any);
+
+            // Call backend API
+            const response = await fetch(`${API_BASE}/api/video-analysis`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.error || 'Analysis failed');
+            }
+
+            // Create incident from API response
             const newIncident: TrafficIncident = {
                 id: `tra-${Date.now()}`,
-                type: 'Signal Jump',
+                type: data.helmet_detection?.violations_count > 0 ? 'No Helmet' : 'Helmet Violation',
                 timestamp: new Date().toISOString(),
-                severity: 'Medium',
-                location: 'Signal point B, MG Road',
-                numberPlate: 'KA 51 MP 9999',
-                thumbnail: 'https://images.unsplash.com/photo-1592126296549-0e3edb40aca1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHRyYWZmaWMlMjB2aW9sYXRpb258ZW58MHx8MHx8fDA%3D',
-                videoPath: 'video3'
+                severity: data.helmet_detection?.violations_count > 0 ? 'High' : 'Medium',
+                location: 'Detected via Helmet Camera',
+                numberPlate: data.license_plate || 'N/A',
+                thumbnail: data.helmet_detection?.best_frame 
+                    ? `${API_BASE}${data.helmet_detection.best_frame}`
+                    : 'https://via.placeholder.com/300x200?text=No+Frame',
+                videoPath: data.video_id || 'uploaded',
+                // Store API response data
+                videoId: data.video_id,
+                annotatedVideoUrl: data.annotated_video ? `${API_BASE}${data.annotated_video}` : undefined,
+                bestFrameUrl: data.helmet_detection?.best_frame 
+                    ? `${API_BASE}${data.helmet_detection.best_frame}` 
+                    : undefined,
+                helmetViolationsCount: data.helmet_detection?.violations_count || 0,
+                vehicleThreatsCount: data.vehicle_threats?.threats_count || 0,
+                processingTime: data.processing_time_seconds,
             };
 
             const updatedIncidents = [newIncident, ...incidents];
             setIncidents(updatedIncidents);
             await saveIncidents(updatedIncidents);
 
+            setUploading(false);
+            
             // Navigate to the new incident detail
             router.push(`/traffic/${newIncident.id}` as any);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Upload failed:', error);
-            Alert.alert('Error', 'Failed to add the selected video. Please try again.');
+            setUploading(false);
+            Alert.alert('Error', error.message || 'Failed to analyze video. Please try again.');
         }
     };
 
@@ -127,16 +169,25 @@ export default function Traffic() {
                 {/* Upload Section */}
                 <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
                     <View className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center mb-4">
-                        <UploadCloud size={32} color="#3B82F6" />
+                        {uploading ? (
+                            <ActivityIndicator size="large" color="#3B82F6" />
+                        ) : (
+                            <UploadCloud size={32} color="#3B82F6" />
+                        )}
                     </View>
-                    <Text className="text-lg font-bold mb-1">Upload Violation Data</Text>
+                    <Text className="text-lg font-bold mb-1">
+                        {uploading ? 'Analyzing Video...' : 'Upload Violation Data'}
+                    </Text>
                     <Text className="text-center text-sm mb-4" variant="muted">
-                        Sync helmet footage to detect and report traffic violations.
+                        {uploading 
+                            ? 'Detecting helmet violations and extracting license plates...'
+                            : 'Sync helmet footage to detect and report traffic violations.'}
                     </Text>
                     <Button
-                        title="Upload New Data"
+                        title={uploading ? 'Processing...' : 'Upload New Data'}
                         onPress={handleUpload}
                         className="w-full"
+                        disabled={uploading}
                     />
                 </Card>
 

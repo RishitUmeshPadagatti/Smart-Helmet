@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { wasteIncidents as INITIAL_INCIDENTS, WasteIncident } from '../../lib/mockData';
+import { API_BASE } from '../../config/api';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -18,6 +19,7 @@ export default function Waste() {
     const router = useRouter();
     const [incidents, setIncidents] = useState<WasteIncident[]>([]);
     const [loading, setLoading] = useState(true);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         loadIncidents();
@@ -61,39 +63,77 @@ export default function Waste() {
         try {
             const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (!permission.granted) {
-                Alert.alert('Permission needed', 'Please allow media library access to select a video.');
+                Alert.alert('Permission needed', 'Please allow media library access to select an image.');
                 return;
             }
 
+            // Changed to Images for garbage detection
             const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsMultipleSelection: false,
-                quality: 1,
+                quality: 0.8,
             });
 
-            if (result.canceled) {
+            if (result.canceled || !result.assets[0]) {
                 return;
             }
 
-            // Create a new dummy incident
+            const imageAsset = result.assets[0];
+            setUploading(true);
+
+            // Create form data for API
+            const formData = new FormData();
+            formData.append('image', {
+                uri: imageAsset.uri,
+                type: 'image/jpeg',
+                name: `garbage_${Date.now()}.jpg`,
+            } as any);
+
+            // Call garbage detection API
+            const response = await fetch(`${API_BASE}/api/garbage-image-check`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.error || 'Garbage detection failed');
+            }
+
+            // Create incident from API response
             const newIncident: WasteIncident = {
                 id: `waste-${Date.now()}`,
-                type: 'Littering',
+                type: data.garbage_detected ? 'Garbage Detected' : 'Clean Area',
                 timestamp: new Date().toISOString(),
-                severity: 'Low',
-                location: 'Near Park Gate, Sector 4',
-                thumbnail: 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHdhc3RlJTIwb24lMjBzdHJlZXR8ZW58MHx8MHx8fDA%3D',
+                severity: data.garbage_detected 
+                    ? (data.confidence > 0.8 ? 'High' : data.confidence > 0.5 ? 'Medium' : 'Low')
+                    : 'Low',
+                location: 'Detected via Helmet Camera',
+                thumbnail: imageAsset.uri, // Original image
+                // Store API response data
+                garbageDetected: data.garbage_detected,
+                confidence: data.confidence,
+                annotatedImageUrl: data.processed_image_path 
+                    ? `${API_BASE}${data.processed_image_path.replace(/\\/g, '/')}`
+                    : undefined,
             };
 
             const updatedIncidents = [newIncident, ...incidents];
             setIncidents(updatedIncidents);
             await saveIncidents(updatedIncidents);
 
+            setUploading(false);
+            
             // Navigate to the new incident detail
             router.push(`/waste/${newIncident.id}` as any);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Upload failed:', error);
-            Alert.alert('Error', 'Failed to add the selected video. Please try again.');
+            setUploading(false);
+            Alert.alert('Error', error.message || 'Failed to analyze image. Please try again.');
         }
     };
 
@@ -124,17 +164,26 @@ export default function Waste() {
             >
                 {/* Upload Section */}
                 <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
-                    <View className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center mb-4">
-                        <UploadCloud size={32} color="#3B82F6" />
+                    <View className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 items-center justify-center mb-4">
+                        {uploading ? (
+                            <ActivityIndicator size="large" color="#10B981" />
+                        ) : (
+                            <UploadCloud size={32} color="#10B981" />
+                        )}
                     </View>
-                    <Text className="text-lg font-bold mb-1">Upload Waste Data</Text>
+                    <Text className="text-lg font-bold mb-1">
+                        {uploading ? 'Analyzing Image...' : 'Upload Waste Image'}
+                    </Text>
                     <Text className="text-center text-sm mb-4" variant="muted">
-                        Sync helmet footage to detect and report waste management issues.
+                        {uploading 
+                            ? 'Detecting garbage in the image...'
+                            : 'Upload an image to detect garbage and waste.'}
                     </Text>
                     <Button
-                        title="Upload New Data"
+                        title={uploading ? 'Processing...' : 'Upload Image'}
                         onPress={handleUpload}
                         className="w-full"
+                        disabled={uploading}
                     />
                 </Card>
 
