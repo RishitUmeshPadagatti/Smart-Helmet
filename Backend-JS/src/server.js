@@ -22,6 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 const processedFolder = path.join(__dirname, '..', 'processed');
 app.use('/results', express.static(processedFolder));
 
+// Serve static files for outputs (annotated videos, frames, garbage images)
+const outputsFolder = path.join(__dirname, '..', 'outputs');
+app.use('/outputs', express.static(outputsFolder));
+
 // ============================================
 // Request Logging
 // ============================================

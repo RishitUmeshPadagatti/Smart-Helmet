@@ -184,6 +184,7 @@ router.post('/garbage-image-check', upload.single('image'), async (req, res) => 
     }
 
     let processedImagePath = null;
+    let processedImageUrl = null;
 
     // If garbage detected, save annotated version
     if (detectionResult.is_garbage && detectionResult.garbage_confidence > 0.5) {
@@ -204,6 +205,9 @@ router.post('/garbage-image-check', upload.single('image'), async (req, res) => 
       if (!saveResult.success) {
         console.warn('Warning: Failed to save annotated image, but detection succeeded');
         processedImagePath = null;
+      } else {
+        // Convert to URL path for frontend
+        processedImageUrl = `/outputs/garbage/${uniqueName}`;
       }
     }
 
@@ -215,7 +219,7 @@ router.post('/garbage-image-check', upload.single('image'), async (req, res) => 
       garbage_detected: detectionResult.is_garbage,
       confidence: detectionResult.garbage_confidence,
       not_garbage_confidence: detectionResult.not_garbage_confidence,
-      processed_image_path: processedImagePath,
+      processed_image_path: processedImageUrl,
       detection_model: 'garbage_classifier.keras',
       input_size: '224x224',
       threshold: 0.5,

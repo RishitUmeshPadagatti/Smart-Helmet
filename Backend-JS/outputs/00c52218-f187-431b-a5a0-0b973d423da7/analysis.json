@@ -1,0 +1,4550 @@
+{
+  "success": true,
+  "video_id": "00c52218-f187-431b-a5a0-0b973d423da7",
+  "helmet_detection": {
+    "violations_count": 0,
+    "best_frame": "/outputs/00c52218-f187-431b-a5a0-0b973d423da7/violation_frames/0000.jpg",
+    "details": []
+  },
+  "vehicle_threats": {
+    "threats_count": 348,
+    "details": [
+      {
+        "frame_number": 0,
+        "vehicle_type": "motorcycle",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          6,
+          405,
+          492,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 0,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          44,
+          258,
+          478,
+          719
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 1,
+        "vehicle_type": "motorcycle",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          6,
+          405,
+          492,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 1,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          44,
+          258,
+          478,
+          719
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 2,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          42,
+          257,
+          485,
+          719
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 2,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          9,
+          403,
+          496,
+          719
+        ],
+        "confidence": 0.85
+      },
+      {
+        "frame_number": 3,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          45,
+          257,
+          487,
+          718
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 3,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          9,
+          403,
+          499,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 4,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          44,
+          257,
+          488,
+          719
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 4,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          8,
+          403,
+          499,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 5,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          46,
+          256,
+          491,
+          718
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 5,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          8,
+          403,
+          501,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 6,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          46,
+          256,
+          491,
+          718
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 6,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          8,
+          403,
+          501,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 7,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          53,
+          256,
+          500,
+          718
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 7,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          7,
+          403,
+          504,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 8,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          54,
+          256,
+          504,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 8,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          402,
+          507,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 9,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          54,
+          256,
+          504,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 9,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          402,
+          507,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 10,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          54,
+          254,
+          505,
+          719
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 10,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          18,
+          403,
+          509,
+          719
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 11,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 64,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          256,
+          509,
+          718
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 11,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          15,
+          404,
+          510,
+          719
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 12,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          57,
+          256,
+          508,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 12,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          15,
+          405,
+          510,
+          719
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 13,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          63,
+          255,
+          506,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 13,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          23,
+          403,
+          513,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 14,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          63,
+          255,
+          506,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 14,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          23,
+          403,
+          513,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 15,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 63,
+        "threat_level": "medium",
+        "bbox": [
+          66,
+          256,
+          506,
+          719
+        ],
+        "confidence": 0.88
+      },
+      {
+        "frame_number": 15,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          29,
+          402,
+          516,
+          719
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 16,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          257,
+          514,
+          719
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 16,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          30,
+          400,
+          518,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 17,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          257,
+          514,
+          719
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 17,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          30,
+          400,
+          518,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 18,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          258,
+          520,
+          719
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 18,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          31,
+          397,
+          523,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 19,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          72,
+          257,
+          522,
+          718
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 19,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          33,
+          396,
+          528,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 20,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          34,
+          395,
+          529,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 20,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          70,
+          257,
+          521,
+          718
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 21,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          68,
+          257,
+          525,
+          717
+        ],
+        "confidence": 0.84
+      },
+      {
+        "frame_number": 21,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          35,
+          396,
+          535,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 22,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          68,
+          257,
+          524,
+          717
+        ],
+        "confidence": 0.84
+      },
+      {
+        "frame_number": 22,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          35,
+          396,
+          535,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 23,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          69,
+          257,
+          532,
+          718
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 23,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          34,
+          396,
+          541,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 24,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          79,
+          257,
+          539,
+          718
+        ],
+        "confidence": 0.85
+      },
+      {
+        "frame_number": 24,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          37,
+          397,
+          546,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 25,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          77,
+          258,
+          540,
+          718
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 25,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          37,
+          397,
+          546,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 26,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          83,
+          257,
+          535,
+          718
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 26,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          35,
+          395,
+          531,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 27,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          85,
+          257,
+          545,
+          717
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 27,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          37,
+          398,
+          538,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 28,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          37,
+          397,
+          540,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 28,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          85,
+          257,
+          548,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 29,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          78,
+          257,
+          551,
+          717
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 29,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          38,
+          401,
+          543,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 30,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          80,
+          257,
+          552,
+          717
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 30,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          38,
+          401,
+          542,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 31,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          83,
+          257,
+          554,
+          717
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 31,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          45,
+          396,
+          550,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 32,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          81,
+          256,
+          553,
+          717
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 32,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          48,
+          395,
+          551,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 33,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          78,
+          256,
+          555,
+          716
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 33,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          47,
+          395,
+          550,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 34,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          63,
+          257,
+          558,
+          717
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 34,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          48,
+          392,
+          556,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 35,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          68,
+          257,
+          563,
+          717
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 35,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          50,
+          392,
+          558,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 35,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          171,
+          229,
+          526,
+          662
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 36,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          68,
+          257,
+          563,
+          717
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 36,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          50,
+          392,
+          558,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 36,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          171,
+          229,
+          526,
+          662
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 37,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          70,
+          257,
+          563,
+          717
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 37,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          55,
+          392,
+          561,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 38,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 62,
+        "threat_level": "medium",
+        "bbox": [
+          70,
+          257,
+          564,
+          717
+        ],
+        "confidence": 0.87
+      },
+      {
+        "frame_number": 38,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          55,
+          393,
+          562,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 39,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          79,
+          258,
+          561,
+          717
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 39,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          390,
+          566,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 40,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 60,
+        "threat_level": "medium",
+        "bbox": [
+          86,
+          258,
+          563,
+          717
+        ],
+        "confidence": 0.85
+      },
+      {
+        "frame_number": 40,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          61,
+          394,
+          569,
+          719
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 41,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 60,
+        "threat_level": "medium",
+        "bbox": [
+          86,
+          258,
+          563,
+          717
+        ],
+        "confidence": 0.85
+      },
+      {
+        "frame_number": 41,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          61,
+          394,
+          569,
+          719
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 42,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          97,
+          258,
+          543,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 42,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          390,
+          569,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 43,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          96,
+          258,
+          551,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 43,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          63,
+          392,
+          571,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 44,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          97,
+          257,
+          549,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 44,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          63,
+          394,
+          572,
+          719
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 45,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          101,
+          259,
+          565,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 45,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          66,
+          393,
+          572,
+          719
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 46,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          101,
+          259,
+          565,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 46,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          66,
+          393,
+          572,
+          719
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 47,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          107,
+          260,
+          553,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 47,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          398,
+          574,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 48,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          110,
+          261,
+          552,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 48,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          406,
+          575,
+          719
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 49,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          111,
+          261,
+          555,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 49,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          69,
+          409,
+          574,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 50,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          114,
+          258,
+          555,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 50,
+        "vehicle_type": "motorcycle",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          69,
+          407,
+          573,
+          719
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 51,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          113,
+          258,
+          554,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 51,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          71,
+          404,
+          573,
+          719
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 52,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          113,
+          259,
+          555,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 52,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          71,
+          404,
+          573,
+          719
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 53,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          112,
+          259,
+          549,
+          718
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 53,
+        "vehicle_type": "motorcycle",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          70,
+          420,
+          574,
+          719
+        ],
+        "confidence": 0.68
+      },
+      {
+        "frame_number": 54,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          112,
+          259,
+          547,
+          718
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 54,
+        "vehicle_type": "motorcycle",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          68,
+          414,
+          572,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 55,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          111,
+          259,
+          545,
+          718
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 55,
+        "vehicle_type": "motorcycle",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          71,
+          418,
+          574,
+          719
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 56,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          108,
+          261,
+          546,
+          716
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 56,
+        "vehicle_type": "motorcycle",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          57,
+          413,
+          519,
+          719
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 57,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          107,
+          261,
+          546,
+          716
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 57,
+        "vehicle_type": "motorcycle",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          57,
+          414,
+          509,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 58,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          106,
+          261,
+          546,
+          716
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 58,
+        "vehicle_type": "motorcycle",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          73,
+          418,
+          570,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 59,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          69,
+          436,
+          570,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 59,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          108,
+          262,
+          545,
+          718
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 60,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          69,
+          436,
+          570,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 60,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          108,
+          262,
+          545,
+          718
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 61,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          65,
+          449,
+          563,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 61,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          109,
+          261,
+          545,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 62,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          65,
+          455,
+          565,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 62,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          109,
+          261,
+          546,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 63,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          107,
+          262,
+          549,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 63,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          457,
+          572,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 63,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          224,
+          490,
+          460
+        ],
+        "confidence": 0.58
+      },
+      {
+        "frame_number": 64,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          106,
+          261,
+          550,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 64,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          65,
+          460,
+          572,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 64,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          223,
+          488,
+          465
+        ],
+        "confidence": 0.63
+      },
+      {
+        "frame_number": 65,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          106,
+          261,
+          550,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 65,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          66,
+          457,
+          572,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 65,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          223,
+          488,
+          465
+        ],
+        "confidence": 0.63
+      },
+      {
+        "frame_number": 66,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          102,
+          261,
+          544,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 66,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          68,
+          452,
+          573,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 66,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 53,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          223,
+          486,
+          463
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 67,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          89,
+          261,
+          548,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 67,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          48,
+          413,
+          519,
+          719
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 67,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          222,
+          481,
+          465
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 68,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          89,
+          261,
+          548,
+          718
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 68,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          48,
+          413,
+          519,
+          719
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 68,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          222,
+          481,
+          465
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 69,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          98,
+          259,
+          552,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 69,
+        "vehicle_type": "motorcycle",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          430,
+          568,
+          719
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 69,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          221,
+          479,
+          465
+        ],
+        "confidence": 0.62
+      },
+      {
+        "frame_number": 70,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          91,
+          260,
+          551,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 70,
+        "vehicle_type": "motorcycle",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          430,
+          568,
+          719
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 70,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          221,
+          479,
+          465
+        ],
+        "confidence": 0.62
+      },
+      {
+        "frame_number": 71,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          84,
+          260,
+          531,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 71,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          45,
+          414,
+          530,
+          719
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 71,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          308,
+          221,
+          474,
+          461
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 72,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          84,
+          260,
+          531,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 72,
+        "vehicle_type": "motorcycle",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          42,
+          411,
+          521,
+          719
+        ],
+        "confidence": 0.62
+      },
+      {
+        "frame_number": 72,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          220,
+          470,
+          461
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 73,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          84,
+          260,
+          531,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 73,
+        "vehicle_type": "motorcycle",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          42,
+          411,
+          521,
+          719
+        ],
+        "confidence": 0.62
+      },
+      {
+        "frame_number": 73,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          307,
+          220,
+          470,
+          461
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 74,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          74,
+          258,
+          530,
+          718
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 74,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          40,
+          409,
+          521,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 74,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          220,
+          467,
+          458
+        ],
+        "confidence": 0.59
+      },
+      {
+        "frame_number": 75,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          72,
+          259,
+          567,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 75,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          40,
+          408,
+          529,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 75,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          219,
+          465,
+          457
+        ],
+        "confidence": 0.62
+      },
+      {
+        "frame_number": 76,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          85,
+          258,
+          546,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 76,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          40,
+          407,
+          528,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 76,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          219,
+          465,
+          458
+        ],
+        "confidence": 0.6
+      },
+      {
+        "frame_number": 77,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          258,
+          569,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 77,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          38,
+          406,
+          538,
+          719
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 77,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          219,
+          464,
+          458
+        ],
+        "confidence": 0.66
+      },
+      {
+        "frame_number": 78,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          258,
+          569,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 78,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          38,
+          406,
+          538,
+          719
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 78,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          219,
+          464,
+          458
+        ],
+        "confidence": 0.66
+      },
+      {
+        "frame_number": 79,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          258,
+          567,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 79,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          36,
+          403,
+          528,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 79,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          219,
+          462,
+          459
+        ],
+        "confidence": 0.67
+      },
+      {
+        "frame_number": 80,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 60,
+        "threat_level": "medium",
+        "bbox": [
+          70,
+          258,
+          568,
+          717
+        ],
+        "confidence": 0.84
+      },
+      {
+        "frame_number": 80,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          55,
+          397,
+          567,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 80,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          220,
+          460,
+          457
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 81,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          70,
+          259,
+          569,
+          717
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 81,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          52,
+          397,
+          567,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 81,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          304,
+          220,
+          461,
+          458
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 82,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          54,
+          261,
+          560,
+          718
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 82,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          28,
+          407,
+          557,
+          719
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 82,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          220,
+          457,
+          456
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 83,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          46,
+          400,
+          551,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 83,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          220,
+          456,
+          457
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 83,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          73,
+          259,
+          551,
+          717
+        ],
+        "confidence": 0.67
+      },
+      {
+        "frame_number": 84,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          46,
+          400,
+          552,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 84,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          306,
+          220,
+          456,
+          457
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 84,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          73,
+          259,
+          552,
+          717
+        ],
+        "confidence": 0.68
+      },
+      {
+        "frame_number": 85,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          304,
+          220,
+          456,
+          459
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 85,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          67,
+          260,
+          549,
+          718
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 85,
+        "vehicle_type": "motorcycle",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          27,
+          407,
+          533,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 86,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          304,
+          220,
+          456,
+          459
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 86,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          69,
+          260,
+          549,
+          718
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 86,
+        "vehicle_type": "motorcycle",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          27,
+          407,
+          532,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 87,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          263,
+          551,
+          717
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 87,
+        "vehicle_type": "motorcycle",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          27,
+          406,
+          535,
+          719
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 87,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 53,
+        "threat_level": "medium",
+        "bbox": [
+          304,
+          220,
+          456,
+          458
+        ],
+        "confidence": 0.68
+      },
+      {
+        "frame_number": 88,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          23,
+          404,
+          546,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 88,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          58,
+          262,
+          545,
+          717
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 88,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          220,
+          457,
+          460
+        ],
+        "confidence": 0.63
+      },
+      {
+        "frame_number": 89,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          21,
+          404,
+          551,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 89,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          56,
+          262,
+          550,
+          717
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 89,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          304,
+          220,
+          456,
+          460
+        ],
+        "confidence": 0.62
+      },
+      {
+        "frame_number": 90,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          17,
+          402,
+          546,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 90,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          56,
+          263,
+          548,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 90,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          220,
+          458,
+          466
+        ],
+        "confidence": 0.52
+      },
+      {
+        "frame_number": 91,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          52,
+          263,
+          546,
+          717
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 91,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          16,
+          402,
+          526,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 91,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          221,
+          460,
+          467
+        ],
+        "confidence": 0.58
+      },
+      {
+        "frame_number": 92,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          52,
+          263,
+          546,
+          717
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 92,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          16,
+          402,
+          526,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 92,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          305,
+          221,
+          460,
+          467
+        ],
+        "confidence": 0.58
+      },
+      {
+        "frame_number": 93,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          52,
+          262,
+          548,
+          717
+        ],
+        "confidence": 0.85
+      },
+      {
+        "frame_number": 93,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          12,
+          401,
+          506,
+          719
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 93,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          304,
+          221,
+          461,
+          471
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 94,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 61,
+        "threat_level": "medium",
+        "bbox": [
+          52,
+          262,
+          546,
+          717
+        ],
+        "confidence": 0.86
+      },
+      {
+        "frame_number": 94,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          13,
+          400,
+          506,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 94,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          303,
+          221,
+          461,
+          471
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 95,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 60,
+        "threat_level": "medium",
+        "bbox": [
+          46,
+          262,
+          547,
+          717
+        ],
+        "confidence": 0.85
+      },
+      {
+        "frame_number": 95,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          399,
+          510,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 95,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          302,
+          221,
+          459,
+          470
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 96,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          31,
+          261,
+          546,
+          717
+        ],
+        "confidence": 0.82
+      },
+      {
+        "frame_number": 96,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          16,
+          399,
+          507,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 96,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          301,
+          221,
+          459,
+          471
+        ],
+        "confidence": 0.56
+      },
+      {
+        "frame_number": 97,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          27,
+          261,
+          544,
+          718
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 97,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          18,
+          399,
+          498,
+          719
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 97,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          301,
+          221,
+          460,
+          471
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 97,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 35,
+        "threat_level": "medium",
+        "bbox": [
+          302,
+          222,
+          462,
+          715
+        ],
+        "confidence": 0.52
+      },
+      {
+        "frame_number": 98,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          10,
+          397,
+          499,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 98,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          42,
+          259,
+          513,
+          717
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 98,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          300,
+          221,
+          461,
+          469
+        ],
+        "confidence": 0.58
+      },
+      {
+        "frame_number": 98,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          302,
+          220,
+          463,
+          716
+        ],
+        "confidence": 0.52
+      },
+      {
+        "frame_number": 99,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          10,
+          396,
+          482,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 99,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          47,
+          258,
+          513,
+          717
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 99,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          298,
+          220,
+          460,
+          469
+        ],
+        "confidence": 0.61
+      },
+      {
+        "frame_number": 100,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          12,
+          396,
+          481,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 100,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          48,
+          258,
+          513,
+          717
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 100,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          298,
+          220,
+          460,
+          470
+        ],
+        "confidence": 0.61
+      },
+      {
+        "frame_number": 101,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          16,
+          397,
+          482,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 101,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 51,
+        "threat_level": "medium",
+        "bbox": [
+          53,
+          257,
+          508,
+          716
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 101,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 51,
+        "threat_level": "medium",
+        "bbox": [
+          295,
+          220,
+          460,
+          469
+        ],
+        "confidence": 0.64
+      },
+      {
+        "frame_number": 102,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          9,
+          396,
+          485,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 102,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 53,
+        "threat_level": "medium",
+        "bbox": [
+          53,
+          257,
+          508,
+          717
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 102,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 51,
+        "threat_level": "medium",
+        "bbox": [
+          295,
+          220,
+          460,
+          468
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 103,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          6,
+          395,
+          471,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 103,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          48,
+          256,
+          512,
+          716
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 103,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          293,
+          218,
+          459,
+          470
+        ],
+        "confidence": 0.61
+      },
+      {
+        "frame_number": 104,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          5,
+          394,
+          477,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 104,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 51,
+        "threat_level": "medium",
+        "bbox": [
+          36,
+          256,
+          509,
+          717
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 104,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          292,
+          216,
+          461,
+          474
+        ],
+        "confidence": 0.57
+      },
+      {
+        "frame_number": 104,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          293,
+          216,
+          467,
+          718
+        ],
+        "confidence": 0.5
+      },
+      {
+        "frame_number": 105,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          5,
+          393,
+          471,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 105,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 51,
+        "threat_level": "medium",
+        "bbox": [
+          39,
+          256,
+          509,
+          717
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 105,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          292,
+          217,
+          462,
+          473
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 105,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          293,
+          216,
+          470,
+          718
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 106,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          28,
+          256,
+          526,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 106,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          7,
+          393,
+          473,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 106,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          291,
+          216,
+          462,
+          475
+        ],
+        "confidence": 0.52
+      },
+      {
+        "frame_number": 107,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          10,
+          392,
+          469,
+          719
+        ],
+        "confidence": 0.84
+      },
+      {
+        "frame_number": 107,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          27,
+          254,
+          505,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 107,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 19,
+        "threat_level": "low",
+        "bbox": [
+          424,
+          517,
+          543,
+          617
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 107,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          292,
+          215,
+          492,
+          717
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 108,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          10,
+          392,
+          469,
+          719
+        ],
+        "confidence": 0.84
+      },
+      {
+        "frame_number": 108,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 59,
+        "threat_level": "medium",
+        "bbox": [
+          27,
+          254,
+          505,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 108,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 19,
+        "threat_level": "low",
+        "bbox": [
+          424,
+          517,
+          543,
+          617
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 108,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          292,
+          215,
+          492,
+          717
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 109,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          8,
+          392,
+          473,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 109,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          25,
+          253,
+          500,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 109,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 20,
+        "threat_level": "low",
+        "bbox": [
+          423,
+          518,
+          542,
+          618
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 109,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          292,
+          213,
+          487,
+          717
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 110,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 58,
+        "threat_level": "medium",
+        "bbox": [
+          28,
+          253,
+          498,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 110,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          10,
+          393,
+          470,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 110,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 22,
+        "threat_level": "low",
+        "bbox": [
+          422,
+          518,
+          542,
+          618
+        ],
+        "confidence": 0.59
+      },
+      {
+        "frame_number": 110,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 35,
+        "threat_level": "medium",
+        "bbox": [
+          292,
+          213,
+          475,
+          719
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 111,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          4,
+          390,
+          475,
+          719
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 111,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 48,
+        "threat_level": "medium",
+        "bbox": [
+          41,
+          250,
+          501,
+          719
+        ],
+        "confidence": 0.67
+      },
+      {
+        "frame_number": 111,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 24,
+        "threat_level": "low",
+        "bbox": [
+          421,
+          519,
+          540,
+          618
+        ],
+        "confidence": 0.63
+      },
+      {
+        "frame_number": 111,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 35,
+        "threat_level": "medium",
+        "bbox": [
+          289,
+          211,
+          498,
+          717
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 112,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          4,
+          388,
+          478,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 112,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          47,
+          250,
+          502,
+          718
+        ],
+        "confidence": 0.68
+      },
+      {
+        "frame_number": 112,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 25,
+        "threat_level": "low",
+        "bbox": [
+          419,
+          519,
+          539,
+          619
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 112,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          290,
+          211,
+          504,
+          718
+        ],
+        "confidence": 0.56
+      },
+      {
+        "frame_number": 113,
+        "vehicle_type": "motorcycle",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          4,
+          388,
+          478,
+          719
+        ],
+        "confidence": 0.83
+      },
+      {
+        "frame_number": 113,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          46,
+          250,
+          502,
+          718
+        ],
+        "confidence": 0.67
+      },
+      {
+        "frame_number": 113,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 25,
+        "threat_level": "low",
+        "bbox": [
+          419,
+          519,
+          539,
+          619
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 113,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          290,
+          210,
+          504,
+          718
+        ],
+        "confidence": 0.56
+      },
+      {
+        "frame_number": 114,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          388,
+          488,
+          719
+        ],
+        "confidence": 0.8
+      },
+      {
+        "frame_number": 114,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 55,
+        "threat_level": "medium",
+        "bbox": [
+          23,
+          249,
+          501,
+          719
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 114,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 28,
+        "threat_level": "low",
+        "bbox": [
+          418,
+          519,
+          538,
+          619
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 114,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          289,
+          211,
+          499,
+          718
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 115,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          12,
+          388,
+          484,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 115,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          23,
+          247,
+          500,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 115,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 25,
+        "threat_level": "low",
+        "bbox": [
+          415,
+          519,
+          536,
+          620
+        ],
+        "confidence": 0.66
+      },
+      {
+        "frame_number": 115,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 35,
+        "threat_level": "medium",
+        "bbox": [
+          288,
+          210,
+          498,
+          717
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 116,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 57,
+        "threat_level": "medium",
+        "bbox": [
+          23,
+          247,
+          501,
+          719
+        ],
+        "confidence": 0.79
+      },
+      {
+        "frame_number": 116,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          12,
+          387,
+          486,
+          719
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 116,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 25,
+        "threat_level": "low",
+        "bbox": [
+          415,
+          519,
+          536,
+          620
+        ],
+        "confidence": 0.66
+      },
+      {
+        "frame_number": 116,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          288,
+          210,
+          499,
+          717
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 117,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          12,
+          389,
+          512,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 117,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 47,
+        "threat_level": "medium",
+        "bbox": [
+          30,
+          246,
+          498,
+          719
+        ],
+        "confidence": 0.65
+      },
+      {
+        "frame_number": 117,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          287,
+          211,
+          495,
+          717
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 118,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          9,
+          388,
+          512,
+          719
+        ],
+        "confidence": 0.77
+      },
+      {
+        "frame_number": 118,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          24,
+          246,
+          499,
+          719
+        ],
+        "confidence": 0.68
+      },
+      {
+        "frame_number": 118,
+        "vehicle_type": "vehicle_35",
+        "threat_score": 22,
+        "threat_level": "low",
+        "bbox": [
+          414,
+          520,
+          535,
+          622
+        ],
+        "confidence": 0.57
+      },
+      {
+        "frame_number": 118,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          287,
+          211,
+          494,
+          717
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 119,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          9,
+          389,
+          498,
+          719
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 119,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 51,
+        "threat_level": "medium",
+        "bbox": [
+          105,
+          244,
+          507,
+          718
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 119,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          286,
+          209,
+          509,
+          717
+        ],
+        "confidence": 0.52
+      },
+      {
+        "frame_number": 120,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          389,
+          484,
+          718
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 120,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          42,
+          243,
+          504,
+          718
+        ],
+        "confidence": 0.74
+      },
+      {
+        "frame_number": 121,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          390,
+          480,
+          718
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 121,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          45,
+          243,
+          503,
+          718
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 122,
+        "vehicle_type": "motorcycle",
+        "threat_score": 46,
+        "threat_level": "medium",
+        "bbox": [
+          11,
+          387,
+          482,
+          718
+        ],
+        "confidence": 0.81
+      },
+      {
+        "frame_number": 122,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          18,
+          243,
+          504,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 122,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 34,
+        "threat_level": "medium",
+        "bbox": [
+          284,
+          208,
+          497,
+          718
+        ],
+        "confidence": 0.51
+      },
+      {
+        "frame_number": 123,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          15,
+          385,
+          486,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 123,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          24,
+          242,
+          500,
+          719
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 123,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          284,
+          208,
+          498,
+          718
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 124,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          15,
+          385,
+          486,
+          719
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 124,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          24,
+          242,
+          500,
+          719
+        ],
+        "confidence": 0.7
+      },
+      {
+        "frame_number": 124,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          284,
+          208,
+          498,
+          718
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 125,
+        "vehicle_type": "motorcycle",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          34,
+          384,
+          500,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 125,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 49,
+        "threat_level": "medium",
+        "bbox": [
+          30,
+          241,
+          500,
+          719
+        ],
+        "confidence": 0.67
+      },
+      {
+        "frame_number": 125,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          284,
+          206,
+          495,
+          718
+        ],
+        "confidence": 0.55
+      },
+      {
+        "frame_number": 126,
+        "vehicle_type": "motorcycle",
+        "threat_score": 41,
+        "threat_level": "medium",
+        "bbox": [
+          29,
+          385,
+          494,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 126,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 50,
+        "threat_level": "medium",
+        "bbox": [
+          26,
+          241,
+          504,
+          719
+        ],
+        "confidence": 0.69
+      },
+      {
+        "frame_number": 126,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 36,
+        "threat_level": "medium",
+        "bbox": [
+          284,
+          206,
+          496,
+          718
+        ],
+        "confidence": 0.53
+      },
+      {
+        "frame_number": 127,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          10,
+          383,
+          499,
+          718
+        ],
+        "confidence": 0.75
+      },
+      {
+        "frame_number": 127,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 53,
+        "threat_level": "medium",
+        "bbox": [
+          54,
+          241,
+          505,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 127,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 37,
+        "threat_level": "medium",
+        "bbox": [
+          285,
+          204,
+          489,
+          719
+        ],
+        "confidence": 0.54
+      },
+      {
+        "frame_number": 128,
+        "vehicle_type": "motorcycle",
+        "threat_score": 45,
+        "threat_level": "medium",
+        "bbox": [
+          8,
+          383,
+          499,
+          718
+        ],
+        "confidence": 0.78
+      },
+      {
+        "frame_number": 128,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 53,
+        "threat_level": "medium",
+        "bbox": [
+          59,
+          239,
+          505,
+          719
+        ],
+        "confidence": 0.72
+      },
+      {
+        "frame_number": 128,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 38,
+        "threat_level": "medium",
+        "bbox": [
+          286,
+          205,
+          490,
+          719
+        ],
+        "confidence": 0.56
+      },
+      {
+        "frame_number": 129,
+        "vehicle_type": "motorcycle",
+        "threat_score": 43,
+        "threat_level": "medium",
+        "bbox": [
+          7,
+          383,
+          501,
+          718
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 129,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 52,
+        "threat_level": "medium",
+        "bbox": [
+          65,
+          240,
+          506,
+          718
+        ],
+        "confidence": 0.71
+      },
+      {
+        "frame_number": 129,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 39,
+        "threat_level": "medium",
+        "bbox": [
+          285,
+          205,
+          491,
+          719
+        ],
+        "confidence": 0.57
+      },
+      {
+        "frame_number": 130,
+        "vehicle_type": "motorcycle",
+        "threat_score": 44,
+        "threat_level": "medium",
+        "bbox": [
+          7,
+          382,
+          497,
+          718
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 130,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 54,
+        "threat_level": "medium",
+        "bbox": [
+          82,
+          239,
+          503,
+          718
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 130,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          286,
+          203,
+          486,
+          718
+        ],
+        "confidence": 0.58
+      },
+      {
+        "frame_number": 131,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 56,
+        "threat_level": "medium",
+        "bbox": [
+          91,
+          239,
+          503,
+          718
+        ],
+        "confidence": 0.76
+      },
+      {
+        "frame_number": 131,
+        "vehicle_type": "motorcycle",
+        "threat_score": 42,
+        "threat_level": "medium",
+        "bbox": [
+          4,
+          382,
+          498,
+          719
+        ],
+        "confidence": 0.73
+      },
+      {
+        "frame_number": 131,
+        "vehicle_type": "vehicle_0",
+        "threat_score": 40,
+        "threat_level": "medium",
+        "bbox": [
+          287,
+          202,
+          487,
+          719
+        ],
+        "confidence": 0.59
+      }
+    ]
+  },
+  "license_plate": "09A03439",
+  "license_plate_details": {
+    "primary": "09A03439",
+    "primary_frequency": 2,
+    "secondary": "K109A03439",
+    "secondary_frequency": 2,
+    "confidence": 0.4,
+    "frames_analyzed": 5,
+    "valid_extractions": 5
+  },
+  "annotated_video": "/outputs/00c52218-f187-431b-a5a0-0b973d423da7/annotated_violations.mp4",
+  "processing_time_seconds": 34.33
+}
