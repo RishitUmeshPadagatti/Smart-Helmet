@@ -113,3 +113,31 @@ export const impactData = {
         { time: "10:15", force: 0 },
     ]
 };
+
+export interface PotholeIncident {
+    id: string;
+    location: string;
+    timestamp: string;
+    riskLevel: 'High' | 'Low' | 'Medium';
+    thumbnail: string;
+    videoPath: string;
+}
+
+export const potholeIncidents: PotholeIncident[] = [
+    {
+        id: 'pot-1',
+        location: 'MG Road, Near Trinity Circle',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        riskLevel: 'High',
+        thumbnail: 'pothole1',
+        videoPath: 'video4_pothole'
+    },
+    {
+        id: 'pot-2',
+        location: 'Indiranagar 100ft Road',
+        timestamp: new Date(Date.now() - 86400000).toISOString(),
+        riskLevel: 'Medium',
+        thumbnail: 'pothole1',
+        videoPath: 'video4_pothole'
+    }
+];

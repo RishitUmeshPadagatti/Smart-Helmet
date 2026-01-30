@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
-import { Home, Trash2, Car, Activity, Settings } from 'lucide-react-native';
+import { Home, Trash2, Car, Activity, Settings, AlertTriangle } from 'lucide-react-native';
+import { View } from 'react-native';
 
 import { useColorScheme } from 'nativewind';
 
@@ -31,6 +32,13 @@ export default function TabLayout() {
         options={{
           title: 'Waste',
           tabBarIcon: ({ color }) => <Trash2 size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="potholes"
+        options={{
+          title: 'Potholes',
+          tabBarIcon: ({ color }) => <AlertTriangle size={24} color={color} />,
         }}
       />
       <Tabs.Screen
