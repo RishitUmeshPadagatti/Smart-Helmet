@@ -6,7 +6,7 @@ import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { SOSButton } from '../../components/SOSButton';
-import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera } from 'lucide-react-native';
+import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera, Wind } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import useUserData from '../hooks/useUserData';
@@ -17,6 +17,46 @@ import { useEffect, useState } from 'react';
 export default function Dashboard() {
     const { userData, loading, error } = useUserData();
     const router = useRouter();
+    const [aqi, setAqi] = useState<string>("...");
+    const [speed, setSpeed] = useState<string>("0");
+    const [latitude, setLatitude] = useState<string>("...");
+    const [longitude, setLongitude] = useState<string>("...");
+
+    useEffect(() => {
+        const fetchLiveData = async () => {
+            try {
+                const aqiResponse = await axios.get(`http://${piIpAddress}:3000/aqi`);
+                setAqi(aqiResponse.data.toString());
+            } catch (err) {
+                console.log("Error fetching AQI:", err);
+            }
+
+            try {
+                const speedResponse = await axios.get(`http://${piIpAddress}:3000/speed`);
+                setSpeed(speedResponse.data.toString());
+            } catch (err) {
+                console.log("Error fetching speed:", err);
+            }
+
+            try {
+                const latResponse = await axios.get(`http://${piIpAddress}:3000/latitude`);
+                setLatitude(latResponse.data.toString());
+            } catch (err) {
+                console.log("Error fetching latitude:", err);
+            }
+
+            try {
+                const lngResponse = await axios.get(`http://${piIpAddress}:3000/longitude`);
+                setLongitude(lngResponse.data.toString());
+            } catch (err) {
+                console.log("Error fetching longitude:", err);
+            }
+        };
+
+        fetchLiveData();
+        const interval = setInterval(fetchLiveData, 2000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSOS = async () => {
         console.log("SOS Activated! EMERGENCY CALL INITIATED");
@@ -116,19 +156,15 @@ export default function Dashboard() {
                     {/* Speed Card */}
                     <Card className="w-[48%] items-center justify-center py-6">
                         <Zap size={28} color="#F59E0B" className="mb-2" />
-                        <Text className="text-3xl font-bold">{userData.dashboard.speed}</Text>
-                        <Text className="text-xs uppercase font-medium" variant="muted">km/h</Text>
+                        <Text className="text-3xl font-bold">{speed}</Text>
+                        <Text className="text-xs uppercase font-medium" variant="muted">m/s</Text>
                     </Card>
 
-                    {/* Wearing Status */}
+                    {/* AQI Card */}
                     <Card className="w-[48%] items-center justify-center py-6">
-                        <ShieldCheck size={28} color="#10B981" className="mb-2" />
-                        <Text className="text-lg font-bold text-center">
-                            {userData.dashboard.wearing ? "Wearing" : "Not Wearing"}
-                        </Text>
-                        <Text className="text-xs font-medium mt-1" variant="success">
-                            {userData.dashboard.wearing ? "Safe" : "Warning"}
-                        </Text>
+                        <Wind size={28} color="#10B981" className="mb-2" />
+                        <Text className="text-3xl font-bold">{aqi}</Text>
+                        <Text className="text-xs uppercase font-medium" variant="muted">AQI Index</Text>
                     </Card>
 
                     {/* Accident Status */}
@@ -152,16 +188,12 @@ export default function Dashboard() {
                     <SOSButton onTrigger={handleSOS} />
                 </View>
 
-                {/* Media */}
-                <Card className="flex-row items-center gap-4 bg-gray-900 border-gray-900 dark:bg-gray-800 dark:border-gray-800">
-                    <View className="w-10 h-10 rounded-full bg-gray-800 dark:bg-gray-700 items-center justify-center">
-                        <Music2 size={20} color="white" />
-                    </View>
-                    <View className="flex-1">
-                        <Text className="text-white font-medium">{userData.dashboard.mediaTrack}</Text>
-                        <Text className="text-gray-400 dark:text-gray-300 text-xs">Now Playing</Text>
-                    </View>
-                </Card>
+                {/* Coordinates */}
+                <View className="items-center mt-2">
+                    <Text variant="muted" className="text-xs">
+                        Coordinates: {latitude}, {longitude}
+                    </Text>
+                </View>
 
             </ScrollView>
         </SafeAreaView>

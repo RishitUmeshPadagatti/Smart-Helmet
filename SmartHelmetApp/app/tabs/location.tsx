@@ -11,6 +11,9 @@ import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { LocationMap } from '../../components/LocationMap';
 import { useRouter } from 'expo-router';
+import { piIpAddress } from '@/constants/values';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 export default function Location() {
     const router = useRouter();
@@ -25,6 +28,22 @@ export default function Location() {
     const [isAddFamilyVisible, setIsAddFamilyVisible] = useState(false);
     const [isViewingMyLocation, setIsViewingMyLocation] = useState(true);
     const [showHeatmap, setShowHeatmap] = useState(false);
+    const [speed, setSpeed] = useState<string>("0");
+
+    useEffect(() => {
+        const fetchSpeed = async () => {
+            try {
+                const response = await axios.get(`http://${piIpAddress}:3000/speed`);
+                setSpeed(response.data.toString());
+            } catch (err) {
+                console.log("Error fetching speed in Location screen:", err);
+            }
+        };
+
+        fetchSpeed();
+        const interval = setInterval(fetchSpeed, 2000);
+        return () => clearInterval(interval);
+    }, []);
 
     const focusLocation = (lat: number, lng: number) => {
         setRegion({
@@ -75,7 +94,7 @@ export default function Location() {
                             <Navigation size={20} color="#4F46E5" />
                             <View>
                                 <Text className="text-xs" variant="muted">Speed</Text>
-                                <Text className="text-lg font-bold">{locationData.speed} km/h</Text>
+                                <Text className="text-lg font-bold">{speed} m/s</Text>
                             </View>
                         </View>
                     </View>
