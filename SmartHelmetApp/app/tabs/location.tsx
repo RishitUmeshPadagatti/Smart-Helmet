@@ -10,8 +10,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { LocationMap } from '../../components/LocationMap';
+import { useRouter } from 'expo-router';
 
 export default function Location() {
+    const router = useRouter();
     const [region, setRegion] = useState({
         latitude: locationData.latitude,
         longitude: locationData.longitude,
@@ -46,7 +48,18 @@ export default function Location() {
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
-            <Header title="Location" />
+            <Header
+                title="Location"
+                leftContent={
+                    <TouchableOpacity
+                        onPress={() => router.push('/tabs/dashboard')}
+                        activeOpacity={0.7}
+                        className="p-1 -ml-2"
+                    >
+                        <ArrowLeft size={24} color="#ffffffff" className="dark:text-white" />
+                    </TouchableOpacity>
+                }
+            />
             <View className="flex-1 relative">
                 <LocationMap
                     region={region}

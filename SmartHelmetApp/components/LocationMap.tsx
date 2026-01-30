@@ -33,7 +33,7 @@ export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: L
         >
             {showHeatmap && aqiPoints.map((point, index) => (
                 <Circle
-                    key={`aqi-${index}`}
+                    key={`aqi-point-${index}-${point.latitude}-${point.longitude}`}
                     center={{ latitude: point.latitude, longitude: point.longitude }}
                     radius={150}
                     fillColor={
@@ -45,27 +45,10 @@ export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: L
                     strokeWidth={0}
                 />
             ))}
-            <Marker
-                coordinate={{
-                    latitude: locationData.latitude,
-                    longitude: locationData.longitude,
-                }}
-                title="You"
-                description="Current Location"
-            >
-                <View className="items-center">
-                    <View className="bg-red-500 rounded-full p-1 border-2 border-white shadow-sm">
-                        <MapPin size={24} color="white" fill="white" />
-                    </View>
-                    <View className="bg-black/80 px-2 py-1 rounded-md shadow-sm mt-1">
-                        <Text className="text-[10px] font-bold text-white">You</Text>
-                    </View>
-                </View>
-            </Marker>
 
             {familyMembers.map((member) => (
                 <Marker
-                    key={member.id}
+                    key={`family-member-${member.id}`}
                     coordinate={{
                         latitude: member.location.lat,
                         longitude: member.location.lng,
@@ -86,6 +69,25 @@ export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: L
                     </View>
                 </Marker>
             ))}
+
+            <Marker
+                key="user-location-marker"
+                coordinate={{
+                    latitude: locationData.latitude,
+                    longitude: locationData.longitude,
+                }}
+                title="You"
+                description="Current Location"
+            >
+                <View className="items-center">
+                    <View className="bg-red-500 rounded-full p-1 border-2 border-white shadow-sm">
+                        <MapPin size={24} color="white" fill="white" />
+                    </View>
+                    <View className="bg-black/80 px-2 py-1 rounded-md shadow-sm mt-1">
+                        <Text className="text-[10px] font-bold text-white">You</Text>
+                    </View>
+                </View>
+            </Marker>
         </MapView>
     );
 }

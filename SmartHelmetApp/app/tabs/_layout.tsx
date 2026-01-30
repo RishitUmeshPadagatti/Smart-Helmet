@@ -51,6 +51,7 @@ export default function TabLayout() {
         name="location"
         options={{
           href: null,
+          tabBarStyle: { display: 'none' },
         }}
       />
     </Tabs>

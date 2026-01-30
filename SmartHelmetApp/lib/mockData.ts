@@ -39,21 +39,66 @@ export const familyMembers = [
     },
 ];
 
-export const incidents = [
+export interface TrafficIncident {
+    id: string;
+    type: 'No Helmet' | 'One Way' | 'Triple Riding' | 'Signal Jump' | 'Speeding';
+    location: string;
+    timestamp: string;
+    severity: 'High' | 'Low' | 'Medium';
+    numberPlate: string;
+    thumbnail: string;
+    videoPath: string; // reference to bundled video
+}
+
+export const incidents: TrafficIncident[] = [
     {
-        id: 1,
-        timestamp: "2023-10-24T14:30:00Z",
+        id: 'tra-1',
+        type: 'No Helmet',
+        timestamp: "2026-01-24T14:30:00Z",
         severity: "High",
         location: "Main St & 4th Ave",
-        thumbnail: "https://media.istockphoto.com/id/526110307/photo/motorcycle-accident.jpg?s=612x612&w=0&k=20&c=bDS8Vs6e4zbngG8ck-tJXgW5b5ZMfjXPFQl-H1E9dcI="
+        numberPlate: "KA 01 EB 1234",
+        thumbnail: "https://media.istockphoto.com/id/526110307/photo/motorcycle-accident.jpg?s=612x612&w=0&k=20&c=bDS8Vs6e4zbngG8ck-tJXgW5b5ZMfjXPFQl-H1E9dcI=",
+        videoPath: 'video1'
     },
     {
-        id: 2,
-        timestamp: "2023-10-20T09:15:00Z",
+        id: 'tra-2',
+        type: 'One Way',
+        timestamp: "2026-01-28T09:15:00Z",
         severity: "Low",
-        location: "Park Rd",
-        thumbnail: "https://images.unsplash.com/photo-1592126296549-0e3edb40aca1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHRyYWZmaWMlMjB2aW9sYXRpb258ZW58MHx8MHx8fDA%3D"
+        location: "Park Rd, Near Metro",
+        numberPlate: "KA 05 MN 5678",
+        thumbnail: "https://images.unsplash.com/photo-1592126296549-0e3edb40aca1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fHRyYWZmaWMlMjB2aW9sYXRpb258ZW58MHx8MHx8fDA%3D",
+        videoPath: 'video2'
     },
+];
+
+export interface WasteIncident {
+    id: string;
+    type: 'Littering' | 'Illegal Dumping' | 'Overflowing Bin' | 'Hazardous Waste';
+    location: string;
+    timestamp: string;
+    severity: 'High' | 'Low' | 'Medium';
+    thumbnail: string;
+}
+
+export const wasteIncidents: WasteIncident[] = [
+    {
+        id: 'waste-1',
+        type: 'Illegal Dumping',
+        location: 'Central Plaza',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        severity: 'High',
+        thumbnail: 'https://images.unsplash.com/photo-1589627762073-9aca94506fa1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    },
+    {
+        id: 'waste-2',
+        type: 'Overflowing Bin',
+        location: 'North Street',
+        timestamp: new Date(Date.now() - 7200000).toISOString(),
+        severity: 'Medium',
+        thumbnail: 'https://media.istockphoto.com/id/1059301664/photo/waste-abandoned-on-the-hills.jpg?s=612x612&w=0&k=20&c=U7bjzDfcKOcCnedJG347vbFVEUei-V2JAq48sDnyq4I='
+    }
 ];
 
 export const impactData = {
