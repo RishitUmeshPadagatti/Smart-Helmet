@@ -1,12 +1,13 @@
-import { View, ScrollView, TouchableOpacity, Alert, Image, Linking, Modal, Dimensions } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
 import { Button } from '../../components/Button';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { SectionTitle } from '../../components/SectionTitle';
+import { ZoomableImage } from '../../components/ZoomableImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ShieldAlert, ChevronLeft, Trash2, MapPin, Clock, Share2, CheckCircle, AlertTriangle, X } from 'lucide-react-native';
+import { ShieldAlert, ChevronLeft, Trash2, MapPin, Clock, Share2, CheckCircle, AlertTriangle } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import { WasteIncident } from '../../lib/mockData';
@@ -16,7 +17,6 @@ export default function WasteIncidentDetail() {
     const router = useRouter();
     const [incident, setIncident] = useState<WasteIncident | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isImageFullscreen, setIsImageFullscreen] = useState(false);
 
     useEffect(() => {
         loadIncident();
@@ -157,43 +157,14 @@ export default function WasteIncidentDetail() {
                     </Card>
                 )}
 
-                {/* Evidence Snapshot */}
+                {/* Evidence Snapshot with Zoom */}
                 <SectionTitle title="Analyzed Image" className="mb-3" />
-                <TouchableOpacity activeOpacity={0.9} onPress={() => setIsImageFullscreen(true)}>
-                    <Card className="mb-6 p-0 overflow-hidden border-gray-200 dark:border-gray-800 bg-black">
-                        <Image
-                            source={{ uri: incident.annotatedImageUrl || incident.thumbnail }}
-                            className="w-full h-64"
-                            resizeMode="contain"
-                        />
-                        {/* Tap to expand hint */}
-                        <View className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded">
-                            <Text className="text-white text-xs">Tap to expand</Text>
-                        </View>
-                    </Card>
-                </TouchableOpacity>
-
-                {/* Fullscreen Image Modal */}
-                <Modal
-                    visible={isImageFullscreen}
-                    transparent={true}
-                    animationType="fade"
-                    onRequestClose={() => setIsImageFullscreen(false)}
-                >
-                    <View className="flex-1 bg-black justify-center items-center">
-                        <TouchableOpacity
-                            onPress={() => setIsImageFullscreen(false)}
-                            className="absolute top-12 right-4 z-20 bg-white/20 rounded-full p-2"
-                        >
-                            <X size={28} color="white" />
-                        </TouchableOpacity>
-                        <Image
-                            source={{ uri: incident.annotatedImageUrl || incident.thumbnail }}
-                            style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').height * 0.8 }}
-                            resizeMode="contain"
-                        />
-                    </View>
-                </Modal>
+                <Card className="mb-6 p-0 overflow-hidden border-gray-200 dark:border-gray-800">
+                    <ZoomableImage
+                        source={{ uri: incident.annotatedImageUrl || incident.thumbnail }}
+                        thumbnailHeight={256}
+                    />
+                </Card>
 
                 {/* Incident Details */}
                 <SectionTitle title="Report Details" className="mb-3" />

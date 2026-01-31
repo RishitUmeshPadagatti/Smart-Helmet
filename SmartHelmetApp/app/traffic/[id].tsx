@@ -1,12 +1,13 @@
-import { View, ScrollView, TouchableOpacity, Alert, Image, Share, Linking, Modal, Dimensions } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { SectionTitle } from '../../components/SectionTitle';
 import { Button } from '../../components/Button';
+import { ZoomableImage } from '../../components/ZoomableImage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AlertTriangle, ShieldAlert, PlayCircle, ChevronLeft, Trash2, MapPin, Clock, CreditCard, Share2, Video as VideoIcon, X } from 'lucide-react-native';
+import { AlertTriangle, ShieldAlert, PlayCircle, ChevronLeft, Trash2, MapPin, Clock, CreditCard, Share2, Video as VideoIcon } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
@@ -26,7 +27,6 @@ export default function TrafficIncidentDetail() {
     const [loading, setLoading] = useState(true);
     const [videoRef, setVideoRef] = useState<Video | null>(null);
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-    const [isImageFullscreen, setIsImageFullscreen] = useState(false);
 
     useEffect(() => {
         loadIncident();
@@ -236,43 +236,14 @@ export default function TrafficIncidentDetail() {
                     )}
                 </Card>
 
-                {/* Evidence Snapshot */}
+                {/* Evidence Snapshot with Zoom */}
                 <SectionTitle title="Evidence Snapshot" className="mb-3" />
-                <TouchableOpacity activeOpacity={0.9} onPress={() => setIsImageFullscreen(true)}>
-                    <Card className="mb-6 p-0 overflow-hidden border-gray-200 dark:border-gray-800 bg-black">
-                        <Image
-                            source={{ uri: incident.bestFrameUrl || incident.thumbnail }}
-                            className="w-full h-48"
-                            resizeMode="contain"
-                        />
-                        {/* Tap to expand hint */}
-                        <View className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded">
-                            <Text className="text-white text-xs">Tap to expand</Text>
-                        </View>
-                    </Card>
-                </TouchableOpacity>
-
-                {/* Fullscreen Image Modal */}
-                <Modal
-                    visible={isImageFullscreen}
-                    transparent={true}
-                    animationType="fade"
-                    onRequestClose={() => setIsImageFullscreen(false)}
-                >
-                    <View className="flex-1 bg-black justify-center items-center">
-                        <TouchableOpacity
-                            onPress={() => setIsImageFullscreen(false)}
-                            className="absolute top-12 right-4 z-20 bg-white/20 rounded-full p-2"
-                        >
-                            <X size={28} color="white" />
-                        </TouchableOpacity>
-                        <Image
-                            source={{ uri: incident.bestFrameUrl || incident.thumbnail }}
-                            style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').height * 0.8 }}
-                            resizeMode="contain"
-                        />
-                    </View>
-                </Modal>
+                <Card className="mb-6 p-0 overflow-hidden border-gray-200 dark:border-gray-800">
+                    <ZoomableImage
+                        source={{ uri: incident.bestFrameUrl || incident.thumbnail }}
+                        thumbnailHeight={192}
+                    />
+                </Card>
 
                 {/* Violation Details */}
                 <SectionTitle title="Incident Details" className="mb-3" />
@@ -285,7 +256,7 @@ export default function TrafficIncidentDetail() {
 
                     <Card className="w-[48%] py-4 items-center">
                         <CreditCard size={24} color="#3B82F6" className="mb-2" />
-                        <Text className="text-lg font-bold">KL09AQ3439</Text>
+                        <Text className="text-lg font-bold">{incident.numberPlate || 'N/A'}</Text>
                         <Text className="text-xs font-medium" variant="muted">Number Plate</Text>
                     </Card>
 
