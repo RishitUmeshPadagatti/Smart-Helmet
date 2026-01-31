@@ -9,12 +9,15 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 
 // Python executable - use venv Python for TensorFlow compatibility
-// .venv is in Smart-Helmet root (3 levels up from src/utils/)
-const VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+// venv is in Backend-JS/venv
 const getPythonCmd = () => {
-  if (fsSync.existsSync(VENV_PYTHON)) {
-    return VENV_PYTHON;
-  }
+  const venvPath = path.join(__dirname, '../../venv');
+  const winPython = path.join(venvPath, 'Scripts/python.exe');
+  const unixPython = path.join(venvPath, 'bin/python');
+
+  if (fsSync.existsSync(winPython)) return winPython;
+  if (fsSync.existsSync(unixPython)) return unixPython;
+
   return process.platform === 'win32' ? 'py' : 'python';
 };
 
