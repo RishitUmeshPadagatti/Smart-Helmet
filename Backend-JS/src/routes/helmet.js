@@ -17,11 +17,14 @@ const MODEL_PATH = path.join(__dirname, '..', '..', 'ML_model', 'helmet_best.pt'
 const PREDICT_SCRIPT = path.join(__dirname, '..', '..', 'ML_model', 'predict_helmet.py');
 
 // Python executable - use venv Python for TensorFlow compatibility
-const VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
 const getPythonCmd = () => {
-  if (fsSync.existsSync(VENV_PYTHON)) {
-    return VENV_PYTHON;
-  }
+  const venvPath = path.join(__dirname, '../../venv');
+  const winPython = path.join(venvPath, 'Scripts/python.exe');
+  const unixPython = path.join(venvPath, 'bin/python');
+
+  if (fsSync.existsSync(winPython)) return winPython;
+  if (fsSync.existsSync(unixPython)) return unixPython;
+
   return process.platform === 'win32' ? 'py' : 'python';
 };
 
@@ -97,7 +100,7 @@ const upload = multer({
  */
 router.post('/detect', upload.single('image'), async (req, res) => {
   let uploadedFile = null;
-  
+
   try {
     // Validate file upload
     if (!req.file) {
@@ -164,7 +167,7 @@ router.post('/detect', upload.single('image'), async (req, res) => {
 
   } catch (error) {
     console.error(`[Helmet Detection Error]`, error);
-    
+
     res.status(500).json({
       success: false,
       error: 'Internal server error during helmet detection',

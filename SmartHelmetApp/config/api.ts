@@ -12,7 +12,8 @@
 // ============================================
 // ⚙️ UPDATE THIS WITH YOUR BACKEND SERVER IP
 // ============================================
-export const BACKEND_IP = '192.168.1.157';  // <-- Your current WiFi IP
+// export const BACKEND_IP = '192.168.1.157'  // College wifi
+export const BACKEND_IP = '10.103.195.149';  // NothingPhone1
 export const BACKEND_PORT = 3000;            // <-- Change if using different port
 
 export const API_BASE = `http://${BACKEND_IP}:${BACKEND_PORT}`;

@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -22,6 +22,7 @@ export default function Potholes() {
     const router = useRouter();
     const [incidents, setIncidents] = useState<PotholeIncident[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     useEffect(() => {
         loadIncidents();
@@ -74,6 +75,8 @@ export default function Potholes() {
 
             if (result.canceled) return;
 
+            setIsAnalyzing(true);
+
             const newIncident: PotholeIncident = {
                 id: `pot-${Date.now()}`,
                 location: 'Uploaded Location, Near Outer Ring Road',
@@ -87,9 +90,14 @@ export default function Potholes() {
             setIncidents(updatedIncidents);
             await saveIncidents(updatedIncidents);
 
-            router.push(`/potholes/${newIncident.id}` as any);
+            // Navigate after 10 seconds
+            setTimeout(() => {
+                setIsAnalyzing(false);
+                router.push(`/potholes/${newIncident.id}` as any);
+            }, 10000);
         } catch (error) {
             console.error('Upload failed:', error);
+            setIsAnalyzing(false);
             Alert.alert('Error', 'Failed to add the selected video.');
         }
     };
@@ -130,11 +138,26 @@ export default function Potholes() {
             <ScrollView className="flex-1 px-4 py-4" contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
                 <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
                     <View className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center mb-4">
-                        <UploadCloud size={32} color="#3B82F6" />
+                        {isAnalyzing ? (
+                            <ActivityIndicator size="large" color="#3B82F6" />
+                        ) : (
+                            <UploadCloud size={32} color="#3B82F6" />
+                        )}
                     </View>
-                    <Text className="text-lg font-bold mb-1">Upload Road Data</Text>
-                    <Text className="text-center text-sm mb-4" variant="muted">Sync helmet footage to detect road hazards and potholes.</Text>
-                    <Button title="Upload New Data" onPress={handleUpload} className="w-full" />
+                    <Text className="text-lg font-bold mb-1">
+                        {isAnalyzing ? 'Analyzing Road Hazards...' : 'Upload Road Data'}
+                    </Text>
+                    <Text className="text-center text-sm mb-4" variant="muted">
+                        {isAnalyzing
+                            ? 'Scanning footage for potholes and cracks...'
+                            : 'Sync helmet footage to detect road hazards and potholes.'}
+                    </Text>
+                    <Button
+                        title={isAnalyzing ? 'Analyzing...' : 'Upload New Data'}
+                        onPress={handleUpload}
+                        className="w-full"
+                        disabled={isAnalyzing}
+                    />
                 </Card>
 
                 <SectionTitle title="Recent Reports" />

@@ -25,12 +25,14 @@ const OCR_SERVICE = path.join(__dirname, '../../ML_model/easyocr_plate_extractor
 // Note: Garbage detection is disabled for videos - use /api/garbage-image-check for images
 
 // Python executable - use venv Python for TensorFlow compatibility
-const VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
 const getPythonCmd = () => {
-  // Use venv Python if it exists, otherwise fall back to system Python
-  if (fsSync.existsSync(VENV_PYTHON)) {
-    return VENV_PYTHON;
-  }
+  const venvPath = path.join(__dirname, '../../venv');
+  const winPython = path.join(venvPath, 'Scripts/python.exe');
+  const unixPython = path.join(venvPath, 'bin/python');
+
+  if (fsSync.existsSync(winPython)) return winPython;
+  if (fsSync.existsSync(unixPython)) return unixPython;
+
   return process.platform === 'win32' ? 'py' : 'python';
 };
 
@@ -137,7 +139,7 @@ const upload = multer({
 router.post('/video-analysis', upload.single('video'), async (req, res) => {
   let uploadedFile = null;
   const videoId = uuidv4();
-  
+
   try {
     // Validate file upload
     if (!req.file) {
@@ -168,7 +170,7 @@ router.post('/video-analysis', upload.single('video'), async (req, res) => {
     // NOTE: Garbage detection is disabled for videos - use /api/garbage-image-check for images
     console.log(`[Step 1] Running ML service (helmet + vehicle detection)...`);
     const mlResults = await runMLService(videoPath, outputDir);
-    
+
     if (!mlResults.success) {
       console.error(`[Error] ML service failed:`, mlResults.error);
       return res.status(500).json({
@@ -183,7 +185,7 @@ router.post('/video-analysis', upload.single('video'), async (req, res) => {
     const vehicleCount = mlResults.violations?.vehicle?.count || 0;
     console.log(`[Results] Helmet violations found: ${helmetCount}`);
     console.log(`[Results] Vehicle threats found: ${vehicleCount}\n`);
-    
+
     // Debug: Log the actual violations data
     console.log(`[Debug] Helmet details: ${JSON.stringify(mlResults.violations?.helmet?.details || []).substring(0, 100)}...`);
     console.log(`[Debug] Vehicle details: ${JSON.stringify(mlResults.violations?.vehicle?.details || []).substring(0, 100)}...`);
@@ -191,7 +193,7 @@ router.post('/video-analysis', upload.single('video'), async (req, res) => {
     // Step 2: Run OCR for license plate extraction (if violation frames exist)
     console.log(`[Step 2] Running OCR for license plate extraction...`);
     let ocrResults = { success: false, plates: { primary: 'N/A', confidence: 0 } };
-    
+
     const violationFramesDir = path.join(outputDir, 'violation_frames');
     if (fsSync.existsSync(violationFramesDir)) {
       const frameFiles = fsSync.readdirSync(violationFramesDir);
@@ -278,7 +280,7 @@ router.post('/video-analysis', upload.single('video'), async (req, res) => {
 
   } catch (error) {
     console.error(`[Video Analysis Error]`, error);
-    
+
     res.status(500).json({
       success: false,
       error: 'Internal server error during video analysis',
@@ -421,7 +423,7 @@ function runOCRService(violationFramesDir) {
 
     console.log(`[OCR] Processing ${frameFiles.length} frames...`);
     console.log(`[OCR] First frame: ${frameFiles[0]}`);
-    
+
     const pythonCmd = getPythonCmd();
     const ocrServicePath = OCR_SERVICE.replace(/\\/g, '/');
 
@@ -449,19 +451,19 @@ function runOCRService(violationFramesDir) {
     pythonProcess.on('close', (code) => {
       console.log(`[OCR] Process exited with code: ${code}`);
       console.log(`[OCR] Output length: ${outputBuffer.length}, Error length: ${errorBuffer.length}`);
-      
+
       // Log any stderr output for debugging
       if (errorBuffer.length > 0) {
         console.log(`[OCR Stderr] ${errorBuffer.substring(0, 1000)}`);
       }
-      
+
       // Accept code 0 or null (null can happen on Windows)
       if ((code === 0 || code === null) && outputBuffer.trim().length > 0) {
         try {
           // Find JSON in output - Python outputs single-line compact JSON
           const lines = outputBuffer.trim().split('\n');
           let jsonStr = null;
-          
+
           // Search from end for JSON object (single line)
           for (let i = lines.length - 1; i >= 0; i--) {
             const line = lines[i].trim();
@@ -470,17 +472,17 @@ function runOCRService(violationFramesDir) {
               break;
             }
           }
-          
+
           if (!jsonStr) {
             console.error(`[OCR] No valid JSON found in output`);
             console.error(`[OCR Output] ${outputBuffer.substring(0, 500)}`);
             resolve(defaultResult);
             return;
           }
-          
+
           const rawResult = JSON.parse(jsonStr);
           console.log(`[OCR Raw] plate=${rawResult.plate}, success=${rawResult.success}`);
-          
+
           // CRITICAL: Map Python field names to Node.js expected structure
           const normalizedResult = {
             success: Boolean(rawResult.success),
@@ -498,10 +500,10 @@ function runOCRService(violationFramesDir) {
             all_plates: rawResult.all_extractions || [],
             votes: rawResult.votes || {}
           };
-          
+
           console.log(`[OCR Mapped] primary=${normalizedResult.plates.primary}`);
           resolve(normalizedResult);
-          
+
         } catch (parseError) {
           console.error(`[OCR Parse Error] ${parseError.message}`);
           console.error(`[OCR Output] ${outputBuffer.substring(0, 500)}`);
