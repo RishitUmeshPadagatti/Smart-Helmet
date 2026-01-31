@@ -25,13 +25,17 @@ const OCR_SERVICE = path.join(__dirname, '../../ML_model/easyocr_plate_extractor
 // Note: Garbage detection is disabled for videos - use /api/garbage-image-check for images
 
 // Python executable - use venv Python for TensorFlow compatibility
-const VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+const VENV_PYTHON_WIN = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+const VENV_PYTHON_UNIX = path.join(__dirname, '../../../.venv/bin/python');
 const getPythonCmd = () => {
-  // Use venv Python if it exists, otherwise fall back to system Python
-  if (fsSync.existsSync(VENV_PYTHON)) {
-    return VENV_PYTHON;
+  // Use venv Python if it exists (check platform-specific path)
+  if (process.platform === 'win32' && fsSync.existsSync(VENV_PYTHON_WIN)) {
+    return VENV_PYTHON_WIN;
   }
-  return process.platform === 'win32' ? 'py' : 'python';
+  if (process.platform !== 'win32' && fsSync.existsSync(VENV_PYTHON_UNIX)) {
+    return VENV_PYTHON_UNIX;
+  }
+  return process.platform === 'win32' ? 'py' : 'python3';
 };
 
 // Configure multer for video uploads

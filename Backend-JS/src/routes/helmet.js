@@ -17,12 +17,16 @@ const MODEL_PATH = path.join(__dirname, '..', '..', 'ML_model', 'helmet_best.pt'
 const PREDICT_SCRIPT = path.join(__dirname, '..', '..', 'ML_model', 'predict_helmet.py');
 
 // Python executable - use venv Python for TensorFlow compatibility
-const VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+const VENV_PYTHON_WIN = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+const VENV_PYTHON_UNIX = path.join(__dirname, '../../../.venv/bin/python');
 const getPythonCmd = () => {
-  if (fsSync.existsSync(VENV_PYTHON)) {
-    return VENV_PYTHON;
+  if (process.platform === 'win32' && fsSync.existsSync(VENV_PYTHON_WIN)) {
+    return VENV_PYTHON_WIN;
   }
-  return process.platform === 'win32' ? 'py' : 'python';
+  if (process.platform !== 'win32' && fsSync.existsSync(VENV_PYTHON_UNIX)) {
+    return VENV_PYTHON_UNIX;
+  }
+  return process.platform === 'win32' ? 'py' : 'python3';
 };
 
 // Configure multer for file uploads

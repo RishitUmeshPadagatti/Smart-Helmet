@@ -27,20 +27,24 @@ Server runs on `http://localhost:3000`
 ## API Endpoints
 
 ### Health Check
+
 ```
 GET /health
 GET /
 ```
 
 ### Video Analysis (Traffic Violations)
+
 ```
 POST /api/video-analysis
 ```
+
 - **Content-Type**: `multipart/form-data`
 - **Field**: `video` (MP4, AVI, MOV, MKV, WEBM)
 - **Max Size**: 500MB
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -55,14 +59,17 @@ POST /api/video-analysis
 ```
 
 ### Garbage Detection (Single Image)
+
 ```
 POST /api/garbage-image-check
 ```
+
 - **Content-Type**: `multipart/form-data`
 - **Field**: `image` (JPEG, PNG)
 - **Max Size**: 10MB
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -74,9 +81,11 @@ POST /api/garbage-image-check
 ```
 
 ### Helmet Detection (Direct)
+
 ```
 POST /helmet-detect/detect
 ```
+
 - **Content-Type**: `multipart/form-data`
 - **Field**: `image`
 
@@ -112,12 +121,12 @@ Backend-JS/
 
 ## ML Models
 
-| Model | File | Purpose |
-|-------|------|---------|
-| Helmet Detection | `helmet_best.pt` | YOLOv8 - Detects helmet/no-helmet |
-| Vehicle Detection | `yolov8s.pt` | YOLOv8 - Detects cars, motorcycles, trucks |
-| Garbage Classification | `garbage_classifier.keras` | TensorFlow/MobileNet - Binary classifier |
-| License Plate OCR | EasyOCR | Extracts text from license plates |
+| Model                  | File                       | Purpose                                    |
+| ---------------------- | -------------------------- | ------------------------------------------ |
+| Helmet Detection       | `helmet_best.pt`           | YOLOv8 - Detects helmet/no-helmet          |
+| Vehicle Detection      | `yolov8s.pt`               | YOLOv8 - Detects cars, motorcycles, trucks |
+| Garbage Classification | `garbage_classifier.keras` | TensorFlow/MobileNet - Binary classifier   |
+| License Plate OCR      | EasyOCR                    | Extracts text from license plates          |
 
 ## Static File Serving
 
@@ -127,6 +136,7 @@ Backend-JS/
 ## Environment
 
 The backend uses a Python virtual environment for ML processing:
+
 - **Path**: `Smart-Helmet/.venv/`
 - **Python Version**: 3.12.10 (required for TensorFlow 2.20)
 - **Key Packages**: tensorflow, ultralytics, easyocr, opencv-python
@@ -136,13 +146,15 @@ The backend uses a Python virtual environment for ML processing:
 The React Native app connects to this backend at `http://<IP>:3000`.
 
 Configure the IP in `SmartHelmetApp/config/api.ts`:
+
 ```typescript
-export const API_BASE = 'http://192.168.1.157:3000';
+export const API_BASE = "http://192.168.1.157:3000";
 ```
 
 ## Processing Flow
 
 ### Video Analysis
+
 1. Upload video → `/api/video-analysis`
 2. Extract frames using OpenCV
 3. Run YOLOv8 helmet detection on each frame
@@ -152,10 +164,9 @@ export const API_BASE = 'http://192.168.1.157:3000';
 7. Return URLs to annotated video and best frame
 
 ### Garbage Detection
+
 1. Upload image → `/api/garbage-image-check`
 2. Resize to 224x224 for MobileNet
 3. Run TensorFlow classifier
 4. If garbage detected (confidence > 0.5), save annotated image
 5. Return detection result and annotated image URL
-
-
