@@ -112,14 +112,20 @@ export default function TrafficIncidentDetail() {
     const handleShare = async () => {
         if (!incident) return;
         try {
-            const message = `Traffic Violation Report:\nType: ${incident.type}\nVehicle: ${incident.numberPlate}\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}\nEvidence: ${incident.thumbnail}`;
-            await Share.share({
-                message,
-                title: 'Traffic Violation Report',
-            });
+            const subject = 'Traffic Violation Report';
+            const body = `Traffic Violation Report:\n\nType: ${incident.type}\nVehicle: ${incident.numberPlate}\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}\nEvidence: ${incident.thumbnail}`;
+            const email = 'rishitpadagatti@gmail.com';
+            const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            const canOpen = await Linking.canOpenURL(mailtoUrl);
+            if (canOpen) {
+                await Linking.openURL(mailtoUrl);
+            } else {
+                Alert.alert('Error', 'No email app available on this device.');
+            }
         } catch (error) {
-            console.error('Error sharing report:', error);
-            Alert.alert('Error', 'Failed to share report.');
+            console.error('Error sending email:', error);
+            Alert.alert('Error', 'Failed to open email app.');
         }
     };
 
