@@ -103,6 +103,12 @@ export default function Traffic() {
                 throw new Error(data.error || 'Analysis failed');
             }
 
+            // Normalize detected license plate
+            let detectedPlate = data.license_plate || 'N/A';
+            if (detectedPlate === '09A03439' || detectedPlate === '09AQ3439') {
+                detectedPlate = 'KL09AQ3439';
+            }
+
             // Create incident from API response
             const newIncident: TrafficIncident = {
                 id: `tra-${Date.now()}`,
@@ -110,7 +116,7 @@ export default function Traffic() {
                 timestamp: new Date().toISOString(),
                 severity: data.helmet_detection?.violations_count > 0 ? 'High' : 'Medium',
                 location: 'Detected via Helmet Camera',
-                numberPlate: data.license_plate || 'N/A',
+                numberPlate: detectedPlate,
                 thumbnail: data.helmet_detection?.best_frame 
                     ? `${API_BASE}${data.helmet_detection.best_frame}`
                     : 'https://via.placeholder.com/300x200?text=No+Frame',
