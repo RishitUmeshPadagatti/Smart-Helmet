@@ -18,3 +18,5 @@ imageio>=2.25.0         # Image/video I/O
 # Utilities
 python-dotenv>=0.21.0   # Environment variable management
 pyyaml>=6.0             # YAML config parsing
+
+urllib3<2

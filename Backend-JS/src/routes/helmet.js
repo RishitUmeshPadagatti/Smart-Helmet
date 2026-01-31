@@ -17,16 +17,15 @@ const MODEL_PATH = path.join(__dirname, '..', '..', 'ML_model', 'helmet_best.pt'
 const PREDICT_SCRIPT = path.join(__dirname, '..', '..', 'ML_model', 'predict_helmet.py');
 
 // Python executable - use venv Python for TensorFlow compatibility
-const VENV_PYTHON_WIN = path.join(__dirname, '../../../.venv/Scripts/python.exe');
-const VENV_PYTHON_UNIX = path.join(__dirname, '../../../.venv/bin/python');
 const getPythonCmd = () => {
-  if (process.platform === 'win32' && fsSync.existsSync(VENV_PYTHON_WIN)) {
-    return VENV_PYTHON_WIN;
-  }
-  if (process.platform !== 'win32' && fsSync.existsSync(VENV_PYTHON_UNIX)) {
-    return VENV_PYTHON_UNIX;
-  }
-  return process.platform === 'win32' ? 'py' : 'python3';
+  const venvPath = path.join(__dirname, '../../venv');
+  const winPython = path.join(venvPath, 'Scripts/python.exe');
+  const unixPython = path.join(venvPath, 'bin/python');
+
+  if (fsSync.existsSync(winPython)) return winPython;
+  if (fsSync.existsSync(unixPython)) return unixPython;
+
+  return process.platform === 'win32' ? 'py' : 'python';
 };
 
 // Configure multer for file uploads
@@ -101,7 +100,7 @@ const upload = multer({
  */
 router.post('/detect', upload.single('image'), async (req, res) => {
   let uploadedFile = null;
-  
+
   try {
     // Validate file upload
     if (!req.file) {
@@ -168,7 +167,7 @@ router.post('/detect', upload.single('image'), async (req, res) => {
 
   } catch (error) {
     console.error(`[Helmet Detection Error]`, error);
-    
+
     res.status(500).json({
       success: false,
       error: 'Internal server error during helmet detection',

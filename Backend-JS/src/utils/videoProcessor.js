@@ -5,11 +5,15 @@ const path = require('path');
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 
-// Python executable - use venv Python for TensorFlow compatibility\n// .venv is in Smart-Helmet root (3 levels up from src/utils/)\nconst VENV_PYTHON = path.join(__dirname, '../../../.venv/Scripts/python.exe');
+// Python executable - use venv Python for TensorFlow compatibility
 const getPythonCmd = () => {
-  if (fs.existsSync(VENV_PYTHON)) {
-    return VENV_PYTHON;
-  }
+  const venvPath = path.join(__dirname, '../../venv');
+  const winPython = path.join(venvPath, 'Scripts/python.exe');
+  const unixPython = path.join(venvPath, 'bin/python');
+
+  if (fs.existsSync(winPython)) return winPython;
+  if (fs.existsSync(unixPython)) return unixPython;
+
   return process.platform === 'win32' ? 'py' : 'python';
 };
 
@@ -24,7 +28,7 @@ async function processVideoWithDualModels(inputPath, outputDir) {
     const dualModelScriptPath = path.join(__dirname, 'dual_model_ml_service.py');
     const vehicleModelPath = path.join(__dirname, '..', '..', 'ML_model', 'yolov8s.pt');
     const helmetModelPath = path.join(__dirname, '..', '..', 'ML_model', 'helmet_best.pt');
-    
+
     console.log(`[Dual Model Processor] Starting vehicle + helmet detection...`);
     console.log(`[Dual Model Processor] Input: ${inputPath}`);
     console.log(`[Dual Model Processor] Output: ${outputDir}`);
@@ -36,7 +40,7 @@ async function processVideoWithDualModels(inputPath, outputDir) {
       reject(new Error(`Vehicle model not found: ${vehicleModelPath}`));
       return;
     }
-    
+
     if (!fs.existsSync(helmetModelPath)) {
       reject(new Error(`Helmet model not found: ${helmetModelPath}`));
       return;
@@ -72,13 +76,13 @@ async function processVideoWithDualModels(inputPath, outputDir) {
     pythonProcess.on('close', (code) => {
       if (code === 0) {
         console.log(`[Dual Model Processor] Processing completed successfully`);
-        
+
         try {
           // Parse analytics JSON from last line
           const lines = outputBuffer.trim().split('\n');
           const lastLine = lines[lines.length - 1];
           const analytics = JSON.parse(lastLine);
-          
+
           // Now run voting-based OCR on the violation frames
           runOCROnViolationImage(analytics, outputDir)
             .then((analyticsWithPlates) => {
@@ -86,7 +90,7 @@ async function processVideoWithDualModels(inputPath, outputDir) {
               if (analyticsWithPlates.plate_extraction && analyticsWithPlates.plate_extraction.success) {
                 const primaryPlate = analyticsWithPlates.plate_extraction.plate;
                 const secondaryPlate = analyticsWithPlates.plate_extraction.plate_2 || null;
-                
+
                 return annotateVideoWithPlate(
                   path.join(outputDir, 'annotated_violations.mp4'),
                   path.join(outputDir, 'annotated_violations_with_plate.mp4'),
@@ -148,7 +152,7 @@ async function processVideoWithYOLO(inputPath, outputPath) {
   return new Promise((resolve, reject) => {
     // Get the absolute path to the Python script
     const pythonScriptPath = path.join(__dirname, '..', '..', 'ML_model', 'fault_detection_service.py');
-    
+
     console.log(`[Video Processor] Starting single YOLO processing...`);
     console.log(`[Video Processor] Input: ${inputPath}`);
     console.log(`[Video Processor] Output: ${outputPath}`);
@@ -177,7 +181,7 @@ async function processVideoWithYOLO(inputPath, outputPath) {
     pythonProcess.on('close', (code) => {
       if (code === 0) {
         console.log(`[Video Processor] YOLO processing completed successfully`);
-        
+
         // Parse analytics from output or try to read from file
         const analytics = parseYOLOAnalytics(outputBuffer);
         resolve({
@@ -312,7 +316,7 @@ async function runOCROnViolationImage(analytics, outputDir) {
 
       const violationFramesDir = path.join(outputDir, 'violation_frames');
       const easyOCRScript = path.join(__dirname, 'extract_plates.py');
-      
+
       console.log(`[OCR] Starting EasyOCR-based plate extraction on ${analytics.violation_frames.length} frames`);
 
       // Create Python script call with ABSOLUTE Windows-style frame paths as JSON
@@ -323,10 +327,10 @@ async function runOCROnViolationImage(analytics, outputDir) {
         return fullPath;
       });
       const framesList = JSON.stringify(absoluteFramePaths);
-      
+
       console.log(`[OCR] Frame directory: ${violationFramesDir}`);
       console.log(`[OCR] Sample frame path: ${absoluteFramePaths[0]}`);
-      
+
       const pythonProcess = spawn(getPythonCmd(), [
         easyOCRScript,
         framesList,
@@ -357,7 +361,7 @@ async function runOCROnViolationImage(analytics, outputDir) {
             // Parse the JSON result from Python
             const lines = outputBuffer.trim().split('\n');
             let result = null;
-            
+
             // Find the JSON result in output
             for (let i = lines.length - 1; i >= 0; i--) {
               try {
@@ -433,7 +437,7 @@ async function runOCROnViolationImage(analytics, outputDir) {
 async function annotateVideoWithPlate(inputVideoPath, outputVideoPath, primaryPlate, secondaryPlate = null) {
   return new Promise((resolve, reject) => {
     const annotationScriptPath = path.join(__dirname, 'annotate_video_with_plate.py');
-    
+
     console.log(`[Plate Annotation] Adding license plate to video...`);
     console.log(`[Plate Annotation] Primary: ${primaryPlate}`);
     if (secondaryPlate) {
@@ -468,7 +472,7 @@ async function annotateVideoWithPlate(inputVideoPath, outputVideoPath, primaryPl
     pythonProcess.on('close', (code) => {
       if (code === 0) {
         console.log(`[Plate Annotation] Video annotation completed successfully`);
-        
+
         try {
           const lines = outputBuffer.trim().split('\n');
           const lastLine = lines[lines.length - 1];

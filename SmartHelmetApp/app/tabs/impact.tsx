@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions, Alert, ActivityIndicator } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -69,6 +69,7 @@ export default function Impact() {
     const router = useRouter();
     const [incidents, setIncidents] = useState<ImpactIncident[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     useEffect(() => {
         loadIncidents();
@@ -131,6 +132,8 @@ export default function Impact() {
                 return;
             }
 
+            setIsAnalyzing(true);
+
             // Create a new dummy incident tied to video3_impact.mp4
             const newIncident: ImpactIncident = {
                 id: Date.now().toString(),
@@ -155,10 +158,14 @@ export default function Impact() {
             setIncidents(updatedIncidents);
             await saveIncidents(updatedIncidents);
 
-            // Navigate to the new incident detail
-            router.push(`/impact/${newIncident.id}`);
+            // Navigate to the new incident detail after 5 seconds
+            setTimeout(() => {
+                setIsAnalyzing(false);
+                router.push(`/impact/${newIncident.id}`);
+            }, 10000);
         } catch (error) {
             console.error('Upload failed:', error);
+            setIsAnalyzing(false);
             Alert.alert('Error', 'Failed to add the selected video. Please try again.');
         }
     };
@@ -168,7 +175,7 @@ export default function Impact() {
         const now = new Date();
         const diffMs = now.getTime() - date.getTime();
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 0) {
             return `Today, ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
         } else if (diffDays === 1) {
@@ -220,16 +227,25 @@ export default function Impact() {
                 {/* Upload Section */}
                 <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
                     <View className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 items-center justify-center mb-4">
-                        <UploadCloud size={32} color="#3B82F6" />
+                        {isAnalyzing ? (
+                            <ActivityIndicator size="large" color="#3B82F6" />
+                        ) : (
+                            <UploadCloud size={32} color="#3B82F6" />
+                        )}
                     </View>
-                    <Text className="text-lg font-bold mb-1">Upload Impact Data</Text>
+                    <Text className="text-lg font-bold mb-1">
+                        {isAnalyzing ? 'Analyzing Impact...' : 'Upload Impact Data'}
+                    </Text>
                     <Text className="text-center text-sm mb-4" variant="muted">
-                        Sync data from your smart helmet to analyze latest impacts.
+                        {isAnalyzing
+                            ? 'Processing g-force and orientation data...'
+                            : 'Sync data from your smart helmet to analyze latest impacts.'}
                     </Text>
                     <Button
-                        title="Upload New Data"
+                        title={isAnalyzing ? 'Analyzing...' : 'Upload New Data'}
                         onPress={handleUpload}
                         className="w-full"
+                        disabled={isAnalyzing}
                     />
                 </Card>
 
@@ -246,16 +262,16 @@ export default function Impact() {
                 ) : (
                     <View className="gap-3">
                         {incidents.map((incident) => (
-                            <TouchableOpacity 
-                                key={incident.id} 
+                            <TouchableOpacity
+                                key={incident.id}
                                 onPress={() => router.push(`/impact/${incident.id}`)}
                             >
                                 <Card className="flex-row justify-between items-center p-4">
                                     <View className="flex-row items-center gap-4">
                                         <View className={`w-12 h-12 rounded-full ${getSeverityBgColor(incident.severity)} items-center justify-center`}>
-                                            <Activity 
-                                                size={24} 
-                                                color={incident.severity === 'CRITICAL' ? '#EF4444' : incident.severity === 'LOW' ? '#3B82F6' : '#F59E0B'} 
+                                            <Activity
+                                                size={24}
+                                                color={incident.severity === 'CRITICAL' ? '#EF4444' : incident.severity === 'LOW' ? '#3B82F6' : '#F59E0B'}
                                             />
                                         </View>
                                         <View>
