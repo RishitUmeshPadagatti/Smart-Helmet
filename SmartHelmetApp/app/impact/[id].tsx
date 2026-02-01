@@ -1,11 +1,12 @@
-import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Share } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { SectionTitle } from '../../components/SectionTitle';
+import { Button } from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Activity, AlertTriangle, ShieldAlert, TrendingUp, PlayCircle, ChevronLeft, Trash2 } from 'lucide-react-native';
+import { Activity, AlertTriangle, ShieldAlert, TrendingUp, PlayCircle, ChevronLeft, Trash2, Share2 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
@@ -90,26 +91,37 @@ export default function ImpactAnalysisDetail() {
         );
     };
 
+    const handleShare = async () => {
+        if (!incident) return;
+        try {
+            const subject = `Impact Analysis Report #${id}`;
+            const message = `Impact Analysis Report:\n\nImpact Force: ${incident.forceScore || incident.force}g\nInjury Probability: ${incident.injuryProb || 'N/A'}\nFall Direction: ${incident.fallDirection || 'N/A'}\nTilt Angle: ${incident.tiltAngle || 0}°\nTime: ${new Date(incident.timestamp).toLocaleString()}`;
+
+            await Share.share({
+                message: message,
+                title: subject,
+            });
+        } catch (error) {
+            console.error('Error sharing report:', error);
+            Alert.alert('Error', 'Failed to share report.');
+        }
+    };
+
     const handlePlayVideo = async () => {
         if (!videoRef || !incident) return;
-        
+
         try {
-            // Set up playback status listener before presenting
             videoRef.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
-                if (status.isLoaded) {
-                    if (status.didJustFinish) {
-                        setIsVideoPlaying(false);
-                    }
+                if (status.isLoaded && status.didJustFinish) {
+                    setIsVideoPlaying(false);
                 }
             });
-            
-            // Present video in native fullscreen player
-            // This will open the native video player in fullscreen mode
+
             await videoRef.presentFullscreenPlayer();
             setIsVideoPlaying(true);
         } catch (error) {
             console.error('Error playing video:', error);
-            Alert.alert('Error', 'Failed to play video. Please try again.');
+            Alert.alert('Error', 'Failed to play video.');
         }
     };
 
@@ -150,8 +162,8 @@ export default function ImpactAnalysisDetail() {
                     </TouchableOpacity>
                 }
                 rightContent={
-                    <TouchableOpacity 
-                        onPress={handleDelete} 
+                    <TouchableOpacity
+                        onPress={handleDelete}
                         className="p-1 rounded-full bg-red-100 dark:bg-red-900/30"
                     >
                         <Trash2 size={20} color="#EF4444" />
@@ -174,7 +186,7 @@ export default function ImpactAnalysisDetail() {
                         useNativeControls={false}
                         shouldPlay={false}
                     />
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         onPress={handlePlayVideo}
                         className="absolute z-10 items-center"
                         activeOpacity={0.8}
@@ -228,6 +240,16 @@ export default function ImpactAnalysisDetail() {
                         ))}
                     </View>
                 </Card>
+
+                {/* Share Report */}
+                <Button
+                    onPress={handleShare}
+                    variant="outline"
+                    className="mt-2 bg-white border-gray-200"
+                >
+                    <Share2 size={20} color="#000000" />
+                    <Text className="text-black dark:text-black font-medium ml-2">Share Report</Text>
+                </Button>
             </ScrollView>
         </SafeAreaView>
     );

@@ -12,9 +12,9 @@
 // ============================================
 // ⚙️ UPDATE THIS WITH YOUR BACKEND SERVER IP
 // ============================================
-//export const BACKEND_IP = '192.168.1.157';  // <-- Your current WiFi IP clg 5g
-export const BACKEND_IP = '10.33.6.232';
-export const BACKEND_PORT = 3000;            // <-- Change if using different port
+// export const BACKEND_IP = '10.103.195.149';  // NothingPhone1
+export const BACKEND_IP = '10.33.6.109';  // Mohith Hotspot
+export const BACKEND_PORT = 3000;
 
 export const API_BASE = `http://${BACKEND_IP}:${BACKEND_PORT}`;
 

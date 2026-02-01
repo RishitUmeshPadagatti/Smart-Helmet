@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Linking, Share } from 'react-native';
 import { Button } from '../../components/Button';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Text } from '../../components/Text';
@@ -71,19 +71,15 @@ export default function WasteIncidentDetail() {
         if (!incident) return;
         try {
             const subject = 'Waste Management Report';
-            const body = `Waste Management Report:\n\nType: ${incident.type}\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}\nImage: ${incident.thumbnail}`;
-            const email = 'rishitpadagatti@gmail.com';
-            const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            const canOpen = await Linking.canOpenURL(mailtoUrl);
-            if (canOpen) {
-                await Linking.openURL(mailtoUrl);
-            } else {
-                Alert.alert('Error', 'No email app available on this device.');
-            }
+            const message = `Waste Management Report:\n\nType: ${incident.type}\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}\n\nDetection Result: ${incident.garbageDetected ? 'Garbage Detected' : 'Area is Clean'}\nConfidence: ${((incident.confidence || 0) * 100).toFixed(1)}%`;
+
+            await Share.share({
+                message: message,
+                title: subject,
+            });
         } catch (error) {
-            console.error('Error sending email:', error);
-            Alert.alert('Error', 'Failed to open email app.');
+            console.error('Error sharing report:', error);
+            Alert.alert('Error', 'Failed to share report.');
         }
     };
 

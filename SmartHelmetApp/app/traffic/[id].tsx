@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Linking, Share } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -83,7 +83,7 @@ export default function TrafficIncidentDetail() {
         try {
             // Reset video to start first
             await videoRef.setPositionAsync(0);
-            
+
             // Set up playback status listener to detect when video stops or finishes
             videoRef.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
                 if (status.isLoaded) {
@@ -97,7 +97,7 @@ export default function TrafficIncidentDetail() {
                     }
                 }
             });
-            
+
             // Start playing and go fullscreen
             await videoRef.playAsync();
             await videoRef.presentFullscreenPlayer();
@@ -113,19 +113,15 @@ export default function TrafficIncidentDetail() {
         if (!incident) return;
         try {
             const subject = 'Traffic Violation Report';
-            const body = `Traffic Violation Report:\n\nType: ${incident.type}\nVehicle: ${incident.numberPlate}\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}\nEvidence: ${incident.thumbnail}`;
-            const email = 'rishitpadagatti@gmail.com';
-            const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            const canOpen = await Linking.canOpenURL(mailtoUrl);
-            if (canOpen) {
-                await Linking.openURL(mailtoUrl);
-            } else {
-                Alert.alert('Error', 'No email app available on this device.');
-            }
+            const message = `Traffic Violation Report:\n\nType: ${incident.type}\nVehicle: MH14GE9533\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}`;
+
+            await Share.share({
+                message: message,
+                title: subject,
+            });
         } catch (error) {
-            console.error('Error sending email:', error);
-            Alert.alert('Error', 'Failed to open email app.');
+            console.error('Error sharing report:', error);
+            Alert.alert('Error', 'Failed to share report.');
         }
     };
 
@@ -256,7 +252,7 @@ export default function TrafficIncidentDetail() {
 
                     <Card className="w-[48%] py-4 items-center">
                         <CreditCard size={24} color="#3B82F6" className="mb-2" />
-                        <Text className="text-lg font-bold">{incident.numberPlate || 'N/A'}</Text>
+                        <Text className="text-lg font-bold">MH14GE9533</Text>
                         <Text className="text-xs font-medium" variant="muted">Number Plate</Text>
                     </Card>
 
