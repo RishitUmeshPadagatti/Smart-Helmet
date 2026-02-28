@@ -1,7 +1,5 @@
 const express = require('express');
 const os = require('os');
-const { SerialPort } = require('serialport');
-const { ReadlineParser } = require('@serialport/parser-readline');
 
 const app = express();
 const PORT = 3000;
@@ -21,7 +19,26 @@ function getLocalIP() {
 
 const PI_IP = getLocalIP();
 
-// -------- Latest values from ESP32 --------
+// -------- 15 Fake Data Values --------
+const fakeDataset = [
+  { speed: 0, aqi: 45, latitude: 13.0827, longitude: 80.2707 },
+  { speed: 0, aqi: 50, latitude: 13.0827, longitude: 80.2707 },
+  { speed: 0, aqi: 55, latitude: 13.0827, longitude: 80.2717 },
+  { speed: 0, aqi: 60, latitude: 13.0827, longitude: 80.2717 },
+  { speed: 0, aqi: 65, latitude: 13.0827, longitude: 80.2717 },
+  { speed: 0, aqi: 70, latitude: 13.0827, longitude: 80.2717 },
+  { speed: 0, aqi: 75, latitude: 13.0827, longitude: 80.2717 },
+  { speed: 0, aqi: 80, latitude: 13.0827, longitude: 80.2727 },
+  { speed: 0, aqi: 85, latitude: 13.0827, longitude: 80.2727 },
+  { speed: 0, aqi: 90, latitude: 13.0827, longitude: 80.2727 },
+  { speed: 0, aqi: 95, latitude: 13.0827, longitude: 80.2727 },
+  { speed: 0, aqi: 100, latitude: 13.0849, longitude: 80.27229 },
+  { speed: 0, aqi: 105, latitude: 13.0849, longitude: 80.27329 },
+  { speed: 0, aqi: 110, latitude: 13.0849, longitude: 80.27329 },
+  { speed: 0,  aqi: 115, latitude: 13.0849, longitude: 80.27329 },
+];
+
+// -------- Latest Data Object --------
 let latestData = {
   speed: null,
   aqi: null,
@@ -30,61 +47,25 @@ let latestData = {
   lastUpdated: null,
 };
 
-// -------- Open UART (/dev/serial0) --------
-const port = new SerialPort({
-  path: '/dev/serial0',
-  baudRate: 9600,
-});
+let index = 0;
 
-const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
+// -------- Cycle Fake Data Every 1 Second --------
+setInterval(() => {
+  latestData = {
+    ...fakeDataset[index],
+    lastUpdated: new Date().toISOString(),
+  };
 
-console.log("Waiting for ESP32 data...\n");
+  console.log("Fake Data:", latestData);
 
-// -------- Serial Port Error Handling --------
-port.on('open', () => {
-  console.log("Serial port opened successfully.");
-});
-
-port.on('error', (err) => {
-  console.error("Serial Port Error:", err.message);
-});
-
-// -------- Parse incoming ESP32 line --------
-// Expected format:
-// SPD=12.5,AQI=85,LAT=13.0827,LON=80.2707
-parser.on('data', (line) => {
-  line = line.trim();
-  console.log("ESP32:", line);
-
-  try {
-    const parts = Object.fromEntries(
-      line.split(',').map(p => p.split('='))
-    );
-
-    if (parts.SPD) latestData.speed = parseFloat(parts.SPD);
-    if (parts.AQI) latestData.aqi = parseInt(parts.AQI);
-
-    latestData.latitude =
-      parts.LAT && parts.LAT !== 'NA' ? parseFloat(parts.LAT) : null;
-
-    latestData.longitude =
-      parts.LON && parts.LON !== 'NA' ? parseFloat(parts.LON) : null;
-
-    latestData.lastUpdated = new Date().toISOString();
-
-  } catch (err) {
-    console.log("Parse error:", err.message);
-  }
-});
+  index = (index + 1) % fakeDataset.length;
+}, 1000);
 
 // -------- API Endpoints --------
-
-// Combined endpoint (recommended for frontend)
 app.get('/data', (req, res) => {
   res.json(latestData);
 });
 
-// Individual endpoints → RAW values
 app.get('/speed', (req, res) => {
   res.send(String(latestData.speed ?? 'NA'));
 });

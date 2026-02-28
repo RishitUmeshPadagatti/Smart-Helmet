@@ -13,7 +13,7 @@
 // ⚙️ UPDATE THIS WITH YOUR BACKEND SERVER IP
 // ============================================
 // export const BACKEND_IP = '10.103.195.149';  // NothingPhone1
-export const BACKEND_IP = '10.33.6.109';  // Mohith Hotspot
+export const BACKEND_IP = '10.28.203.109';  // Mohith Hotspot
 export const BACKEND_PORT = 3000;
 
 export const API_BASE = `http://${BACKEND_IP}:${BACKEND_PORT}`;

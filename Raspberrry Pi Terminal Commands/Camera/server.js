@@ -18,11 +18,15 @@ wss.on('connection', (ws) => {
 // Spawn ffmpeg to read webcam and output MJPEG frames
 const ffmpeg = spawn('ffmpeg', [
   '-f', 'v4l2',
+  '-input_format', 'yuyv422',
+  '-video_size', '640x480',
+  '-framerate', '30',
   '-i', '/dev/video0',
-  '-vf', 'scale=640:480',
-  '-r', '15',
-  '-f', 'mjpeg',
-  'pipe:1'
+
+  '-f', 'image2pipe',
+  '-vcodec', 'mjpeg',
+  '-q:v', '5',
+  '-'
 ]);
 
 ffmpeg.stdout.on('data', (chunk) => {
