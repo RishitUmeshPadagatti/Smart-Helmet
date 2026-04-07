@@ -1,0 +1,223 @@
+import sounddevice as sd
+import queue
+import json
+import os
+import time
+import subprocess
+import platform
+import re
+import urllib.request
+import zipfile
+from vosk import Model, KaldiRecognizer
+from google import genai
+from dotenv import load_dotenv
+
+# -----------------------------
+# CONFIG
+# -----------------------------
+# Automatically resolve directory of the script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(BASE_DIR, "vosk-model-en-in-0.5")
+MODEL_ZIP_PATH = os.path.join(BASE_DIR, "vosk-model-en-in-0.5.zip")
+MODEL_URL = "https://alphacephei.com/vosk/models/vosk-model-en-in-0.5.zip"
+SAMPLE_RATE = 16000
+
+# Load Environment Variables from .env file
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+gemini_client = None
+if GEMINI_API_KEY:
+    gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+else:
+    print("Warning: GEMINI_API_KEY not found in .env file.")
+
+# -----------------------------
+# ENSURE MODEL EXISTS
+# -----------------------------
+if not os.path.exists(MODEL_DIR):
+    print(f"Vosk model not found at {MODEL_DIR}.")
+    print(f"Downloading from {MODEL_URL} (this might take a few minutes)...")
+    try:
+        urllib.request.urlretrieve(MODEL_URL, MODEL_ZIP_PATH)
+        print("Download complete. Extracting...")
+        with zipfile.ZipFile(MODEL_ZIP_PATH, 'r') as zip_ref:
+            zip_ref.extractall(BASE_DIR)
+        os.remove(MODEL_ZIP_PATH)
+        print("Model extracted successfully.")
+    except Exception as e:
+        print(f"Failed to download or extract model: {e}")
+        exit(1)
+
+# -----------------------------
+# LOAD MODEL
+# -----------------------------
+print("Loading speech model...")
+try:
+    model = Model(MODEL_DIR)
+    rec = KaldiRecognizer(model, SAMPLE_RATE)
+except Exception as e:
+    print(f"Failed to load Vosk model: {e}")
+    exit(1)
+
+q = queue.Queue()
+
+# Media player state
+PROCESS = None
+LAST_TIME_MS = 0
+START_WALL_TIME = None
+MEDIA_PATH = os.path.join(BASE_DIR, "Closer.mp3")
+
+# Detect platform for playing media and TTS
+SYS_PLATFORM = platform.system()
+# On macOS, VLC is usually not in PATH, use the direct binary
+VLC_CMD = "/Applications/VLC.app/Contents/MacOS/VLC" if SYS_PLATFORM == "Darwin" else "cvlc"
+
+IS_SPEAKING = False
+
+def audio_callback(indata, frames, time_info, status):
+    if status:
+        print(status, flush=True)
+    if not IS_SPEAKING:
+        q.put(bytes(indata))
+
+# -----------------------------
+# SPEAK FUNCTION
+# -----------------------------
+def speak(text):
+    global IS_SPEAKING
+    IS_SPEAKING = True
+    
+    print(f"🤖 Assistant: {text}")
+    # Sanitize text to remove quotes, backticks, and other dangerous shell characters
+    clean_text = re.sub(r'[^a-zA-Z0-9 \.,\?!:\-]', '', text)
+    
+    if SYS_PLATFORM == "Darwin":
+        os.system(f'say "{clean_text}"')
+    else:
+        # Use espeak on Raspberry Pi / Linux
+        os.system(f'espeak "{clean_text}" 2>/dev/null')
+        
+    # Prevent audio feedback loop by clearing the mic queue 
+    with q.mutex:
+        q.queue.clear()
+    # Reset KaldiRecognizer to clear out any half-heard phrases
+    rec.Reset()
+    
+    IS_SPEAKING = False
+
+# -----------------------------
+# GEMINI FUNCTION
+# -----------------------------
+def ask_gemini(text):
+    if not gemini_client:
+        return "My brain is disconnected because the Gemini API key is missing."
+    
+    try:
+        prompt = (f"You are MAX, a smart helmet assistant. The user said: '{text}'. "
+                  f"Provide a short, conversational response (no more than 2 sentences).")
+        response = gemini_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+        )
+        # Clean up any markdown
+        clean_response = response.text.replace("*", "").replace("\n", " ").strip()
+        return clean_response
+    except Exception as e:
+        print(f"Gemini Error: {e}")
+        return "I am having trouble connecting to my brain right now."
+
+# -----------------------------
+# INTENT LOGIC
+# -----------------------------
+def handle_intent(text):
+    text_lower = text.lower()
+    global PROCESS, LAST_TIME_MS, START_WALL_TIME
+
+    # If external player exited on its own, clear state
+    if PROCESS is not None and PROCESS.poll() is not None:
+        PROCESS = None
+        LAST_TIME_MS = 0
+        START_WALL_TIME = None
+
+    # Play/resume
+    if any(cmd in text_lower for cmd in ["play", "resume", "start"]):
+        try:
+            if PROCESS is None:
+                start_seconds = LAST_TIME_MS / 1000
+                cmd = [
+                    VLC_CMD, "--intf", "dummy", "--play-and-exit",
+                    "--start-time", str(start_seconds), MEDIA_PATH
+                ]
+                PROCESS = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                START_WALL_TIME = time.time()
+                speak("Playing")
+            else:
+                speak("Already playing")
+        except FileNotFoundError:
+            speak(f"{VLC_CMD} not found. Please install VLC.")
+        except Exception as e:
+            speak(f"Unable to play media: {e}")
+        return
+
+    # Pause/stop
+    if any(cmd in text_lower for cmd in ["pause", "stop"]):
+        try:
+            if PROCESS is not None:
+                elapsed = 0
+                if START_WALL_TIME is not None:
+                    elapsed = time.time() - START_WALL_TIME
+                LAST_TIME_MS = int(LAST_TIME_MS + elapsed * 1000)
+                PROCESS.terminate()
+                PROCESS = None
+                START_WALL_TIME = None
+                speak("Paused")
+            else:
+                speak("Nothing is playing right now")
+        except Exception as e:
+            speak(f"Unable to pause media: {e}")
+        return
+
+    # Hardcoded intents
+    if "hello" in text_lower:
+        speak("Hello. I am ready.")
+    elif "hey max" in text_lower:
+        speak("Hey. How can I help you today?")
+    elif text.strip() == "":
+        pass
+    else:
+        # Fallback to Gemini API
+        print("🔍 Asking Gemini...")
+        gemini_response = ask_gemini(text)
+        if gemini_response:
+             speak(gemini_response)
+
+# -----------------------------
+# MAIN LOOP
+# -----------------------------
+if __name__ == "__main__":
+    print("🎙️ Starting Voice Assistant...")
+    try:
+        with sd.RawInputStream(
+            samplerate=SAMPLE_RATE,
+            blocksize=8000,
+            dtype='int16',
+            channels=1,
+            callback=audio_callback
+        ):
+            print("🎙️ Listening... Speak now.")
+            while True:
+                data = q.get()
+                if rec.AcceptWaveform(data):
+                    result = json.loads(rec.Result())
+                    spoken_text = result.get("text", "")
+                    if spoken_text:
+                        print(f"🗣️  You said: {spoken_text}")
+                        handle_intent(spoken_text)
+                        print("-" * 50 + "\n")
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"Critical Error: {e}")

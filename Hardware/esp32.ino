@@ -1,8 +1,3 @@
-/*************************************************
- * SMART HELMET – ESP32 (FINAL CLEAN VERSION)
- * GPS Speed + AQI + UART Output to Raspberry Pi
- *************************************************/
-
 #include <TinyGPSPlus.h>
 
 // ---------------- PIN DEFINITIONS ----------------
