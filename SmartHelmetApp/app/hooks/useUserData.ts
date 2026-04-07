@@ -74,56 +74,21 @@ const getMockUserData = (): UserData => ({
 });
 
 export default function useUserData(userId: string = 'test_user') {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Use mock data locally directly, no slow backend calls
+  const [userData, setUserData] = useState<UserData | null>(getMockUserData());
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchUserData();
-    // Optionally refresh every 10 seconds
-    const interval = setInterval(fetchUserData, 10000);
-    return () => clearInterval(interval);
-  }, [userId]);
-
+  // Empty mock methods left behind to prevent Dashboard UI crashing
   const fetchUserData = async () => {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-
-      const res = await fetch(`${API_BASE}/users/${userId}`, {
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setUserData(data);
-      setError(null);
-      setLoading(false);
-    } catch (err) {
-      // Backend unavailable or timeout - use mock data immediately without loading state
-      console.log('Backend unavailable, using mock data immediately');
-      setUserData(getMockUserData());
-      setError(null);
-      setLoading(false);
-    }
+    setUserData(getMockUserData());
   };
 
   const updateUserData = async (updates: Partial<UserData>) => {
-    try {
-      const res = await fetch(`${API_BASE}/users/${userId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const result = await res.json();
-      setUserData(result.user);
-      return result.user;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update data');
-      console.error('Update error:', err);
-    }
+    // We optionally can locally merge changes but it's not required 
+    // since data is static: return updated mock if desired
+    console.log('[Mock] User data update simulated:', updates);
+    return userData;
   };
 
   return { userData, loading, error, fetchUserData, updateUserData };
