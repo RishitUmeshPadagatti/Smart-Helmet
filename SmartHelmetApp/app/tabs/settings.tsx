@@ -144,7 +144,7 @@ export default function Settings() {
                     <View className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 mb-3 overflow-hidden border-4 border-white dark:border-gray-800 shadow-sm">
                         <Image source={require('../../assets/images/dummy.jpeg')} className="w-full h-full" resizeMode="contain" />
                     </View>
-                    <Text className="text-xl font-bold">{userData.name}</Text>
+                    <Text className="text-xl font-bold">Mohith </Text>
                     <Text className="text-sm" variant="muted">{userData.rfid}</Text>
                     <Text className="text-sm" variant="muted">{userData.phoneNumber}</Text>
                     <Button

@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity, useColorScheme } from 'react-native';
 import { Text } from '../../components/Text';
 import { Navigation, Share2, ArrowLeft } from 'lucide-react-native';
 import { AddFamilyMemberModal } from '../../components/AddFamilyMemberModal';
@@ -10,13 +10,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { LocationMap } from '../../components/LocationMap';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { piIpAddress } from '@/constants/values';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 export default function Location() {
     const router = useRouter();
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const [region, setRegion] = useState({
         latitude: locationData.latitude,
         longitude: locationData.longitude,
@@ -30,20 +32,27 @@ export default function Location() {
     const [showHeatmap, setShowHeatmap] = useState(false);
     const [speed, setSpeed] = useState<string>("0");
 
-    useEffect(() => {
-        const fetchSpeed = async () => {
-            try {
-                const response = await axios.get(`http://${piIpAddress}:3000/speed`);
-                setSpeed(response.data.toString());
-            } catch (err) {
-                console.log("Error fetching speed in Location screen:", err);
-            }
-        };
+    useFocusEffect(
+        useCallback(() => {
+            let isActive = true;
 
-        fetchSpeed();
-        const interval = setInterval(fetchSpeed, 2000);
-        return () => clearInterval(interval);
-    }, []);
+            const fetchSpeed = async () => {
+                if (!isActive) return;
+                try {
+                    const response = await axios.get(`http://${piIpAddress}:3000/speed`);
+                    if (isActive) setSpeed(response.data.toString());
+                } catch (err) { }
+            };
+
+            fetchSpeed();
+            const interval = setInterval(fetchSpeed, 2000);
+            
+            return () => {
+                isActive = false;
+                clearInterval(interval);
+            };
+        }, [])
+    );
 
     const focusLocation = (lat: number, lng: number) => {
         setRegion({
@@ -75,7 +84,7 @@ export default function Location() {
                         activeOpacity={0.7}
                         className="p-1 -ml-2"
                     >
-                        <ArrowLeft size={24} color="#ffffffff" className="dark:text-white" />
+                        <ArrowLeft size={24} color={isDark ? "#ffffff" : "#000000"} />
                     </TouchableOpacity>
                 }
             />

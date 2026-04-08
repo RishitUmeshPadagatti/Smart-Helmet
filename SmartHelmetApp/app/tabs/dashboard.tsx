@@ -6,57 +6,59 @@ import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { SOSButton } from '../../components/SOSButton';
-import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera, Wind } from 'lucide-react-native';
+import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera, Wind, Mountain, Move3d } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
 import { piIpAddress, vapi_authorization_token } from '@/constants/values';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function Dashboard() {
     const { userData, loading, error } = useUserData();
     const router = useRouter();
-    const [aqi, setAqi] = useState<string>("...");
+    const [altitude, setAltitude] = useState<string>("0");
     const [speed, setSpeed] = useState<string>("0");
+    const [aqi, setAqi] = useState<string>("...");
+    const [accelX, setAccelX] = useState<string>("0.0");
+    const [accelY, setAccelY] = useState<string>("0.0");
+    const [accelZ, setAccelZ] = useState<string>("0.0");
     const [latitude, setLatitude] = useState<string>("...");
     const [longitude, setLongitude] = useState<string>("...");
 
-    useEffect(() => {
-        const fetchLiveData = async () => {
-            try {
-                const aqiResponse = await axios.get(`http://${piIpAddress}:3000/aqi`);
-                setAqi(aqiResponse.data.toString());
-            } catch (err) {
-                console.log("Error fetching AQI:", err);
-            }
+    useFocusEffect(
+        useCallback(() => {
+            let isActive = true;
 
-            try {
-                const speedResponse = await axios.get(`http://${piIpAddress}:3000/speed`);
-                setSpeed(speedResponse.data.toString());
-            } catch (err) {
-                console.log("Error fetching speed:", err);
-            }
+            const fetchLiveData = async () => {
+                if (!isActive) return;
 
-            try {
-                const latResponse = await axios.get(`http://${piIpAddress}:3000/latitude`);
-                setLatitude(latResponse.data.toString());
-            } catch (err) {
-                console.log("Error fetching latitude:", err);
-            }
+                try {
+                    const response = await axios.get(`http://${piIpAddress}:3000/esp32-data`);
+                    if (isActive && response.data) {
+                        setAltitude(response.data.altitude?.toString() || "0");
+                        setSpeed(response.data.speed?.toString() || "0");
+                        setAqi(response.data.aqi?.toString() || "...");
+                        setAccelX(response.data.accelX?.toString() || "0");
+                        setAccelY(response.data.accelY?.toString() || "0");
+                        setAccelZ(response.data.accelZ?.toString() || "0");
+                        setLatitude(response.data.latitude?.toString() || "...");
+                        setLongitude(response.data.longitude?.toString() || "...");
+                    }
+                } catch (err) {
+                    console.log("[Dashboard] Error fetching live data:", err);
+                }
+            };
 
-            try {
-                const lngResponse = await axios.get(`http://${piIpAddress}:3000/longitude`);
-                setLongitude(lngResponse.data.toString());
-            } catch (err) {
-                console.log("Error fetching longitude:", err);
-            }
-        };
+            fetchLiveData();
+            const interval = setInterval(fetchLiveData, 2000);
 
-        fetchLiveData();
-        const interval = setInterval(fetchLiveData, 2000);
-        return () => clearInterval(interval);
-    }, []);
+            return () => {
+                isActive = false;
+                clearInterval(interval);
+            };
+        }, [])
+    );
 
     const handleSOS = async () => {
         console.log("SOS Activated! EMERGENCY CALL INITIATED");
@@ -153,32 +155,36 @@ export default function Dashboard() {
 
                 {/* Live Data Grid */}
                 <View className="flex-row flex-wrap gap-3 mb-6">
+                    {/* Altitude Card */}
+                    <Card className="w-[48%] items-center justify-center py-6 px-2">
+                        <Mountain size={28} color="#3B82F6" className="mb-2" />
+                        <Text className="text-2xl font-bold text-center" adjustsFontSizeToFit numberOfLines={1}>{altitude}</Text>
+                        <Text className="text-xs uppercase font-medium mt-1" variant="muted">Altitude (m)</Text>
+                    </Card>
+
                     {/* Speed Card */}
-                    <Card className="w-[48%] items-center justify-center py-6">
+                    <Card className="w-[48%] items-center justify-center py-6 px-2">
                         <Zap size={28} color="#F59E0B" className="mb-2" />
-                        <Text className="text-3xl font-bold">{speed}</Text>
-                        <Text className="text-xs uppercase font-medium" variant="muted">m/s</Text>
+                        <Text className="text-2xl font-bold text-center" adjustsFontSizeToFit numberOfLines={1}>{speed}</Text>
+                        <Text className="text-xs uppercase font-medium mt-1" variant="muted">Speed (m/s)</Text>
                     </Card>
 
                     {/* AQI Card */}
-                    <Card className="w-[48%] items-center justify-center py-6">
+                    <Card className="w-[48%] items-center justify-center py-6 px-2">
                         <Wind size={28} color="#10B981" className="mb-2" />
-                        <Text className="text-3xl font-bold">{aqi}</Text>
-                        <Text className="text-xs uppercase font-medium" variant="muted">AQI Index</Text>
+                        <Text className="text-xl font-bold text-center" adjustsFontSizeToFit numberOfLines={1}>{aqi}</Text>
+                        <Text className="text-xs uppercase font-medium mt-1" variant="muted">AQI Index</Text>
                     </Card>
 
-                    {/* Accident Status */}
-                    <Card className="w-[48%] items-center justify-center py-6">
-                        <AlertTriangle size={28} color="#3B82F6" className="mb-2" />
-                        <Text className="text-lg font-bold text-center capitalize">{userData.dashboard.accident}</Text>
-                        <Text className="text-xs mt-1" variant="muted">Status</Text>
-                    </Card>
-
-                    {/* Battery */}
-                    <Card className="w-[48%] items-center justify-center py-6">
-                        <Battery size={28} color="#10B981" className="mb-2" />
-                        <Text className="text-3xl font-bold">{userData.dashboard.battery}%</Text>
-                        <Text className="text-xs uppercase font-medium" variant="muted">Battery</Text>
+                    {/* Acceleration Card */}
+                    <Card className="w-[48%] items-center justify-center py-6 px-2">
+                        <Move3d size={28} color="#EF4444" className="mb-2" />
+                        <View className="flex-row gap-1 mt-1 w-full justify-center px-1">
+                            <Text className="text-xs font-bold text-gray-700 dark:text-gray-300" adjustsFontSizeToFit numberOfLines={1}>X:{accelX}</Text>
+                            <Text className="text-xs font-bold text-gray-700 dark:text-gray-300" adjustsFontSizeToFit numberOfLines={1}>Y:{accelY}</Text>
+                            <Text className="text-xs font-bold text-gray-700 dark:text-gray-300" adjustsFontSizeToFit numberOfLines={1}>Z:{accelZ}</Text>
+                        </View>
+                        <Text className="text-[10px] uppercase font-medium mt-1" variant="muted">Accel (g)</Text>
                     </Card>
                 </View>
 
@@ -190,8 +196,8 @@ export default function Dashboard() {
 
                 {/* Coordinates */}
                 <View className="items-center mt-2">
-                    <Text variant="muted" className="text-xs">
-                        Coordinates: {latitude}, {longitude}
+                    <Text variant="muted" className="text-[10px]">
+                        LAT: {latitude}, LON: {longitude}
                     </Text>
                 </View>
 
