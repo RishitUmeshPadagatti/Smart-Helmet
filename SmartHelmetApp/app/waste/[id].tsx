@@ -10,7 +10,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ShieldAlert, ChevronLeft, Trash2, MapPin, Clock, Share2, CheckCircle, AlertTriangle } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
-import { WasteIncident } from '../../lib/mockData';
+import { WasteIncident, currentUser } from '../../lib/mockData';
+import { sendReportEmail } from '../../lib/reportUtils';
 
 export default function WasteIncidentDetail() {
     const { id } = useLocalSearchParams();
@@ -69,18 +70,7 @@ export default function WasteIncidentDetail() {
 
     const handleShare = async () => {
         if (!incident) return;
-        try {
-            const subject = 'Waste Management Report';
-            const message = `Waste Management Report:\n\nType: ${incident.type}\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}\n\nDetection Result: ${incident.garbageDetected ? 'Garbage Detected' : 'Area is Clean'}\nConfidence: ${((incident.confidence || 0) * 100).toFixed(1)}%`;
-
-            await Share.share({
-                message: message,
-                title: subject,
-            });
-        } catch (error) {
-            console.error('Error sharing report:', error);
-            Alert.alert('Error', 'Failed to share report.');
-        }
+        await sendReportEmail('Garbage', incident, currentUser.name);
     };
 
     if (loading) {

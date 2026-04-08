@@ -11,7 +11,8 @@ import { AlertTriangle, ShieldAlert, PlayCircle, ChevronLeft, Trash2, MapPin, Cl
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
-import { TrafficIncident } from '../../lib/mockData';
+import { TrafficIncident, currentUser } from '../../lib/mockData';
+import { sendReportEmail } from '../../lib/reportUtils';
 import { API_BASE } from '../../config/api';
 
 const VIDEO_MAP: Record<string, any> = {
@@ -111,18 +112,7 @@ export default function TrafficIncidentDetail() {
 
     const handleShare = async () => {
         if (!incident) return;
-        try {
-            const subject = 'Traffic Violation Report';
-            const message = `Traffic Violation Report:\n\nType: ${incident.type}\nVehicle: MH14GE9533\nLocation: ${incident.location}\nTime: ${new Date(incident.timestamp).toLocaleString()}`;
-
-            await Share.share({
-                message: message,
-                title: subject,
-            });
-        } catch (error) {
-            console.error('Error sharing report:', error);
-            Alert.alert('Error', 'Failed to share report.');
-        }
+        await sendReportEmail('Traffic', incident, currentUser.name);
     };
 
     if (loading) {
