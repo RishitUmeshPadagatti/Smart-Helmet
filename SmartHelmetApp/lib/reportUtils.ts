@@ -12,6 +12,7 @@ interface BaseReportData {
     location: string;
     timestamp: string;
     photoUrl: string;
+    videoUrl?: string;
     reporterDetails?: string;
     metadata?: Record<string, string | number | boolean>;
 }
@@ -42,6 +43,7 @@ export const sendReportEmail = async (
                 location: trafficIncident.location,
                 timestamp: trafficIncident.timestamp,
                 photoUrl: trafficIncident.bestFrameUrl || trafficIncident.thumbnail,
+                videoUrl: trafficIncident.annotatedVideoUrl || undefined,
                 reporterDetails: reporterName || 'Smart Helmet User',
                 metadata: {
                     'Vehicle Number Plate': trafficIncident.numberPlate,
@@ -61,7 +63,7 @@ export const sendReportEmail = async (
                 description: `Waste issue detected: ${wasteIncident.type}`,
                 location: wasteIncident.location,
                 timestamp: wasteIncident.timestamp,
-                photoUrl: wasteIncident.annotatedImageUrl || wasteIncident.thumbnail,
+                photoUrl: wasteIncident.id === 'waste-1' ? wasteIncident.thumbnail : (wasteIncident.annotatedImageUrl || wasteIncident.thumbnail),
                 reporterDetails: reporterName || 'Smart Helmet User',
                 metadata: {
                     'Detection Result': wasteIncident.garbageDetected ? 'Garbage Detected' : 'Clean Area',

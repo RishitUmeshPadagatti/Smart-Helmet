@@ -163,6 +163,48 @@ app.use((req, res) => {
 });
 
 // ============================================
+// Webcam Stream Handling (WebSocket port 8080)
+// ============================================
+const { WebSocketServer } = require('ws');
+const { spawn } = require('child_process');
+const readline = require('readline');
+
+const wss = new WebSocketServer({ port: 8080 });
+console.log('✓ WebSocket server started on port 8080 for live webcam stream');
+
+const pythonScriptPath = path.join(__dirname, 'webcam.py');
+const pythonExecutable = path.join(__dirname, '..', 'venv', 'bin', 'python');
+let webcamProcess = spawn(pythonExecutable, [pythonScriptPath]);
+
+const rl = readline.createInterface({
+  input: webcamProcess.stdout,
+  terminal: false
+});
+
+rl.on('line', (line) => {
+  if (!line || wss.clients.size === 0) return;
+  try {
+    const frameBuffer = Buffer.from(line, 'base64');
+    wss.clients.forEach((client) => {
+      // readyState 1 is WebSocket.OPEN
+      if (client.readyState === 1) {
+        client.send(frameBuffer);
+      }
+    });
+  } catch (error) {
+    // Ignore occasional decoding errors
+  }
+});
+
+webcamProcess.stderr.on('data', (data) => {
+  console.error(`[Webcam Script Error]: ${data}`);
+});
+
+webcamProcess.on('close', (code) => {
+  console.log(`[Webcam Script] exited with code ${code}`);
+});
+
+// ============================================
 // Server Startup
 // ============================================
 const server = app.listen(PORT, () => {
@@ -178,20 +220,24 @@ const server = app.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
+function shutdownServers() {
+  console.log('Closing servers and ending child processes...');
+  if (webcamProcess) webcamProcess.kill();
+  wss.close();
   server.close(() => {
     console.log('HTTP server closed');
     process.exit(0);
   });
+}
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received');
+  shutdownServers();
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
-    process.exit(0);
-  });
+  console.log('SIGINT signal received');
+  shutdownServers();
 });
 
 module.exports = app;
