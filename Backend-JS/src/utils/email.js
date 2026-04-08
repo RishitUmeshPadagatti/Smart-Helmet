@@ -1,5 +1,6 @@
-// src/utils/email.js
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 
 const sendEmail = async (reportData) => {
   const {
@@ -147,21 +148,50 @@ const sendEmail = async (reportData) => {
     </div>
   `;
 
+  // Helper to resolve local paths for attachments from URLs
+  const getAttachmentSource = (url) => {
+    if (!url) return null;
+    
+    // If it's a local backend resource (contains /outputs/ or /results/)
+    // Try to find it on the local filesystem to avoid network issues/timeouts
+    if (url.includes('/outputs/') || url.includes('/results/')) {
+      const isOutput = url.includes('/outputs/');
+      const folder = isOutput ? 'outputs' : 'processed';
+      const delimiter = isOutput ? '/outputs/' : '/results/';
+      
+      const parts = url.split(delimiter);
+      if (parts.length > 1) {
+        const relativePath = parts[1];
+        const localPath = path.join(__dirname, '../..', folder, relativePath);
+        
+        if (fs.existsSync(localPath)) {
+          console.log(`[Email] Resolving URL to local file: ${localPath}`);
+          return { path: localPath };
+        }
+      }
+    }
+    
+    // Fallback to remote URL
+    return url.startsWith('http') ? { href: url } : null;
+  };
+
   const attachments = [];
 
-  // Safely attach the photo if it's a valid remote URL
-  if (photoUrl && photoUrl.startsWith('http')) {
+  // Safely attach the photo
+  const photoSource = getAttachmentSource(photoUrl);
+  if (photoSource) {
     attachments.push({
       filename: 'evidence_snapshot.jpg',
-      href: photoUrl,
+      ...photoSource
     });
   }
 
-  // Safely attach the video if it's provided as a URL
-  if (reportData.videoUrl && reportData.videoUrl.startsWith('http')) {
+  // Safely attach the video
+  const videoSource = getAttachmentSource(reportData.videoUrl);
+  if (videoSource) {
     attachments.push({
       filename: 'violation_video.mp4',
-      href: reportData.videoUrl,
+      ...videoSource
     });
   }
 

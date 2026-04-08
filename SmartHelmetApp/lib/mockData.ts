@@ -17,8 +17,8 @@ export const helmetData = {
 };
 
 export const locationData = {
-    latitude: 13.15127034396623,
-    longitude: 77.61000120674676,
+    latitude: 13.169152,
+    longitude: 77.533862,
     timestamp: new Date().toISOString(),
     speed: 42,
     direction: "NW",

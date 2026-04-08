@@ -22,6 +22,17 @@ export const sendReportEmail = async (
     incident: TrafficIncident | WasteIncident | PotholeIncident,
     reporterName?: string
 ) => {
+    // Helper to fix stale IPs in URLs
+    const sanitizeUrl = (url?: string) => {
+        if (!url) return '';
+        // If it's a local resource, ensure it use the current API_BASE
+        if (url.includes(':3000/outputs/') || url.includes(':3000/results/')) {
+            const path = url.split(':3000')[1];
+            return `${API_BASE}${path}`;
+        }
+        return url;
+    };
+
     try {
         let reportData: BaseReportData;
 
@@ -42,8 +53,8 @@ export const sendReportEmail = async (
                 description: `Violation detected: ${trafficIncident.type}`,
                 location: trafficIncident.location,
                 timestamp: trafficIncident.timestamp,
-                photoUrl: trafficIncident.bestFrameUrl || trafficIncident.thumbnail,
-                videoUrl: trafficIncident.annotatedVideoUrl || undefined,
+                photoUrl: sanitizeUrl(trafficIncident.bestFrameUrl || trafficIncident.thumbnail),
+                videoUrl: trafficIncident.annotatedVideoUrl ? sanitizeUrl(trafficIncident.annotatedVideoUrl) : undefined,
                 reporterDetails: reporterName || 'Smart Helmet User',
                 metadata: {
                     'Vehicle Number Plate': trafficIncident.numberPlate,
@@ -63,7 +74,7 @@ export const sendReportEmail = async (
                 description: `Waste issue detected: ${wasteIncident.type}`,
                 location: wasteIncident.location,
                 timestamp: wasteIncident.timestamp,
-                photoUrl: wasteIncident.id === 'waste-1' ? wasteIncident.thumbnail : (wasteIncident.annotatedImageUrl || wasteIncident.thumbnail),
+                photoUrl: wasteIncident.id === 'waste-1' ? wasteIncident.thumbnail : sanitizeUrl(wasteIncident.annotatedImageUrl || wasteIncident.thumbnail),
                 reporterDetails: reporterName || 'Smart Helmet User',
                 metadata: {
                     'Detection Result': wasteIncident.garbageDetected ? 'Garbage Detected' : 'Clean Area',
@@ -80,7 +91,7 @@ export const sendReportEmail = async (
                 description: 'Potential road hazard detected by smart helmet camera.',
                 location: potholeIncident.location,
                 timestamp: potholeIncident.timestamp,
-                photoUrl: potholeIncident.thumbnail, // Fallback if no specific proof URL
+                photoUrl: sanitizeUrl(potholeIncident.thumbnail), // Fallback if no specific proof URL
                 reporterDetails: reporterName || 'Smart Helmet User',
                 metadata: {
                     'Risk Level': potholeIncident.riskLevel,

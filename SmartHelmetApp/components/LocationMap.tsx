@@ -17,11 +17,11 @@ interface LocationMapProps {
 export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: LocationMapProps) {
     // Mock AQI points around the user's location
     const aqiPoints = [
-        { latitude: locationData.latitude + 0.002, longitude: locationData.longitude + 0.002, weight: 80 },
-        { latitude: locationData.latitude - 0.002, longitude: locationData.longitude - 0.002, weight: 60 },
-        { latitude: locationData.latitude + 0.003, longitude: locationData.longitude - 0.001, weight: 90 },
-        { latitude: locationData.latitude - 0.001, longitude: locationData.longitude + 0.003, weight: 40 },
-        { latitude: locationData.latitude, longitude: locationData.longitude, weight: 50 },
+        { latitude: locationData.latitude + 0.002, longitude: locationData.longitude + 0.002, weight: 300 },
+        { latitude: locationData.latitude - 0.002, longitude: locationData.longitude - 0.002, weight: 290 },
+        { latitude: locationData.latitude + 0.003, longitude: locationData.longitude - 0.001, weight: 310 },
+        { latitude: locationData.latitude - 0.001, longitude: locationData.longitude + 0.003, weight: 300 },
+        { latitude: locationData.latitude, longitude: locationData.longitude, weight: 330 }
     ];
 
     return (

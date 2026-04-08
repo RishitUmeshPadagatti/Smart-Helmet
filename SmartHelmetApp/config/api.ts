@@ -12,7 +12,7 @@
 // ============================================
 // ⚙️ UPDATE THIS WITH YOUR BACKEND SERVER IP
 // ============================================
-export const BACKEND_IP = '10.205.96.149';
+export const BACKEND_IP = '10.205.96.174';
 // export const BACKEND_IP = '10.28.203.109';  // Mohith Hotspot
 export const BACKEND_PORT = 3000;
 
