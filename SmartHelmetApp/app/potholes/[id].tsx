@@ -10,7 +10,8 @@ import { AlertTriangle, MapPin, Clock, Calendar, ChevronLeft, Trash2, Share2, Pl
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
-import { PotholeIncident } from '../../lib/mockData';
+import { PotholeIncident, currentUser } from '../../lib/mockData';
+import { sendReportEmail } from '../../lib/reportUtils';
 
 const VIDEO_MAP: Record<string, any> = {
     'video1': require('../../assets/videos/video1_impact.mp4'),
@@ -75,12 +76,7 @@ export default function PotholeDetail() {
 
     const handleShare = async () => {
         if (!incident) return;
-        try {
-            const message = `Pothole Detection Report:\nLocation: ${incident.location}\nRisk Level: ${incident.riskLevel}\nTime: ${new Date(incident.timestamp).toLocaleString()}`;
-            await Share.share({ message, title: 'Pothole Report' });
-        } catch (error) {
-            console.error('Error sharing report:', error);
-        }
+        await sendReportEmail('Pothole', incident, currentUser.name);
     };
 
     const handlePlayVideo = async () => {

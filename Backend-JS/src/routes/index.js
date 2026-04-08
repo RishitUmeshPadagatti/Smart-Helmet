@@ -7,6 +7,7 @@ const videoRouter = require('./video');
 const helmetRouter = require('./helmet');
 const videoAnalysisRouter = require('./videoAnalysis');
 const garbageRouter = require('./garbageRoutes');
+const reportRouter = require('./report');
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.use('/video', videoRouter);
 router.use('/helmet-detect', helmetRouter);
 router.use('/api', videoAnalysisRouter);
 router.use('/api', garbageRouter);
+router.use('/api', reportRouter);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -36,6 +38,7 @@ router.get('/', (req, res) => {
       garbage_image_check: 'POST /api/garbage-image-check',
       garbage_result: 'POST /api/garbage-result',
       helmet_detect: 'POST /helmet-detect/detect',
+      send_report: 'POST /api/send-report',
       health: 'GET /health'
     }
   });
