@@ -25,71 +25,145 @@ const sendEmail = async (reportData) => {
     },
   });
 
-  // Format metadata as HTML list items
+  // Format metadata as nice table rows
   const metadataHtml = Object.entries(metadata || {})
-    .map(([key, value]) => `<li><strong>${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</strong> ${value}</li>`)
-    .join('\n');
+    .map(([key, value]) => `
+      <tr>
+        <td style="padding: 6px 0; color: #15803d; font-size: 14px; font-weight: 600; width: 50%;">${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</td>
+        <td style="padding: 6px 0; color: #166534; font-size: 14px; text-align: right;">${value}</td>
+      </tr>
+    `).join('');
 
   // Add Number Plate to subject if available for Traffic reports
   const displaySubject = metadata?.['Vehicle Number Plate'] 
     ? `${subject} - ${metadata['Vehicle Number Plate']}` 
     : subject;
 
-  // Construct HTML body
+  // Construct incredibly premium HTML body
   const htmlBody = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-      <h2 style="color: #1e293b; border-bottom: 2px solid #3b82f6; padding-bottom: 12px; margin-top: 0;">${subject}</h2>
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; padding: 40px 20px;">
       
-      <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #f1f5f9;">
-        <h3 style="margin-top: 0; color: #334155; font-size: 16px;">🚨 Vital Information</h3>
-        <table style="width: 100%; border-collapse: collapse;">
-          <tr>
-            <td style="padding: 4px 0; color: #64748b; width: 40%;"><strong>Timestamp:</strong></td>
-            <td style="padding: 4px 0; color: #0f172a;">${new Date(timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
-          </tr>
-          ${metadata?.['Vehicle Number Plate'] ? `
-          <tr>
-            <td style="padding: 4px 0; color: #64748b;"><strong>Vehicle Number:</strong></td>
-            <td style="padding: 4px 0; color: #ef4444; font-weight: bold; font-size: 18px;">${metadata['Vehicle Number Plate']}</td>
-          </tr>
+      <div style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 32px 24px; text-align: center;">
+          <div style="display: inline-block; background-color: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; color: #ffffff; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px;">
+            Official Report
+          </div>
+          <h2 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; line-height: 1.3;">${subject}</h2>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 32px 24px;">
+          
+          <!-- Vital Info Block -->
+          <div style="background-color: #f1f5f9; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; width: 40%;">
+                  <span style="color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Time Detected</span>
+                </td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; text-align: right;">
+                  <span style="color: #0f172a; font-size: 14px; font-weight: 500;">${new Date(timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}</span>
+                </td>
+              </tr>
+              ${metadata?.['Vehicle Number Plate'] ? `
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+                  <span style="color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">License Plate</span>
+                </td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e2e8f0; text-align: right;">
+                  <div style="display: inline-block; background-color: #fef2f2; border: 1px solid #fca5a5; color: #ef4444; font-weight: 700; font-size: 15px; padding: 4px 10px; border-radius: 6px; letter-spacing: 1px;">
+                    ${metadata['Vehicle Number Plate']}
+                  </div>
+                </td>
+              </tr>
+              ` : ''}
+              <tr>
+                <td style="padding: 8px 0; padding-top: 12px;">
+                  <span style="color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Location</span>
+                </td>
+                <td style="padding: 8px 0; padding-top: 12px; text-align: right;">
+                  <span style="color: #0f172a; font-size: 14px; font-weight: 500;">${location}</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Report Details -->
+          <div style="margin-bottom: 28px;">
+            <h3 style="color: #0f172a; font-size: 16px; margin: 0 0 16px 0; font-weight: 700;">Event Breakdown</h3>
+            
+            <div style="border-left: 3px solid #cbd5e1; padding-left: 16px;">
+              <div style="margin-bottom: 12px;">
+                <div style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase;">Detection Type</div>
+                <div style="color: #334155; font-size: 15px; font-weight: 500; margin-top: 2px;">${type}</div>
+              </div>
+              
+              ${title ? `
+              <div style="margin-bottom: 12px;">
+                <div style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase;">Observation</div>
+                <div style="color: #334155; font-size: 15px; margin-top: 2px;">${title}</div>
+              </div>` : ''}
+              
+              ${description ? `
+              <div style="margin-bottom: 12px;">
+                <div style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase;">Context</div>
+                <div style="color: #334155; font-size: 15px; margin-top: 2px;">${description}</div>
+              </div>` : ''}
+              
+              ${reporterDetails ? `
+              <div>
+                <div style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase;">Reported By</div>
+                <div style="color: #334155; font-size: 15px; font-weight: 500; margin-top: 2px;">${reporterDetails}</div>
+              </div>` : ''}
+            </div>
+          </div>
+
+          <!-- AI Metadata -->
+          ${metadataHtml ? `
+          <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+              <h3 style="color: #166534; font-size: 16px; margin: 0; font-weight: 700;">🤖 AI Extracted Data</h3>
+            </div>
+            <table style="width: 100%; border-collapse: collapse;">
+              ${metadataHtml}
+            </table>
+          </div>
           ` : ''}
-          <tr>
-            <td style="padding: 4px 0; color: #64748b;"><strong>Location:</strong></td>
-            <td style="padding: 4px 0; color: #0f172a;">${location}</td>
-          </tr>
-        </table>
-      </div>
+          
+          <!-- Footer Note on Attachments -->
+          <div style="background-color: #eff6ff; border-radius: 8px; padding: 16px; text-align: center;">
+            <p style="color: #1e40af; margin: 0; font-size: 14px; font-weight: 500;">📎 Evidence files are securely attached to this email.</p>
+          </div>
 
-      <div style="margin-bottom: 24px;">
-        <h3 style="margin-top: 0; color: #334155; font-size: 16px;">📋 Report Details</h3>
-        <ul style="list-style: none; padding-left: 0; margin: 0;">
-          <li style="padding: 4px 0;"><strong>Detection Type:</strong> ${type}</li>
-          ${title ? `<li style="padding: 4px 0;"><strong>Observation:</strong> ${title}</li>` : ''}
-          ${description ? `<li style="padding: 4px 0;"><strong>Context:</strong> ${description}</li>` : ''}
-          ${reporterDetails ? `<li style="padding: 4px 0;"><strong>Reported By:</strong> ${reporterDetails}</li>` : ''}
-        </ul>
+        </div>
       </div>
-
-      ${metadataHtml ? `
-      <div style="background-color: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-        <h3 style="margin-top: 0; color: #1d4ed8; font-size: 16px;">🔍 AI Analysis Metadata</h3>
-        <ul style="list-style: none; padding-left: 0; margin: 0;">
-          ${metadataHtml}
-        </ul>
-      </div>
-      ` : ''}
-
-      <div style="margin-top: 24px; text-align: center;">
-        <h3 style="color: #334155; font-size: 16px; margin-bottom: 12px; text-align: left;">📸 Evidence Frame</h3>
-        <img src="${photoUrl}" alt="Violation Proof" style="width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
-        <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Direct Link: <a href="${photoUrl}" style="color: #3b82f6;">Open Evidence in Browser</a></p>
-      </div>
-
-      <div style="margin-top: 40px; border-top: 1px solid #f1f5f9; padding-top: 16px; font-size: 11px; color: #94a3b8; text-align: center;">
-        <p>This is a system-generated alert from the <strong>Smart Helmet Safety Network</strong>.</p>
+      
+      <div style="text-align: center; margin-top: 32px;">
+        <p style="color: #94a3b8; font-size: 12px; margin: 0;">Secured & Analyzed by</p>
+        <p style="color: #64748b; font-size: 14px; font-weight: 700; margin: 4px 0 0 0; text-transform: uppercase; letter-spacing: 1px;">Smart Helmet Safety Network</p>
       </div>
     </div>
   `;
+
+  const attachments = [];
+
+  // Safely attach the photo if it's a valid remote URL
+  if (photoUrl && photoUrl.startsWith('http')) {
+    attachments.push({
+      filename: 'evidence_snapshot.jpg',
+      href: photoUrl,
+    });
+  }
+
+  // Safely attach the video if it's provided as a URL
+  if (reportData.videoUrl && reportData.videoUrl.startsWith('http')) {
+    attachments.push({
+      filename: 'violation_video.mp4',
+      href: reportData.videoUrl,
+    });
+  }
 
   // Email options
   const mailOptions = {
@@ -97,6 +171,7 @@ const sendEmail = async (reportData) => {
     to: process.env.RECIPIENT_EMAIL,
     subject: displaySubject,
     html: htmlBody,
+    attachments
   };
 
   // Send email

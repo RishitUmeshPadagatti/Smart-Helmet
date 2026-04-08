@@ -103,14 +103,6 @@ export const wasteIncidents: WasteIncident[] = [
         timestamp: new Date(Date.now() - 3600000).toISOString(),
         severity: 'High',
         thumbnail: 'https://images.unsplash.com/photo-1589627762073-9aca94506fa1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-    },
-    {
-        id: 'waste-2',
-        type: 'Overflowing Bin',
-        location: 'North Street',
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-        severity: 'Medium',
-        thumbnail: 'https://media.istockphoto.com/id/1059301664/photo/waste-abandoned-on-the-hills.jpg?s=612x612&w=0&k=20&c=U7bjzDfcKOcCnedJG347vbFVEUei-V2JAq48sDnyq4I='
     }
 ];
 

@@ -11,12 +11,16 @@ router.post('/send-report', async (req, res) => {
       return res.status(400).json({ error: 'Missing report data or type' });
     }
 
-    const result = await sendEmail(reportData);
-    res.json({ success: true, messageId: result.messageId });
+    // Fire-and-forget: run email sending in background without blocking the response
+    sendEmail(reportData).catch(err => {
+      console.error('Background report sending failed:', err);
+    });
+
+    res.json({ success: true, message: 'Email sequence initiated' });
   } catch (error) {
-    console.error('Report sending failed:', error);
+    console.error('Report endpoint error:', error);
     res.status(500).json({ 
-      error: 'Failed to send report email', 
+      error: 'Failed to process report request', 
       message: error.message 
     });
   }

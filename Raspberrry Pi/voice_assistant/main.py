@@ -24,13 +24,25 @@ SAMPLE_RATE = 16000
 
 # Load Environment Variables from .env file
 load_dotenv(os.path.join(BASE_DIR, ".env"))
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-gemini_client = None
-if GEMINI_API_KEY:
-    gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-else:
-    print("Warning: GEMINI_API_KEY not found in .env file.")
+# Load up to 3 Gemini API keys for rotation on quota errors
+GEMINI_API_KEYS = [
+    key for key in [
+        os.getenv("GEMINI_API_KEY1"),
+        os.getenv("GEMINI_API_KEY2"),
+        os.getenv("GEMINI_API_KEY3"),
+    ] if key
+]
+if not GEMINI_API_KEYS:
+    print("Warning: No Gemini API keys found in .env file.")
+
+current_key_index = 0
+
+def get_gemini_client():
+    """Return a Gemini client for the currently active key."""
+    if not GEMINI_API_KEYS:
+        return None
+    return genai.Client(api_key=GEMINI_API_KEYS[current_key_index])
 
 # -----------------------------
 # ENSURE MODEL EXISTS
@@ -110,22 +122,41 @@ def speak(text):
 # GEMINI FUNCTION
 # -----------------------------
 def ask_gemini(text):
-    if not gemini_client:
+    global current_key_index
+    if not GEMINI_API_KEYS:
         return "My brain is disconnected because the Gemini API key is missing."
-    
-    try:
-        prompt = (f"You are MAX, a smart helmet assistant. The user said: '{text}'. "
-                  f"Provide a short, conversational response (no more than 2 sentences).")
-        response = gemini_client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt,
-        )
-        # Clean up any markdown
-        clean_response = response.text.replace("*", "").replace("\n", " ").strip()
-        return clean_response
-    except Exception as e:
-        print(f"Gemini Error: {e}")
-        return "I am having trouble connecting to my brain right now."
+
+    prompt = (f"You are MAX, a smart helmet assistant. The user said: '{text}'. "
+              f"Provide a short, conversational response (no more than 2 sentences).")
+
+    # Try each key in rotation; cycle on 429 quota errors
+    for attempt in range(len(GEMINI_API_KEYS)):
+        try:
+            client = get_gemini_client()
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+            )
+            # Clean up any markdown
+            clean_response = response.text.replace("*", "").replace("\n", " ").strip()
+            return clean_response
+        except Exception as e:
+            error_str = str(e)
+            if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+                reason = "quota exhausted"
+                next_index = (current_key_index + 1) % len(GEMINI_API_KEYS)
+                print(f"Gemini key {current_key_index + 1} {reason}. Switching to key {next_index + 1}...")
+                current_key_index = next_index
+            elif "503" in error_str or "UNAVAILABLE" in error_str:
+                reason = "unavailable (high demand)"
+                next_index = (current_key_index + 1) % len(GEMINI_API_KEYS)
+                print(f"Gemini key {current_key_index + 1} {reason}. Switching to key {next_index + 1}...")
+                current_key_index = next_index
+            else:
+                print(f"Gemini Error: {e}")
+                break
+
+    return "I am having trouble connecting to my brain right now."
 
 # -----------------------------
 # INTENT LOGIC
