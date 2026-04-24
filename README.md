@@ -45,7 +45,7 @@
 
 ## 🔭 Overview
 
-Smart Helmet is a comprehensive road safety platform built for **JSS Ideathon 2025**. It transforms a standard helmet into an intelligent safety device capable of:
+Smart Helmet is a comprehensive road safety platform that transforms a standard helmet into an intelligent safety device capable of:
 
 - **Real-time telemetry** — GPS, accelerometer, altitude, and speed monitoring via ESP32 sensors
 - **Fall/crash detection** — Automatic impact detection with emergency SOS alerts and AI-powered phone calls
@@ -694,20 +694,18 @@ curl -X POST http://localhost:3000/sensors/upload \
 
 ## 📄 License
 
-This project is licensed under the MIT License. Built for **JSS Ideathon 2025**.
+This project is licensed under the MIT License.
 
 ---
 
 ## 👥 Team
 
-**Team Lingesans**
-
-| Layer | Technologies |
-|-------|-------------|
-| **Hardware** | ESP32 + MPU6050 + MQ135 + MQ7 + GPS |
-| **Edge Computing** | Raspberry Pi + Camera + Voice Assistant |
-| **Backend** | Node.js + Express + YOLOv8 + TensorFlow + OCR |
-| **Frontend** | React Native + Expo SDK 54 + NativeWind |
+| Name | Role | LinkedIn | Email |
+|------|------|----------|-------|
+| **Rishit Umesh Padagatti** | Fullstack Developer | [rishit-padagatti](https://www.linkedin.com/in/rishit-padagatti/) | [rishitpadagatti@gmail.com](mailto:rishitpadagatti@gmail.com) |
+| **Mohith Kumar M** | Machine Learning & Cybersecurity | [mkm175](https://www.linkedin.com/in/mkm175/) | [1725mohith@gmail.com](1725mohith@gmail.com) |
+| **Preethi S V** | Frontend Developer, Documentation | [s-v-preethi](https://www.linkedin.com/in/s-v-preethi/) | [preethisv24@gmail.com](preethisv24@gmail.com) |
+| **Nallaapeta Sai Dhyan Santhosh** | Hardware, Robotics & Automation | [nallaapeta-sai-dhyan-santhosh-244354278](https://www.linkedin.com/in/nallaapeta-sai-dhyan-santhosh-244354278/) | [1js23ra009@jssateb.ac.in](mailto:1js23ra009@jssateb.ac.in) |
 
 ---
 
