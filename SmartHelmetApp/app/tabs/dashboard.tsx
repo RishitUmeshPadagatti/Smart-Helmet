@@ -6,25 +6,28 @@ import { Card } from '../../components/Card';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { SOSButton } from '../../components/SOSButton';
-import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera, Wind, Mountain, Move3d } from 'lucide-react-native';
+import { Battery, Zap, AlertTriangle, ShieldCheck, Music2, Map, Camera, Mountain, Move3d } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { AlertDialog } from '../../components/AlertDialog';
 import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
 import { piIpAddress, vapi_authorization_token } from '@/constants/values';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useRef } from 'react';
 
 export default function Dashboard() {
     const { userData, loading, error } = useUserData();
     const router = useRouter();
     const [altitude, setAltitude] = useState<string>("0");
     const [speed, setSpeed] = useState<string>("0");
-    const [aqi, setAqi] = useState<string>("...");
     const [accelX, setAccelX] = useState<string>("0.0");
     const [accelY, setAccelY] = useState<string>("0.0");
     const [accelZ, setAccelZ] = useState<string>("0.0");
     const [latitude, setLatitude] = useState<string>("...");
     const [longitude, setLongitude] = useState<string>("...");
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
+    const backendErrorShown = useRef(false);
 
     useFocusEffect(
         useCallback(() => {
@@ -38,7 +41,6 @@ export default function Dashboard() {
                     if (isActive && response.data) {
                         setAltitude(response.data.altitude?.toString() || "0");
                         setSpeed(response.data.speed?.toString() || "0");
-                        setAqi(response.data.aqi?.toString() || "...");
                         setAccelX(response.data.accelX?.toString() || "0");
                         setAccelY(response.data.accelY?.toString() || "0");
                         setAccelZ(response.data.accelZ?.toString() || "0");
@@ -47,6 +49,14 @@ export default function Dashboard() {
                     }
                 } catch (err) {
                     console.log("[Dashboard] Error fetching live data:", err);
+                    if (!backendErrorShown.current) {
+                        setAlertConfig({
+                            title: "Connection Error",
+                            message: "The backend server is not running. Please ensure the ESP32 bridge is active and reachable at " + piIpAddress
+                        });
+                        setIsAlertVisible(true);
+                        backendErrorShown.current = true;
+                    }
                 }
             };
 
@@ -169,12 +179,7 @@ export default function Dashboard() {
                         <Text className="text-xs uppercase font-medium mt-1" variant="muted">Speed (m/s)</Text>
                     </Card>
 
-                    {/* AQI Card */}
-                    <Card className="w-[48%] items-center justify-center py-6 px-2">
-                        <Wind size={28} color="#10B981" className="mb-2" />
-                        <Text className="text-xl font-bold text-center" adjustsFontSizeToFit numberOfLines={1}>{aqi}</Text>
-                        <Text className="text-xs uppercase font-medium mt-1" variant="muted">AQI Index</Text>
-                    </Card>
+
 
                     {/* Acceleration Card */}
                     <Card className="w-[48%] items-center justify-center py-6 px-2">
@@ -202,6 +207,13 @@ export default function Dashboard() {
                 </View>
 
             </ScrollView>
+
+            <AlertDialog
+                visible={isAlertVisible}
+                onClose={() => setIsAlertVisible(false)}
+                title={alertConfig.title}
+                message={alertConfig.message}
+            />
         </SafeAreaView>
     );
 }

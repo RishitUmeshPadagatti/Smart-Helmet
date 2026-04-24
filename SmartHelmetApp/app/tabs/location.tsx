@@ -1,4 +1,5 @@
-import { View, ScrollView, TouchableOpacity, useColorScheme } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { Text } from '../../components/Text';
 import { Navigation, Share2, ArrowLeft } from 'lucide-react-native';
 import { AddFamilyMemberModal } from '../../components/AddFamilyMemberModal';
@@ -17,7 +18,7 @@ import { useCallback } from 'react';
 
 export default function Location() {
     const router = useRouter();
-    const colorScheme = useColorScheme();
+    const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
     const [region, setRegion] = useState({
         latitude: locationData.latitude,
@@ -29,7 +30,6 @@ export default function Location() {
     const { familyMembers, addFamilyMember } = useUser();
     const [isAddFamilyVisible, setIsAddFamilyVisible] = useState(false);
     const [isViewingMyLocation, setIsViewingMyLocation] = useState(true);
-    const [showHeatmap, setShowHeatmap] = useState(false);
     const [speed, setSpeed] = useState<string>("0");
 
     useFocusEffect(
@@ -93,7 +93,6 @@ export default function Location() {
                     region={region}
                     setRegion={setRegion}
                     familyMembers={familyMembers}
-                    showHeatmap={showHeatmap}
                 />
 
                 {/* Overlay Stats */}
@@ -118,24 +117,7 @@ export default function Location() {
                     </View>
                 </View>
 
-                {/* AQI Toggle Button */}
-                <View className="absolute top-24 right-4">
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => setShowHeatmap(!showHeatmap)}
-                        className={cn(
-                            "p-3 rounded-2xl shadow-md shadow-black/10 elevation-3 backdrop-blur-md items-center justify-center",
-                            showHeatmap ? "bg-indigo-600" : "bg-white/90 dark:bg-gray-900/90"
-                        )}
-                    >
-                        <Text className={cn("text-[10px] font-bold uppercase", showHeatmap ? "text-white" : "text-indigo-600")}>
-                            AQI Heatmap
-                        </Text>
-                        <Text className={cn("text-xs font-bold", showHeatmap ? "text-white" : "text-gray-900 dark:text-white")}>
-                            {showHeatmap ? "ON" : "OFF"}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+
 
                 {/* Back Button - Shows when viewing family member's location */}
                 {!isViewingMyLocation && (

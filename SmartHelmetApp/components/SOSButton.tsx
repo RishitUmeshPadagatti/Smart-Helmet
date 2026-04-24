@@ -75,7 +75,7 @@ export function SOSButton({ onTrigger, className }: SOSButtonProps) {
                 <View className="items-center z-10 px-4">
                     <AlertTriangle size={32} color="white" className="mb-2" />
                     <Text className="text-white font-bold text-xl uppercase text-center">
-                        {isPressed ? "Keep Holding..." : "SOS Emergency"}
+                        {isPressed ? "Keep Holding..." : "Test SOS Emergency"}
                     </Text>
                     <Text className="text-white/90 text-sm mt-1 font-medium text-center">
                         {isPressed ? "Relaying Emergency Signal..." : "Hold for 3 seconds"}

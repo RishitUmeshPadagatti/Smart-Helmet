@@ -11,18 +11,11 @@ interface LocationMapProps {
     region: Region;
     setRegion: (region: Region) => void;
     familyMembers: FamilyMember[];
-    showHeatmap?: boolean;
+
 }
 
-export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: LocationMapProps) {
-    // Mock AQI points around the user's location
-    const aqiPoints = [
-        { latitude: locationData.latitude + 0.002, longitude: locationData.longitude + 0.002, weight: 300 },
-        { latitude: locationData.latitude - 0.002, longitude: locationData.longitude - 0.002, weight: 290 },
-        { latitude: locationData.latitude + 0.003, longitude: locationData.longitude - 0.001, weight: 310 },
-        { latitude: locationData.latitude - 0.001, longitude: locationData.longitude + 0.003, weight: 300 },
-        { latitude: locationData.latitude, longitude: locationData.longitude, weight: 330 }
-    ];
+export function LocationMap({ region, setRegion, familyMembers }: LocationMapProps) {
+
 
     return (
         <MapView
@@ -31,22 +24,7 @@ export function LocationMap({ region, setRegion, familyMembers, showHeatmap }: L
             onRegionChangeComplete={setRegion}
             provider={PROVIDER_DEFAULT}
         >
-            {showHeatmap && aqiPoints.map((point, index) => (
-                <Marker
-                    key={`aqi-point-${index}-${point.latitude}-${point.longitude}`}
-                    coordinate={{ latitude: point.latitude, longitude: point.longitude }}
-                >
-                    <View className={cn(
-                        "px-2 py-1 rounded-full border border-white shadow-sm",
-                        point.weight > 80 ? "bg-red-500" :
-                            point.weight > 60 ? "bg-orange-500" :
-                                point.weight > 40 ? "bg-yellow-500" :
-                                    "bg-green-500"
-                    )}>
-                        <Text className="text-[12px] font-bold text-white">{point.weight}</Text>
-                    </View>
-                </Marker>
-            ))}
+
 
             {familyMembers.map((member) => (
                 <Marker
