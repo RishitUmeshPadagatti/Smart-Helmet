@@ -166,14 +166,14 @@ export default function TrafficIncidentDetail() {
             >
                 {/* Video Playback - Annotated Video with Play Button */}
                 <SectionTitle title="Violation Video" className="mb-3" />
-                <Card className="mb-6 p-0 overflow-hidden h-56 bg-black justify-center items-center relative">
+                <Card className="mb-6 p-0 overflow-hidden bg-black justify-center items-center relative" style={{ height: 350 }}>
                     {incident.annotatedVideoUrl ? (
                         // Use annotated video from API with play button overlay
                         <>
                             <Video
                                 ref={(ref) => setVideoRef(ref)}
                                 source={{ uri: incident.annotatedVideoUrl }}
-                                className="w-full h-full"
+                                style={{ width: '100%', height: '100%' }}
                                 resizeMode={ResizeMode.CONTAIN}
                                 useNativeControls={false}
                                 shouldPlay={false}
@@ -197,7 +197,7 @@ export default function TrafficIncidentDetail() {
                             <Video
                                 ref={(ref) => setVideoRef(ref)}
                                 source={VIDEO_MAP[incident.videoPath]}
-                                className="w-full h-full"
+                                style={{ width: '100%', height: '100%' }}
                                 resizeMode={ResizeMode.CONTAIN}
                                 useNativeControls={false}
                                 shouldPlay={false}
@@ -224,10 +224,10 @@ export default function TrafficIncidentDetail() {
 
                 {/* Evidence Snapshot with Zoom */}
                 <SectionTitle title="Evidence Snapshot" className="mb-3" />
-                <Card className="mb-6 p-0 overflow-hidden border-gray-200 dark:border-gray-800">
+                <Card className="mb-6 p-0 overflow-hidden border-gray-200 dark:border-gray-800" style={{ height: 350, backgroundColor: '#f3f4f6' }}>
                     <ZoomableImage
                         source={{ uri: incident.bestFrameUrl || incident.thumbnail }}
-                        thumbnailHeight={192}
+                        thumbnailHeight={350}
                     />
                 </Card>
 

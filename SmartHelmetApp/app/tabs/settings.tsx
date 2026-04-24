@@ -10,13 +10,15 @@ import { Button } from '../../components/Button';
 import { useUser } from '../../context/UserContext';
 import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
-import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2 } from 'lucide-react-native';
+import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2, Moon, Sun, ChevronRight } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useColorScheme } from 'nativewind';
 
 export default function Settings() {
     const { familyMembers, helmetVolume, unitSystem, addFamilyMember, removeFamilyMember, updateHelmetVolume, updateUnitSystem } = useUser();
     const { userData, loading, error, updateUserData } = useUserData();
+    const { colorScheme, setColorScheme } = useColorScheme();
 
     const [autoSOS, setAutoSOSState] = useState(true);
     const [autoRecord, setAutoRecordState] = useState(true);
@@ -190,27 +192,51 @@ export default function Settings() {
 
                 {/* App Settings */}
                 <SectionTitle title="App Preferences" />
-                <View className="mb-6">
-                    <View className="flex-row items-center justify-between p-4 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-gray-800 rounded-t-xl">
+                <View className="bg-white dark:bg-neutral-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-6 shadow-md shadow-black/5 dark:shadow-none elevation-2">
+                    <View className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
                         <View className="flex-row items-center gap-3">
                             <Bell size={20} color="#666" />
                             <Text className="text-base font-medium">Notifications</Text>
                         </View>
                         <Switch value={notifications} onValueChange={setNotifications} trackColor={{ true: '#4F46E5' }} />
                     </View>
-                    <ListItem
-                        className="rounded-t-none border-t-0"
-                        icon={Zap}
-                        label="Units"
-                        value={unitSystem === 'metric' ? "Metric (km/h)" : "Imperial (mph)"}
+                    <View className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
+                        <View className="flex-row items-center gap-3">
+                            {colorScheme === 'dark' ? <Moon size={20} color="#666" /> : <Sun size={20} color="#666" />}
+                            <Text className="text-base font-medium">Dark Mode</Text>
+                        </View>
+                        <Switch
+                            value={colorScheme === 'dark'}
+                            onValueChange={(value) => setColorScheme(value ? 'dark' : 'light')}
+                            trackColor={{ true: '#4F46E5' }}
+                        />
+                    </View>
+                    <TouchableOpacity 
                         onPress={handleUnitsPress}
-                    />
-                    <ListItem
-                        icon={Volume2}
-                        label="Helmet Volume"
-                        value={`${helmetVolume ?? 80}%`}
+                        className="flex-row items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800"
+                    >
+                        <View className="flex-row items-center gap-3">
+                            <Zap size={20} color="#666" />
+                            <Text className="text-base font-medium">Units</Text>
+                        </View>
+                        <View className="flex-row items-center gap-2">
+                            <Text variant="muted">{unitSystem === 'metric' ? "Metric (km/h)" : "Imperial (mph)"}</Text>
+                            <ChevronRight size={16} color="#999" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
                         onPress={() => setIsVolumeModalVisible(true)}
-                    />
+                        className="flex-row items-center justify-between p-4"
+                    >
+                        <View className="flex-row items-center gap-3">
+                            <Volume2 size={20} color="#666" />
+                            <Text className="text-base font-medium">Helmet Volume</Text>
+                        </View>
+                        <View className="flex-row items-center gap-2">
+                            <Text variant="muted">{`${helmetVolume ?? 80}%`}</Text>
+                            <ChevronRight size={16} color="#999" />
+                        </View>
+                    </TouchableOpacity>
                 </View>
 
                 {/* Management */}

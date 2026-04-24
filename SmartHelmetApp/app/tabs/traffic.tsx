@@ -214,24 +214,26 @@ export default function Traffic() {
                                 key={incident.id}
                                 onPress={() => router.push(`/traffic/${incident.id}` as any)}
                             >
-                                <Card className="flex-row justify-between items-center p-0 overflow-hidden">
-                                    <View className="flex-row items-center flex-1">
-                                        <Image
-                                            source={{ uri: incident.thumbnail }}
-                                            className="w-20 h-20 bg-gray-200"
-                                        />
-                                        <View className="p-3 flex-1">
-                                            <Text className="font-bold text-base">{incident.type}</Text>
-                                            <Text className="text-xs" variant="muted">
+                                <Card className="flex-row items-center p-0 overflow-hidden mb-3 h-20 shadow-sm">
+                                    <Image
+                                        source={{ uri: incident.thumbnail }}
+                                        style={{ width: 80, height: 80 }}
+                                        className="w-20 h-20 bg-gray-200"
+                                        resizeMode="cover"
+                                    />
+                                    <View className="flex-1 px-3 flex-row justify-between items-center">
+                                        <View className="flex-1 mr-2">
+                                            <Text className="font-bold text-base" numberOfLines={1}>{incident.type}</Text>
+                                            <Text className="text-[10px]" variant="muted">
                                                 {formatDate(incident.timestamp)}
                                             </Text>
-                                            <Text className="text-xs mt-1" variant="muted">
+                                            <Text className="text-[10px] mt-0.5" variant="muted" numberOfLines={1}>
                                                 {incident.location}
                                             </Text>
                                         </View>
-                                    </View>
-                                    <View className="pr-4">
-                                        <ChevronRight size={16} color="#9CA3AF" />
+                                        <View className="items-end">
+                                            <ChevronRight size={14} color="#9CA3AF" />
+                                        </View>
                                     </View>
                                 </Card>
                             </TouchableOpacity>

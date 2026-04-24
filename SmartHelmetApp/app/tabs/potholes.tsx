@@ -169,21 +169,29 @@ export default function Potholes() {
                     <View className="gap-3">
                         {incidents.map((incident) => (
                             <TouchableOpacity key={incident.id} onPress={() => router.push(`/potholes/${incident.id}` as any)}>
-                                <Card className="flex-row justify-between items-center p-0 overflow-hidden">
-                                    <View className="flex-row items-center flex-1">
-                                        <Image
-                                            source={IMAGE_MAP[incident.thumbnail] || { uri: incident.thumbnail }}
-                                            className="w-20 h-20 bg-gray-200"
-                                        />
-                                        <View className="p-3 flex-1">
-                                            <Text className="font-bold text-base">Pothole Alert</Text>
-                                            <Text className="text-xs" variant="muted">{formatDate(incident.timestamp)}</Text>
-                                            <Text className="text-xs mt-1" variant="muted" numberOfLines={1}>{incident.location}</Text>
+                                <Card className="flex-row items-center p-0 overflow-hidden mb-3 h-20 shadow-sm">
+                                    <Image
+                                        source={IMAGE_MAP[incident.thumbnail] || { uri: incident.thumbnail }}
+                                        style={{ width: 80, height: 80 }}
+                                        className="w-20 h-20 bg-gray-200"
+                                        resizeMode="cover"
+                                    />
+                                    <View className="flex-1 px-3 flex-row justify-between items-center">
+                                        <View className="flex-1 mr-2">
+                                            <Text className="font-bold text-base" numberOfLines={1}>Pothole Alert</Text>
+                                            <View className="flex-row items-center gap-2">
+                                                <Text className="text-[10px]" variant="muted">{formatDate(incident.timestamp)}</Text>
+                                            </View>
+                                            <Text className="text-[10px] mt-0.5" variant="muted" numberOfLines={1}>
+                                                {incident.location}
+                                            </Text>
                                         </View>
-                                    </View>
-                                    <View className="items-end pr-4">
-                                        <Text className={`${getRiskColor(incident.riskLevel)} font-bold text-xs mb-1`}>{incident.riskLevel.toUpperCase()}</Text>
-                                        <ChevronRight size={16} color="#9CA3AF" />
+                                        <View className="items-end">
+                                            <Text className={`${getRiskColor(incident.riskLevel)} font-bold text-[10px] mb-1`}>
+                                                {incident.riskLevel.toUpperCase()}
+                                            </Text>
+                                            <ChevronRight size={14} color="#9CA3AF" />
+                                        </View>
                                     </View>
                                 </Card>
                             </TouchableOpacity>
