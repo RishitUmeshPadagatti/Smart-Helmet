@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator, Platform } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -82,19 +82,26 @@ export default function Traffic() {
 
             // Create form data for API
             const formData = new FormData();
-            formData.append('video', {
-                uri: videoAsset.uri,
-                type: 'video/mp4',
-                name: `video_${Date.now()}.mp4`,
-            } as any);
+            
+            if (Platform.OS === 'web') {
+                // For web, we need to fetch the blob from the URI
+                const response = await fetch(videoAsset.uri);
+                const blob = await response.blob();
+                formData.append('video', blob, `video_${Date.now()}.mp4`);
+            } else {
+                // For native (iOS/Android)
+                formData.append('video', {
+                    uri: videoAsset.uri,
+                    type: 'video/mp4',
+                    name: `video_${Date.now()}.mp4`,
+                } as any);
+            }
 
             // Call backend API
             const response = await fetch(`${API_BASE}/api/video-analysis`, {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                // No headers needed for FormData - fetch will set Content-Type with boundary automatically
             });
 
             const data = await response.json();
@@ -123,9 +130,11 @@ export default function Traffic() {
                 videoPath: data.video_id || 'uploaded',
                 // Store API response data
                 videoId: data.video_id,
-                annotatedVideoUrl: data.annotated_video ? `${API_BASE}${data.annotated_video}` : undefined,
+                annotatedVideoUrl: data.annotated_video 
+                    ? `${API_BASE}${data.annotated_video.startsWith('/') ? '' : '/'}${data.annotated_video}` 
+                    : undefined,
                 bestFrameUrl: data.helmet_detection?.best_frame 
-                    ? `${API_BASE}${data.helmet_detection.best_frame}` 
+                    ? `${API_BASE}${data.helmet_detection.best_frame.startsWith('/') ? '' : '/'}${data.helmet_detection.best_frame}` 
                     : undefined,
                 helmetViolationsCount: data.helmet_detection?.violations_count || 0,
                 vehicleThreatsCount: data.vehicle_threats?.threats_count || 0,

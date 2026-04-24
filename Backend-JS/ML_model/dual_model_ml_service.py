@@ -97,10 +97,32 @@ class DualModelMLService:
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             duration = total_frames / fps if fps > 0 else 0
             
-            # Video writer for annotated output
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            # Video writer for annotated output - Try multiple H.264 variants for web compatibility
             output_video_path = os.path.join(output_dir, 'annotated_violations.mp4')
+            
+            codecs = ['avc1', 'H264', 'X264', 'mp4v']
+            fourcc = None
+            for codec in codecs:
+                try:
+                    fcc = cv2.VideoWriter_fourcc(*codec)
+                    test_out = cv2.VideoWriter(os.path.join(output_dir, 'test.mp4'), fcc, 1, (width, height))
+                    if test_out.isOpened():
+                        test_out.release()
+                        fourcc = fcc
+                        print(f"[Video] Successfully initialized with codec: {codec}")
+                        break
+                except:
+                    continue
+            
+            if fourcc is None:
+                print("[Video] Warning: No preferred codec worked, falling back to mp4v", file=sys.stderr)
+                fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                
             out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+            
+            # Clean up test file if it exists
+            if os.path.exists(os.path.join(output_dir, 'test.mp4')):
+                os.remove(os.path.join(output_dir, 'test.mp4'))
             
             # Analysis storage
             helmet_violations = []

@@ -175,8 +175,10 @@ export default function TrafficIncidentDetail() {
                                 source={{ uri: incident.annotatedVideoUrl }}
                                 style={{ width: '100%', height: '100%' }}
                                 resizeMode={ResizeMode.CONTAIN}
-                                useNativeControls={false}
+                                useNativeControls={true}
                                 shouldPlay={false}
+                                posterSource={{ uri: incident.bestFrameUrl || incident.thumbnail }}
+                                usePoster={true}
                             />
                             {!isVideoPlaying && (
                                 <TouchableOpacity

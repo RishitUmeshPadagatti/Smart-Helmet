@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator, Platform } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
@@ -83,19 +83,26 @@ export default function Waste() {
 
             // Create form data for API
             const formData = new FormData();
-            formData.append('image', {
-                uri: imageAsset.uri,
-                type: 'image/jpeg',
-                name: `garbage_${Date.now()}.jpg`,
-            } as any);
+            
+            if (Platform.OS === 'web') {
+                // For web, we need to fetch the blob from the URI
+                const response = await fetch(imageAsset.uri);
+                const blob = await response.blob();
+                formData.append('image', blob, `garbage_${Date.now()}.jpg`);
+            } else {
+                // For native (iOS/Android)
+                formData.append('image', {
+                    uri: imageAsset.uri,
+                    type: 'image/jpeg',
+                    name: `garbage_${Date.now()}.jpg`,
+                } as any);
+            }
 
             // Call garbage detection API
             const response = await fetch(`${API_BASE}/api/garbage-image-check`, {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                // No headers needed for FormData - fetch will set Content-Type with boundary automatically
             });
 
             const data = await response.json();
