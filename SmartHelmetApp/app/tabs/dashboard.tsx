@@ -23,8 +23,8 @@ export default function Dashboard() {
     const [accelX, setAccelX] = useState<string>("0.0");
     const [accelY, setAccelY] = useState<string>("0.0");
     const [accelZ, setAccelZ] = useState<string>("0.0");
-    const [latitude, setLatitude] = useState<string>("...");
-    const [longitude, setLongitude] = useState<string>("...");
+    const [latitude, setLatitude] = useState<string>("0");
+    const [longitude, setLongitude] = useState<string>("0");
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
     const backendErrorShown = useRef(false);
@@ -39,13 +39,15 @@ export default function Dashboard() {
                 try {
                     const response = await axios.get(`http://${backendAddress}:3000/esp32-data`);
                     if (isActive && response.data) {
-                        setAltitude(response.data.altitude?.toString() || "0");
-                        setSpeed(response.data.speed?.toString() || "0");
-                        setAccelX(response.data.accelX?.toString() || "0");
-                        setAccelY(response.data.accelY?.toString() || "0");
-                        setAccelZ(response.data.accelZ?.toString() || "0");
-                        setLatitude(response.data.latitude?.toString() || "...");
-                        setLongitude(response.data.longitude?.toString() || "...");
+                        const formatVal = (val: any) => (!val || val === "null" || val === "undefined" || val === "...") ? "0" : val.toString();
+
+                        setAltitude(formatVal(response.data.altitude));
+                        setSpeed(formatVal(response.data.speed));
+                        setAccelX(formatVal(response.data.accelX));
+                        setAccelY(formatVal(response.data.accelY));
+                        setAccelZ(formatVal(response.data.accelZ));
+                        setLatitude(formatVal(response.data.latitude));
+                        setLongitude(formatVal(response.data.longitude));
                     }
                 } catch (err) {
                     console.log("[Dashboard] Error fetching live data:", err);
