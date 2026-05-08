@@ -5,7 +5,7 @@ import { useRouter, Stack } from 'expo-router';
 import { ChevronLeft, Camera, RefreshCw } from 'lucide-react-native';
 import { Header } from '../components/Header';
 import { Text } from '../components/Text';
-import { piIpAddress } from '@/constants/values';
+import { backendAddress } from '@/constants/values';
 
 export default function LiveCamScreen() {
     const [frame, setFrame] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export default function LiveCamScreen() {
     const connect = () => {
         setConnected(false);
         setError(null);
-        const ws = new WebSocket(`ws://${piIpAddress}:8080`);
+        const ws = new WebSocket(`ws://${backendAddress}:8080`);
 
         ws.binaryType = 'arraybuffer';
 
@@ -98,7 +98,7 @@ export default function LiveCamScreen() {
                             <>
                                 <ActivityIndicator color="#3b82f6" size="large" className="mb-4" />
                                 <Text className="text-gray-400">Establishing secure link...</Text>
-                                <Text className="text-xs text-gray-600 mt-2">{piIpAddress}:8080</Text>
+                                <Text className="text-xs text-gray-600 mt-2">{backendAddress}:8080</Text>
                             </>
                         )}
                     </View>

@@ -3,16 +3,52 @@ import { View, Modal, TouchableOpacity, Pressable, StyleSheet, Platform } from '
 import { Text } from './Text';
 import { Button } from './Button';
 
+interface AlertButton {
+    text: string;
+    onPress?: () => void;
+    style?: 'default' | 'cancel' | 'destructive';
+}
+
 interface AlertDialogProps {
     visible: boolean;
     onClose: () => void;
     title: string;
     message: string;
-    confirmText?: string;
-    onConfirm?: () => void;
+    buttons?: AlertButton[];
 }
 
-export function AlertDialog({ visible, onClose, title, message, confirmText = "Close", onConfirm }: AlertDialogProps) {
+export function AlertDialog({ visible, onClose, title, message, buttons }: AlertDialogProps) {
+    const handlePress = (onPress?: () => void) => {
+        if (onPress) onPress();
+        onClose();
+    };
+
+    const renderButtons = () => {
+        if (!buttons || buttons.length === 0) {
+            return (
+                <Button 
+                    title="Close" 
+                    onPress={onClose} 
+                    className="w-full h-12 rounded-2xl"
+                />
+            );
+        }
+
+        return (
+            <View className={buttons.length > 2 ? "flex-col gap-2" : "flex-row gap-3"}>
+                {buttons.map((btn, index) => (
+                    <Button 
+                        key={index}
+                        variant={btn.style === 'destructive' ? 'destructive' : btn.style === 'cancel' ? 'outline' : 'default'}
+                        title={btn.text} 
+                        onPress={() => handlePress(btn.onPress)} 
+                        className={buttons.length > 2 ? "w-full h-12 rounded-2xl" : "flex-1 h-12 rounded-2xl"}
+                    />
+                ))}
+            </View>
+        );
+    };
+
     return (
         <Modal
             animationType="fade"
@@ -27,23 +63,16 @@ export function AlertDialog({ visible, onClose, title, message, confirmText = "C
             >
                 <Pressable 
                     className="bg-white dark:bg-neutral-900 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800"
-                    onPress={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                    onPress={(e) => e.stopPropagation()} 
                 >
                     <View className="px-6 pt-6 pb-2">
                         <Text className="text-xl font-bold">{title}</Text>
                     </View>
-
-                    {/* Content */}
                     <View className="px-6 pb-6">
                         <Text variant="muted" className="text-base leading-6 mb-8">
                             {message}
                         </Text>
-                        
-                        <Button 
-                            title={confirmText} 
-                            onPress={onConfirm || onClose} 
-                            className="w-full h-12 rounded-2xl"
-                        />
+                        {renderButtons()}
                     </View>
                 </Pressable>
             </Pressable>

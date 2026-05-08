@@ -36,14 +36,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     AsyncStorage.getItem('unitSystem')
                 ]);
 
-                // For development: Always reset to mock data to ensure location updates are reflected
-                // if (storedFamily) {
-                //    setFamilyMembers(JSON.parse(storedFamily));
-                // } else {
-                const initialData = initialFamily.map(m => ({ ...m, speed: 0, status: 'Not Driving', rfid: '', mobileNumber: '' }));
-                setFamilyMembers(initialData);
-                await AsyncStorage.setItem('familyMembers', JSON.stringify(initialData));
-                //}
+                if (storedFamily) {
+                    const parsedFamily = JSON.parse(storedFamily);
+                    // Migration: Ensure Mom and Dad have RFID/Phone even if already stored
+                    const migratedFamily = parsedFamily.map((m: any) => {
+                        const original = initialFamily.find(o => o.name === m.name);
+                        if (original) {
+                            return { ...original, ...m, rfid: m.rfid || original.rfid, mobileNumber: m.mobileNumber || original.mobileNumber };
+                        }
+                        return m;
+                    });
+                    setFamilyMembers(migratedFamily);
+                } else {
+                    const initialData = initialFamily.map(m => ({ ...m, speed: 0, status: 'Not Driving' }));
+                    setFamilyMembers(initialData);
+                    await AsyncStorage.setItem('familyMembers', JSON.stringify(initialData));
+                }
 
                 if (storedVolume) {
                     setHelmetVolume(JSON.parse(storedVolume));

@@ -39,6 +39,7 @@ export default function TabLayout() {
         options={{
           title: 'Potholes',
           tabBarIcon: ({ color }) => <AlertTriangle size={24} color={color} />,
+          href: null,
         }}
       />
       <Tabs.Screen
@@ -46,6 +47,7 @@ export default function TabLayout() {
         options={{
           title: 'Impact',
           tabBarIcon: ({ color }) => <Activity size={24} color={color} />,
+          // href: null,
         }}
       />
       <Tabs.Screen

@@ -1,25 +1,33 @@
 import { View, ScrollView, TouchableOpacity, Dimensions, Alert, Image, ActivityIndicator, Platform } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { useColorScheme } from 'nativewind';
 import { Text } from '../../components/Text';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { SectionTitle } from '../../components/SectionTitle';
 import { Button } from '../../components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Camera, UploadCloud, ChevronRight, Calendar, Trash2 } from 'lucide-react-native';
+import { Camera, UploadCloud, ChevronRight, Calendar, Trash2, MapPin } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { wasteIncidents as INITIAL_INCIDENTS, WasteIncident } from '../../lib/mockData';
 import { API_BASE } from '../../config/api';
+import { GarbageMap } from '../../components/GarbageMap';
+import { AlertDialog } from '../../components/AlertDialog';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function Waste() {
+    const { colorScheme } = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
     const router = useRouter();
     const [incidents, setIncidents] = useState<WasteIncident[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
+    const [showMap, setShowMap] = useState(false);
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{title: string, message: string, buttons?: any[]}>({ title: "", message: "" });
 
     useEffect(() => {
         loadIncidents();
@@ -63,7 +71,12 @@ export default function Waste() {
         try {
             const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (!permission.granted) {
-                Alert.alert('Permission needed', 'Please allow media library access to select an image.');
+                setAlertConfig({
+                    title: "Permission needed",
+                    message: "Please allow media library access to select an image.",
+                    buttons: [{ text: "OK" }]
+                });
+                setIsAlertVisible(true);
                 return;
             }
 
@@ -140,7 +153,12 @@ export default function Waste() {
         } catch (error: any) {
             console.error('Upload failed:', error);
             setUploading(false);
-            Alert.alert('Error', error.message || 'Failed to analyze image. Please try again.');
+            setAlertConfig({
+                title: "Error",
+                message: error.message || 'Failed to analyze image. Please try again.',
+                buttons: [{ text: "OK" }]
+            });
+            setIsAlertVisible(true);
         }
     };
 
@@ -162,82 +180,104 @@ export default function Waste() {
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50 dark:bg-black" edges={['top']}>
-            <Header title="Waste Management" />
+            {!showMap ? (
+                <>
+                    <Header title="Waste Management" />
 
-            <ScrollView
-                className="flex-1 px-4 py-4"
-                contentContainerStyle={{ paddingBottom: 20 }}
-                showsVerticalScrollIndicator={false}
-            >
-                {/* Upload Section */}
-                <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
-                    <View className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 items-center justify-center mb-4">
-                        {uploading ? (
-                            <ActivityIndicator size="large" color="#10B981" />
+                    <ScrollView
+                        className="flex-1 px-4 py-4"
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {/* Upload Section */}
+                        <Card className="mb-8 p-6 items-center border-dashed border-2 border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-neutral-900">
+                            <View className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 items-center justify-center mb-4">
+                                {uploading ? (
+                                    <ActivityIndicator size="large" color="#10B981" />
+                                ) : (
+                                    <UploadCloud size={32} color="#10B981" />
+                                )}
+                            </View>
+                            <Text className="text-lg font-bold mb-1">
+                                {uploading ? 'Analyzing Image...' : 'Upload Waste Image'}
+                            </Text>
+                            <Text className="text-center text-sm mb-4" variant="muted">
+                                {uploading 
+                                    ? 'Detecting garbage in the image...'
+                                    : 'Upload an image to detect garbage and waste.'}
+                            </Text>
+                            <Button
+                                title={uploading ? 'Processing...' : 'Upload Image'}
+                                onPress={handleUpload}
+                                className="w-full"
+                                disabled={uploading}
+                            />
+                        </Card>
+
+                        {/* History List */}
+                        <SectionTitle title="Recent Reports" />
+                        {loading ? (
+                            <View className="py-8 items-center">
+                                <Text variant="muted">Loading reports...</Text>
+                            </View>
+                        ) : incidents.length === 0 ? (
+                            <View className="py-8 items-center">
+                                <Text variant="muted">No reports recorded yet</Text>
+                            </View>
                         ) : (
-                            <UploadCloud size={32} color="#10B981" />
+                            <View className="gap-3">
+                                {incidents.map((incident) => (
+                                    <TouchableOpacity
+                                        key={incident.id}
+                                        onPress={() => router.push(`/waste/${incident.id}` as any)}
+                                    >
+                                        <Card className="flex-row items-center p-0 overflow-hidden mb-3 h-20 shadow-sm">
+                                            <Image
+                                                source={{ uri: incident.thumbnail }}
+                                                style={{ width: 80, height: 80 }}
+                                                className="w-20 h-20 bg-gray-200"
+                                                resizeMode="cover"
+                                            />
+                                            <View className="flex-1 px-3 flex-row justify-between items-center">
+                                                <View className="flex-1 mr-2">
+                                                    <Text className="font-bold text-base" numberOfLines={1}>{incident.type}</Text>
+                                                    <Text className="text-[10px]" variant="muted">
+                                                        {formatDate(incident.timestamp)}
+                                                    </Text>
+                                                    <Text className="text-[10px] mt-0.5" variant="muted" numberOfLines={1}>
+                                                        {incident.location}
+                                                    </Text>
+                                                </View>
+                                                <View className="items-end">
+                                                    <ChevronRight size={14} color="#9CA3AF" />
+                                                </View>
+                                            </View>
+                                        </Card>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
                         )}
-                    </View>
-                    <Text className="text-lg font-bold mb-1">
-                        {uploading ? 'Analyzing Image...' : 'Upload Waste Image'}
-                    </Text>
-                    <Text className="text-center text-sm mb-4" variant="muted">
-                        {uploading 
-                            ? 'Detecting garbage in the image...'
-                            : 'Upload an image to detect garbage and waste.'}
-                    </Text>
-                    <Button
-                        title={uploading ? 'Processing...' : 'Upload Image'}
-                        onPress={handleUpload}
-                        className="w-full"
-                        disabled={uploading}
-                    />
-                </Card>
-
-                {/* History List */}
-                <SectionTitle title="Recent Reports" />
-                {loading ? (
-                    <View className="py-8 items-center">
-                        <Text variant="muted">Loading reports...</Text>
-                    </View>
-                ) : incidents.length === 0 ? (
-                    <View className="py-8 items-center">
-                        <Text variant="muted">No reports recorded yet</Text>
-                    </View>
-                ) : (
-                    <View className="gap-3">
-                        {incidents.map((incident) => (
-                            <TouchableOpacity
-                                key={incident.id}
-                                onPress={() => router.push(`/waste/${incident.id}` as any)}
-                            >
-                                <Card className="flex-row items-center p-0 overflow-hidden mb-3 h-20 shadow-sm">
-                                    <Image
-                                        source={{ uri: incident.thumbnail }}
-                                        style={{ width: 80, height: 80 }}
-                                        className="w-20 h-20 bg-gray-200"
-                                        resizeMode="cover"
-                                    />
-                                    <View className="flex-1 px-3 flex-row justify-between items-center">
-                                        <View className="flex-1 mr-2">
-                                            <Text className="font-bold text-base" numberOfLines={1}>{incident.type}</Text>
-                                            <Text className="text-[10px]" variant="muted">
-                                                {formatDate(incident.timestamp)}
-                                            </Text>
-                                            <Text className="text-[10px] mt-0.5" variant="muted" numberOfLines={1}>
-                                                {incident.location}
-                                            </Text>
-                                        </View>
-                                        <View className="items-end">
-                                            <ChevronRight size={14} color="#9CA3AF" />
-                                        </View>
-                                    </View>
-                                </Card>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
-            </ScrollView>
+                        
+                        {/* Reports Button */}
+                        <Button 
+                            onPress={() => setShowMap(true)}
+                            className="mt-6 mb-10"
+                        >
+                            <MapPin size={20} color={isDarkMode ? 'black' : 'white'} className="mr-2" />
+                            <Text className="text-white font-medium dark:text-black">Garbage Map</Text>
+                        </Button>
+                    </ScrollView>
+                </>
+            ) : (
+                <GarbageMap onBack={() => setShowMap(false)} />
+            )}
+            <AlertDialog
+                visible={isAlertVisible}
+                onClose={() => setIsAlertVisible(false)}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                buttons={alertConfig.buttons}
+            />
         </SafeAreaView>
     );
 }

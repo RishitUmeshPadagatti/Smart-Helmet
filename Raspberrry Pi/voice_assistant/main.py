@@ -8,6 +8,10 @@ import platform
 import re
 import urllib.request
 import zipfile
+import threading
+import sys
+import termios
+import tty
 from vosk import Model, KaldiRecognizer
 from google import genai
 from dotenv import load_dotenv
@@ -31,6 +35,8 @@ GEMINI_API_KEYS = [
         os.getenv("GEMINI_API_KEY1"),
         os.getenv("GEMINI_API_KEY2"),
         os.getenv("GEMINI_API_KEY3"),
+        os.getenv("GEMINI_API_KEY4"),
+        os.getenv("GEMINI_API_KEY5"),
     ] if key
 ]
 if not GEMINI_API_KEYS:
@@ -86,6 +92,36 @@ SYS_PLATFORM = platform.system()
 VLC_CMD = "/Applications/VLC.app/Contents/MacOS/VLC" if SYS_PLATFORM == "Darwin" else "cvlc"
 
 IS_SPEAKING = False
+SKIP_EVENT = threading.Event()
+SPEECH_PROCESS = None
+
+def keyboard_listener():
+    """Listens for 's' key press to skip current process."""
+    global SPEECH_PROCESS
+    fd = sys.stdin.fileno()
+    while True:
+        # Save terminal settings
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setcbreak(fd)
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        
+        if ch.lower() == 's':
+            print("\r⏭️  Skipping...")
+            SKIP_EVENT.set()
+            if SPEECH_PROCESS is not None:
+                try:
+                    SPEECH_PROCESS.terminate()
+                except:
+                    pass
+        elif ch.lower() == 'q': # Optional: allow quitting with 'q'
+            print("\rQuitting...")
+            os._exit(0)
+
+# Start keyboard listener in background
+threading.Thread(target=keyboard_listener, daemon=True).start()
 
 def audio_callback(indata, frames, time_info, status):
     if status:
@@ -97,26 +133,34 @@ def audio_callback(indata, frames, time_info, status):
 # SPEAK FUNCTION
 # -----------------------------
 def speak(text):
-    global IS_SPEAKING
+    global IS_SPEAKING, SPEECH_PROCESS
+    # Don't speak if skip was requested
+    if SKIP_EVENT.is_set():
+        return
+
     IS_SPEAKING = True
+    print(f"\r🤖 Assistant: {text}")
     
-    print(f"🤖 Assistant: {text}")
-    # Sanitize text to remove quotes, backticks, and other dangerous shell characters
+    # Sanitize text
     clean_text = re.sub(r'[^a-zA-Z0-9 \.,\?!:\-]', '', text)
     
-    if SYS_PLATFORM == "Darwin":
-        os.system(f'say "{clean_text}"')
-    else:
-        # Use espeak on Raspberry Pi / Linux
-        os.system(f'espeak "{clean_text}" 2>/dev/null')
-        
-    # Prevent audio feedback loop by clearing the mic queue 
-    with q.mutex:
-        q.queue.clear()
-    # Reset KaldiRecognizer to clear out any half-heard phrases
-    rec.Reset()
-    
-    IS_SPEAKING = False
+    try:
+        if SYS_PLATFORM == "Darwin":
+            cmd = ["say", clean_text]
+        else:
+            cmd = ["espeak", clean_text]
+            
+        SPEECH_PROCESS = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        SPEECH_PROCESS.wait()
+    except Exception as e:
+        print(f"Speech error: {e}")
+    finally:
+        SPEECH_PROCESS = None
+        # Prevent audio feedback loop
+        with q.mutex:
+            q.queue.clear()
+        rec.Reset()
+        IS_SPEAKING = False
 
 # -----------------------------
 # GEMINI FUNCTION
@@ -131,6 +175,9 @@ def ask_gemini(text):
 
     # Try each key in rotation; cycle on 429 quota errors
     for attempt in range(len(GEMINI_API_KEYS)):
+        if SKIP_EVENT.is_set():
+            return None
+
         try:
             client = get_gemini_client()
             response = client.models.generate_content(
@@ -141,19 +188,22 @@ def ask_gemini(text):
             clean_response = response.text.replace("*", "").replace("\n", " ").strip()
             return clean_response
         except Exception as e:
+            if SKIP_EVENT.is_set():
+                return None
+                
             error_str = str(e)
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
                 reason = "quota exhausted"
                 next_index = (current_key_index + 1) % len(GEMINI_API_KEYS)
-                print(f"Gemini key {current_key_index + 1} {reason}. Switching to key {next_index + 1}...")
+                print(f"\rGemini key {current_key_index + 1} {reason}. Switching to key {next_index + 1}...")
                 current_key_index = next_index
             elif "503" in error_str or "UNAVAILABLE" in error_str:
                 reason = "unavailable (high demand)"
                 next_index = (current_key_index + 1) % len(GEMINI_API_KEYS)
-                print(f"Gemini key {current_key_index + 1} {reason}. Switching to key {next_index + 1}...")
+                print(f"\rGemini key {current_key_index + 1} {reason}. Switching to key {next_index + 1}...")
                 current_key_index = next_index
             else:
-                print(f"Gemini Error: {e}")
+                print(f"\rGemini Error: {e}")
                 break
 
     return "I am having trouble connecting to my brain right now."
@@ -218,9 +268,13 @@ def handle_intent(text):
         pass
     else:
         # Fallback to Gemini API
-        print("🔍 Asking Gemini...")
+        if SKIP_EVENT.is_set(): return
+        
+        print("\r🔍 Asking Gemini...")
         gemini_response = ask_gemini(text)
-        if gemini_response:
+        
+        # Check if user skipped while Gemini was thinking
+        if not SKIP_EVENT.is_set() and gemini_response:
              speak(gemini_response)
 
 # -----------------------------
@@ -244,11 +298,12 @@ if __name__ == "__main__":
                     spoken_text = result.get("text", "")
                     if spoken_text:
                         print(f"🗣️  You said: {spoken_text}")
+                        SKIP_EVENT.clear() # Reset skip flag for new interaction
                         handle_intent(spoken_text)
-                        print("-" * 50 + "\n")
+                        print("-" * 50 + "\r\n")
     except KeyboardInterrupt:
-        print("\nExiting...")
+        print("\r\nExiting...")
     except Exception as e:
         import traceback
         traceback.print_exc()
-        print(f"Critical Error: {e}")
+        print(f"\rCritical Error: {e}")

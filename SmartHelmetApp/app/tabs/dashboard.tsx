@@ -12,7 +12,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { AlertDialog } from '../../components/AlertDialog';
 import useUserData from '../hooks/useUserData';
 import { currentUser } from '../../lib/mockData';
-import { piIpAddress, vapi_authorization_token } from '@/constants/values';
+import { backendAddress, vapi_authorization_token } from '@/constants/values';
 import { useCallback, useState, useRef } from 'react';
 
 export default function Dashboard() {
@@ -37,7 +37,7 @@ export default function Dashboard() {
                 if (!isActive) return;
 
                 try {
-                    const response = await axios.get(`http://${piIpAddress}:3000/esp32-data`);
+                    const response = await axios.get(`http://${backendAddress}:3000/esp32-data`);
                     if (isActive && response.data) {
                         setAltitude(response.data.altitude?.toString() || "0");
                         setSpeed(response.data.speed?.toString() || "0");
@@ -52,7 +52,7 @@ export default function Dashboard() {
                     if (!backendErrorShown.current) {
                         setAlertConfig({
                             title: "Connection Error",
-                            message: "The backend server is not running. Please ensure the ESP32 bridge is active and reachable at " + piIpAddress
+                            message: "The backend server is not running. Please ensure the ESP32 bridge is active and reachable at " + backendAddress
                         });
                         setIsAlertVisible(true);
                         backendErrorShown.current = true;
@@ -213,6 +213,7 @@ export default function Dashboard() {
                 onClose={() => setIsAlertVisible(false)}
                 title={alertConfig.title}
                 message={alertConfig.message}
+                buttons={[{ text: "Close", onPress: () => setIsAlertVisible(false) }]}
             />
         </SafeAreaView>
     );

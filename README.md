@@ -324,7 +324,7 @@ cd Smart-Helmet/SmartHelmetApp
 npm install
 
 # Configure backend IP address
-# Edit constants/values.ts and set piIpAddress to your backend's IP
+# Edit constants/values.ts and set backendAddress to your backend's IP
 
 # Start the Expo dev server
 npm start
@@ -598,7 +598,7 @@ GEMINI_API_KEY3=your_gemini_api_key_3
 
 Configure the backend IP address in the constants file:
 ```typescript
-export const piIpAddress = "192.168.1.157";   // Your backend machine IP
+export const backendAddress = "192.168.1.157";   // Your backend machine IP
 ```
 
 ---
@@ -668,7 +668,7 @@ curl -X POST http://localhost:3000/sensors/upload \
 
 | Problem | Solution |
 |---------|----------|
-| `AxiosError: Network Error` on Dashboard | Ensure backend is running and `piIpAddress` is correct |
+| `AxiosError: Network Error` on Dashboard | Ensure backend is running and `backendAddress` is correct |
 | Map not showing on web | Leaflet CSS may not be loaded; check `LocationMap.web.tsx` |
 | Camera feed disconnects | Check WebSocket port 8080 is open; verify same network |
 

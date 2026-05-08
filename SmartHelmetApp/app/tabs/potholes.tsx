@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { potholeIncidents as INITIAL_INCIDENTS, PotholeIncident } from '../../lib/mockData';
+import { AlertDialog } from '../../components/AlertDialog';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -23,6 +24,8 @@ export default function Potholes() {
     const [incidents, setIncidents] = useState<PotholeIncident[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{title: string, message: string, buttons?: any[]}>({ title: "", message: "" });
 
     useEffect(() => {
         loadIncidents();
@@ -63,7 +66,12 @@ export default function Potholes() {
         try {
             const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (!permission.granted) {
-                Alert.alert('Permission needed', 'Please allow media library access to select a video.');
+                setAlertConfig({
+                    title: "Permission needed",
+                    message: "Please allow media library access to select a video.",
+                    buttons: [{ text: "OK" }]
+                });
+                setIsAlertVisible(true);
                 return;
             }
 
@@ -98,7 +106,12 @@ export default function Potholes() {
         } catch (error) {
             console.error('Upload failed:', error);
             setIsAnalyzing(false);
-            Alert.alert('Error', 'Failed to add the selected video.');
+            setAlertConfig({
+                title: "Error",
+                message: 'Failed to add the selected video.',
+                buttons: [{ text: "OK" }]
+            });
+            setIsAlertVisible(true);
         }
     };
 
@@ -199,6 +212,13 @@ export default function Potholes() {
                     </View>
                 )}
             </ScrollView>
+            <AlertDialog
+                visible={isAlertVisible}
+                onClose={() => setIsAlertVisible(false)}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                buttons={alertConfig.buttons}
+            />
         </SafeAreaView>
     );
 }

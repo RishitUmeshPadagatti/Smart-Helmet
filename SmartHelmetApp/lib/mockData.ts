@@ -1,5 +1,5 @@
 export const currentUser = {
-    name: "Mohith",
+    name: "Kumar",
     rfid: "RFID12345",
     status: "active", // green dot
     avatarUrl: "https://github.com/shadcn.png", // dummy
@@ -17,8 +17,8 @@ export const helmetData = {
 };
 
 export const locationData = {
-    latitude: 13.169152,
-    longitude: 77.533862,
+    latitude: 12.8865647,
+    longitude: 77.4472367,
     timestamp: new Date().toISOString(),
     speed: 42,
     direction: "NW",
@@ -29,13 +29,19 @@ export const familyMembers = [
         id: 1, name: "Mom", location: {
             lat: 12.9362778,
             lng: 77.5182222
-        }, status: "Not Driving"
+        }, 
+        status: "Not Driving",
+        rfid: "RFID98765",
+        mobileNumber: "+91 98860 12345"
     },
     {
         id: 2, name: "Dad", location: {
             lat: 13.0115833,
             lng: 77.5544722
-        }, status: "Not Driving"
+        }, 
+        status: "Not Driving",
+        rfid: "RFID54321",
+        mobileNumber: "+91 94480 54321"
     },
 ];
 

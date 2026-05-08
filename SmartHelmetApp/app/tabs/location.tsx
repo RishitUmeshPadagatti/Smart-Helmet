@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { LocationMap } from '../../components/LocationMap';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { piIpAddress } from '@/constants/values';
+import { backendAddress } from '@/constants/values';
 import axios from 'axios';
 import { useCallback } from 'react';
 
@@ -39,14 +39,14 @@ export default function Location() {
             const fetchSpeed = async () => {
                 if (!isActive) return;
                 try {
-                    const response = await axios.get(`http://${piIpAddress}:3000/speed`);
+                    const response = await axios.get(`http://${backendAddress}:3000/speed`);
                     if (isActive) setSpeed(response.data.toString());
                 } catch (err) { }
             };
 
             fetchSpeed();
             const interval = setInterval(fetchSpeed, 2000);
-            
+
             return () => {
                 isActive = false;
                 clearInterval(interval);
@@ -189,7 +189,10 @@ export default function Location() {
                 onAdd={(member) => {
                     addFamilyMember({
                         ...member,
-                        location: { lat: 0, lng: 0 } // Default location
+                        location: {
+                            lat: locationData.latitude + (Math.random() - 0.5) * 0.01,
+                            lng: locationData.longitude + (Math.random() - 0.5) * 0.01
+                        }
                     });
                 }}
             />

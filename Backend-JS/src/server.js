@@ -45,9 +45,10 @@ app.use('/', routes);
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 
+
 let latestEsp32Data = {
-  latitude: '...',
-  longitude: '...',
+  latitude: '12.8865647',
+  longitude: '77.4472367',
   altitude: '0.00',
   speed: '0.00',
   accelX: '0.00',
@@ -121,10 +122,46 @@ async function startSerialListener() {
     console.error('[SerialPort] List error:', err);
   }
 }
-startSerialListener();
+async function startGetRequestListener() {
+  const DATA_SOURCE_URL = "http://10.68.94.58:3000/data";
+
+  console.log(`[Data Source] Starting GET request listener: ${DATA_SOURCE_URL}`);
+  setInterval(async () => {
+    try {
+      const response = await fetch(DATA_SOURCE_URL);
+      if (response.ok) {
+        const data = await response.json();
+        latestEsp32Data = {
+          latitude: String(data.latitude),
+          longitude: String(data.longitude),
+          altitude: String(data.altitude),
+          speed: String(data.speed),
+          accelX: String(data.accelX),
+          accelY: String(data.accelY),
+          accelZ: String(data.accelZ),
+          aqi: String(data.aqi),
+          fall: String(data.fall)
+        };
+        console.log('[Data Source] Updated latestEsp32Data:', JSON.stringify(latestEsp32Data));
+      }
+    } catch (error) {
+      // Silently fail to avoid console clutter, or uncomment for debugging
+      // console.error('[Data Source] GET Request failed:', error.message);
+    }
+  }, 2000);
+}
+
+// ============================================
+// Data Source Activation (Comment/Uncomment to switch)
+// ============================================
+// startSerialListener();
+startGetRequestListener();
 
 // Endpoints for Dashboard
-app.get('/esp32-data', (req, res) => res.json(latestEsp32Data));
+app.get('/esp32-data', (req, res) => {
+  console.log('\n[API] Sending data to dashboard:', JSON.stringify(latestEsp32Data));
+  res.json(latestEsp32Data);
+});
 app.get('/altitude', (req, res) => res.send(latestEsp32Data.altitude));
 app.get('/speed', (req, res) => res.send(latestEsp32Data.speed));
 app.get('/aqi', (req, res) => res.send(latestEsp32Data.aqi));

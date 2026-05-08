@@ -9,9 +9,10 @@ import { SectionTitle } from '../../components/SectionTitle';
 import { Button } from '../../components/Button';
 import { useUser } from '../../context/UserContext';
 import useUserData from '../hooks/useUserData';
-import { currentUser } from '../../lib/mockData';
+import { currentUser, locationData } from '../../lib/mockData';
 import { User, Bell, Shield, Phone, Zap, Volume2, Info, LogOut, X, Plus, Trash2, Moon, Sun, ChevronRight } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
+import { AlertDialog } from '../../components/AlertDialog';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 
@@ -24,6 +25,8 @@ export default function Settings() {
     const [autoRecord, setAutoRecordState] = useState(true);
     const [smsAlert, setSmsAlertState] = useState(false);
     const [notifications, setNotificationsState] = useState(true);
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertConfig, setAlertConfig] = useState<{title: string, message: string, buttons?: any[]}>({ title: "", message: "" });
 
     const setAutoSOS = async (value: boolean) => {
         setAutoSOSState(value);
@@ -96,29 +99,34 @@ export default function Settings() {
     };
 
     const handleUnitsPress = () => {
-        Alert.alert(
-            "Select Unit System",
-            "Choose your preferred unit system",
-            [
-                { text: "Metric (km/h)", onPress: () => updateUnitSystem('metric'), style: 'default' },
+        setAlertConfig({
+            title: "Select Unit System",
+            message: "Choose your preferred unit system",
+            buttons: [
+                { text: "Metric (km/h)", onPress: () => updateUnitSystem('metric') },
                 { text: "Imperial (mph)", onPress: () => updateUnitSystem('imperial') },
                 { text: "Cancel", style: "cancel" }
             ]
-        );
+        });
+        setIsAlertVisible(true);
     };
 
     const handleAboutPress = () => {
-        Alert.alert(
-            "About Smart Helmet",
-            "Version 1.0.0\n\nDeveloped by Lingesans Team\n\nThis app connects to your Smart Helmet to provide safety features like impact detection, SOS alerts, and location tracking."
-        );
+        setAlertConfig({
+            title: "About Smart Helmet",
+            message: "Version 1.0.0\n\nDeveloped by Fantastic 4 Team\n\nThis app connects to your Smart Helmet to provide safety features like impact detection, SOS alerts, and location tracking.",
+            buttons: [{ text: "Close" }]
+        });
+        setIsAlertVisible(true);
     };
 
     const handleLogOutPress = () => {
-        Alert.alert(
-            "Cannot Log Out",
-            "Logging out is disabled in this demo version."
-        );
+        setAlertConfig({
+            title: "Cannot Log Out",
+            message: "Logging out is disabled in this demo version.",
+            buttons: [{ text: "Understood" }]
+        });
+        setIsAlertVisible(true);
     };
 
     if (loading || !userData) {
@@ -146,7 +154,7 @@ export default function Settings() {
                     <View className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 mb-3 overflow-hidden border-4 border-white dark:border-gray-800 shadow-sm">
                         <Image source={require('../../assets/images/dummy.jpeg')} className="w-full h-full" resizeMode="contain" />
                     </View>
-                    <Text className="text-xl font-bold">Mohith </Text>
+                    <Text className="text-xl font-bold">Kumar </Text>
                     <Text className="text-sm" variant="muted">{userData.rfid}</Text>
                     <Text className="text-sm" variant="muted">{userData.phoneNumber}</Text>
                     <Button
@@ -248,12 +256,27 @@ export default function Settings() {
                     </TouchableOpacity>
                     {familyMembers.map((member) => (
                         <View key={member.id} className="p-4 border-b border-gray-100 dark:border-gray-800 flex-row justify-between items-center">
-                            <View>
-                                <Text className="font-medium">{member.name}</Text>
-                                <Text className="text-xs" variant="muted">{member.status}</Text>
+                            <View className="flex-1">
+                                <View className="flex-row items-center gap-2">
+                                    <Text className="font-bold text-base">{member.name}</Text>
+                                    <View className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-md">
+                                        <Text className="text-[10px] font-medium" variant="muted">{member.status}</Text>
+                                    </View>
+                                </View>
+                                <View className="flex-row gap-3 mt-1">
+                                    {member.rfid ? (
+                                        <Text className="text-[10px]" variant="muted">RFID: {member.rfid}</Text>
+                                    ) : null}
+                                    {member.mobileNumber ? (
+                                        <Text className="text-[10px]" variant="muted">PH: {member.mobileNumber}</Text>
+                                    ) : null}
+                                </View>
                             </View>
-                            <TouchableOpacity onPress={() => removeFamilyMember(member.id)}>
-                                <Trash2 size={18} color="#EF4444" />
+                            <TouchableOpacity 
+                                className="p-2 bg-red-50 dark:bg-red-900/20 rounded-full"
+                                onPress={() => removeFamilyMember(member.id)}
+                            >
+                                <Trash2 size={16} color="#EF4444" />
                             </TouchableOpacity>
                         </View>
                     ))}
@@ -341,7 +364,10 @@ export default function Settings() {
                 onAdd={(member) => {
                     addFamilyMember({
                         ...member,
-                        location: { lat: 0, lng: 0 } // Default location
+                        location: { 
+                            lat: locationData.latitude + (Math.random() - 0.5) * 0.01, 
+                            lng: locationData.longitude + (Math.random() - 0.5) * 0.01 
+                        }
                     });
                 }}
             />
@@ -378,6 +404,14 @@ export default function Settings() {
                     </View>
                 </View>
             </Modal>
+            {/* Custom Alert */}
+            <AlertDialog
+                visible={isAlertVisible}
+                onClose={() => setIsAlertVisible(false)}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                buttons={alertConfig.buttons}
+            />
         </SafeAreaView>
     );
 }
